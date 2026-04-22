@@ -61,6 +61,7 @@
                         <div class="p-5 mx-auto" style="max-width: 600px;">
                             <h2 class="form-section-title">Book a Facility</h2>
                             <form action="BookingServlet" method="POST">
+                                
                                 <div class="mb-4">
                                     <label class="form-label fw-bold">DATE OF RESERVATION</label>
                                     <input type="date" class="form-control" name="bookingDate" required>
