@@ -5,7 +5,8 @@
 
 <!DOCTYPE html>
 <html>
-    <jsp:include page="headerL.jsp" />
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <jsp:include page="header.jsp" />
 <head>
     <title>Manage Maintenance</title>
 </head>
@@ -33,5 +34,5 @@
         <% } %>
     </table>
 </body>
-<jsp:include page="footerL.jsp" />
+<jsp:include page="footer.jsp" />
 </html>
