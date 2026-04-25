@@ -143,3 +143,146 @@ footer p {
     background: white;
     box-shadow: none;
 }
+/* header lynn*/
+:root {
+    --soft-peach: #fff5eb;
+    --mocha-text: #4a403a;
+    --border-tan: #e6dcd2;
+}
+
+body {
+    background-color: var(--soft-peach);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--mocha-text);
+}
+
+/* Navbar Neat Styles */
+.navbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--border-tan);
+    padding: 1rem 0;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--mocha-text) !important;
+}
+
+.nav-link {
+    color: var(--mocha-text) !important;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin: 0 10px;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #8b4513 !important; /* Muted brown hover */
+}
+
+/* Dropdown Menu Styles */
+.dropdown-menu {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 10px;
+    margin-top: 15px;
+}
+
+.dropdown-item {
+    color: var(--mocha-text);
+    font-size: 0.9rem;
+    border-radius: 8px;
+    padding: 8px 15px;
+}
+
+.dropdown-item:hover {
+    background-color: var(--soft-peach);
+    color: #8b4513;
+}
+
+/* Logout Button */
+.btn-logout {
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    font-size: 0.85rem;
+    padding: 6px 18px;
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: #dc3545;
+    color: white;
+}
+/* maintenance*/
+.maintenance-container {
+    color: white;
+    max-width: 900px;
+    margin: 60px auto;
+    background: var(--card-white);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(74, 64, 58, 0.05);
+}
+
+.table {
+    border-top: 2px solid var(--border-tan);
+}
+
+.btn-update {
+    background-color: var(--mocha-text);
+    color: white;
+    border-radius: 10px;
+    padding: 8px 20px;
+    border: none;
+    transition: 0.3s;
+}
+
+.btn-update:hover {
+    background-color: #362e2a;
+    transform: translateY(-2px);
+}
+/* untuk cust care lynn */
+
+.border-end {
+    border-right: 1px solid var(--border-tan) !important;
+}
+
+/* Adjusting the container width specifically for this page */
+.maintenance-container {
+    transition: all 0.3s ease;
+}
+
+/* Make sure inputs match the neat and clean mocha style */
+.form-control-sm {
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
+
+/* lynnn Profile Icon */
+.profile-icon-circle {
+    width: 35px;
+    height: 35px;
+    background-color: #f0f7ff; /* Soft blue background to match your profile page */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-tan);
+    transition: 0.3s;
+}
+
+.profile-link:hover .profile-icon-circle {
+    background-color: var(--border-tan);
+    transform: scale(1.05);
+}
+
+.profile-link:hover strong {
+    color: var(--mocha-text);
+}
+
+/* Ensure the logout button stays neat next to the icon */
+.btn-logout {
+    font-size: 0.8rem;
+    padding: 4px 15px;
+}
