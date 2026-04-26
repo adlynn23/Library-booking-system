@@ -3,6 +3,108 @@
     Module: Global Styling for Header, Footer, and Forms
 */
 
+/*index.jsp*/
+/* --- EduSpace Global Style Variables --- */
+:root {
+    --edu-green: #1a3a32;      /* Signature Dark Green */
+    --soft-peach: #fff5eb;     /* Peach accent color */
+    --text-dark: #112d32;      /* Headings */
+    --text-muted: #666666;     /* Subtitles */
+    --white: #ffffff;
+}
+
+/* --- Base Body Styles --- */
+body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--white);
+    color: #1a1a1a;
+    margin: 0;
+    padding: 0;
+}
+
+/* --- Shared Components (Buttons) --- */
+.btn-cta {
+    background-color: var(--edu-green);
+    color: var(--white);
+    padding: 18px 40px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.3s ease;
+    border: none;
+}
+
+.btn-cta:hover {
+    transform: translateY(-3px);
+    color: var(--white);
+}
+
+/* --- Index Page Specific Styles --- */
+.hero-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 10%;
+    min-height: 70vh;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text-dark);
+    margin-bottom: 25px;
+}
+
+.visual-box {
+    width: 45%;
+    height: 500px;
+    background-color: var(--soft-peach);
+    border-radius: 50px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+/* --- Dashboard Specific Styles --- */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--edu-green);
+    color: white;
+    padding: 20px;
+}
+
+.sidebar a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 5px;
+}
+
+.sidebar a:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* --- Login & Registration Card Styles --- */
+.auth-card {
+    max-width: 450px;
+    margin: 80px auto;
+    padding: 40px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+
 :root {
     --edu-green: #1a3a32;   /* Signature Dark Green */
     --soft-peach: #fff5eb;  /* Soft Background Peach */
