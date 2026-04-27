@@ -22,12 +22,12 @@
 
             <form action="LoginServlet" method="POST">
                 <div class="mb-3">
-                    <label for="email" class="form-label">INSTITUTIONAL EMAIL</label>
+                    <label for="email" class="form-label">Institutional Email</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="name@university.edu" required>
                 </div>
 
                 <div class="mb-4">
-                    <label for="password" class="form-label">PASSWORD</label>
+                    <label for="password" class="form-label">Password</label>
                     <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
                 </div>
 

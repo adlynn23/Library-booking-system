@@ -123,11 +123,11 @@
 
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="password" class="form-label text-uppercase">Password</label>
+                        <label for="password" class="form-label">Password</label>
                         <input type="password" class="form-control" id="password" name="password" placeholder="••••••••" required>
                     </div>
                     <div class="col-md-6 mb-4">
-                        <label for="confirmPassword" class="form-label text-uppercase">Confirm</label>
+                        <label for="confirmPassword" class="form-label">Confirm</label>
                         <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="••••••••" required>
                     </div>
                 </div>
