@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
 
         <title>JSP Page</title>
-        <%@include file="header.jsp" %>
+        <%@include file="header_landing.jsp" %>
 
     </head>
     <body>
@@ -25,6 +25,7 @@
             </div>
             <div class="visual-box"></div>
         </section>
-        <%@include file="footer.jsp" %>
     </body>
+    <%@include file="footer.jsp" %>
+
 </html>
