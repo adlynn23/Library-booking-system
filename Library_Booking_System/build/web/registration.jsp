@@ -9,8 +9,10 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                <link rel="stylesheet" type="text/css" href="style.css">
 
-        <style>
+
+<!--        <style>
             :root {
                 --edu-green: #1a3a32;
                 --soft-peach: #fff5eb;
@@ -92,7 +94,7 @@
                 font-weight: 700;
                 text-decoration: none;
             }
-        </style>
+        </style>-->
     </head>
     <body>
 

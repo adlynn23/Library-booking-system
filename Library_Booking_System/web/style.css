@@ -1,0 +1,146 @@
+/* General Refinements 
+body {
+    background-color: #fcfcfc;  Off-white for a cleaner look 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #444;
+}
+
+ Header Styling 
+.navbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    color: #333 !important;
+}
+
+.nav-link {
+    color: #666 !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #007bff !important;  Soft accent color 
+}
+
+ Button Styling (Left Side) 
+.btn-outline-secondary {
+    border-color: #ddd;
+    color: #666;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+    border-color: #ccc;
+    color: #333;
+}
+
+ Footer Styling 
+footer {
+    background-color: #f9f9f9 !important;  Soft light gray instead of dark 
+    color: #666 !important;
+    border-top: 1px solid #eee;
+}
+
+footer strong {
+    color: #333;
+}
+
+footer hr {
+    opacity: 0.1;
+    background-color: #000;
+}
+
+ Utility: Spacing for content between header and footer 
+.main-content {
+    min-height: 80vh;
+    padding: 40px 0;
+}*/
+/*REGISTRATION STYLE
+:root {
+                --edu-green: #1a3a32;
+                --soft-peach: #fff5eb;
+            }
+
+            body {
+                font-family: 'DM Sans', sans-serif;
+                background-color: var(--soft-peach);
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 40px 0;
+            }
+
+            .register-card {
+                background: white;
+                padding: 45px;
+                border-radius: 24px;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+                width: 100%;
+                max-width: 500px;
+            }
+
+            .brand-name {
+                color: var(--edu-green);
+                font-weight: 700;
+                font-size: 26px;
+                text-align: center;
+                margin-bottom: 25px;
+            }
+
+            .form-label {
+                font-weight: 600;
+                color: #555;
+                font-size: 13px;
+                letter-spacing: 0.5px;
+            }
+
+            .form-control {
+                border: 2px solid #f0f0f0;
+                border-radius: 12px;
+                padding: 10px 15px;
+                background: #fafafa;
+            }
+
+            .form-control:focus {
+                border-color: var(--edu-green);
+                box-shadow: none;
+                background: white;
+            }
+
+            .btn-register {
+                background-color: var(--edu-green);
+                color: white;
+                width: 100%;
+                padding: 14px;
+                border-radius: 12px;
+                font-weight: 700;
+                border: none;
+                margin-top: 15px;
+                transition: 0.3s;
+            }
+
+            .btn-register:hover {
+                opacity: 0.9;
+                transform: translateY(-2px);
+            }
+
+            .login-link {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 14px;
+                color: #888;
+            }
+
+            .login-link a {
+                color: var(--edu-green);
+                font-weight: 700;
+                text-decoration: none;
+            }*/
+
+
+
