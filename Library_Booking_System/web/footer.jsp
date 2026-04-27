@@ -8,17 +8,28 @@
 <!DOCTYPE html>
 <html>
     <link rel="stylesheet" type="text/css" href="style.css">
-  <footer>
-    <div class="footer-container">
-        <div class="footer-info">
-            <p>&copy; 2026 Universiti Malaysia Terengganu Library</p> [cite: 1000]
-            <p>Contact: +1 (555) 123-4567 | Email: support@library.com</p> [cite: 826, 1000]
+<footer class="pt-4 pb-2 mt-5">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <p class="mb-1">
+                    <strong>Contact:</strong> +1 (555) 123-4567 | 
+                    <strong>Email:</strong> support@library.com
+                </p>
+                <p class="mb-1">
+                    <strong>Operating Hours:</strong> Mon–Fri (8:00 AM – 8:00 PM)
+                </p>
+            </div>
         </div>
-        <div class="footer-hours">
-            <p>Operating Hours: Mon-Fri (8:00 AM - 8:00 PM)</p> [cite: 826, 1000]
+        <hr class="bg-white">
+        <div class="row">
+            <div class="col-md-12">
+                <p class="small text-secondary">
+                    &copy; 2026 Universiti Library. All Rights Reserved.
+                </p>
+            </div>
         </div>
     </div>
 </footer>
-</body>
 </html>
 
