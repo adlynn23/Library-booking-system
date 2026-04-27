@@ -4,9 +4,41 @@
         <servlet-name>MaintenanceServlet</servlet-name>
         <servlet-class>MaintenanceServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>startBookingServlet</servlet-name>
+        <servlet-class>startBookingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>loginServlet</servlet-name>
+        <servlet-class>loginServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>RegisterServlet</servlet-name>
+        <servlet-class>RegisterServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>registerServlet</servlet-name>
+        <servlet-class>registerServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>MaintenanceServlet</servlet-name>
         <url-pattern>/MaintenanceServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>startBookingServlet</servlet-name>
+        <url-pattern>/startBookingServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>loginServlet</servlet-name>
+        <url-pattern>/loginServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RegisterServlet</servlet-name>
+        <url-pattern>/RegisterServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>registerServlet</servlet-name>
+        <url-pattern>/registerServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
