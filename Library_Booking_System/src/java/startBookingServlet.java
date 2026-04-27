@@ -6,6 +6,7 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author ASUS
  */
+@WebServlet("/startBookingServlet")
 public class startBookingServlet extends HttpServlet {
 
     /**
@@ -61,21 +63,29 @@ HttpSession session=request.getSession(false);
 
 //1. if no session exists, the user must login or register
 if(session==null || session.getAttribute("userRole")==null){
-    response.sendRedirect("login.jsp");
-}else{
-    //2.retrieve role from session (set during LoginServlet database check)
-    String role=(String) session.getAttribute("userRole");
-    
-    //3.redirect to role-based dashboard
-    if("Librarian".equalsIgnoreCase(role)){
-        response.sendRedirect("adminDashboard.jsp");
-} else if("Student".equalsIgnoreCase(role)||"Staff".equalsIgnoreCase(role)){
-    response.sendRedirect("userDashboard.jsp");
-}else{
-            response.sendRedirect("login.jsp");
-            }
-    }
+    response.sendRedirect("login.jsp?msg=please_login");
+    return;
 }
+//retrieve the role that was saved by loginServlet
+String role=(String)session.getAttribute("userRole");
+
+//4.Role_Based Redirection
+if("Librarian".equalsIgnoreCase(role)){
+    //if email started with 'A', they go here
+    response.sendRedirect("admin_dashboard.jsp");
+}
+else if("Student".equalsIgnoreCase(role)||"Staff".equalsIgnoreCase(role)){
+    //if email start with 'S' or "L", they go here
+    response.sendRedirect("user_dashboard.jsp");
+    
+}
+else{
+    //unknown role? safety first.
+    response.sendRedirect("login.jsp");
+}
+}
+
+
     
 
     /**

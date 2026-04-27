@@ -3,17 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
+import com.sun.jdi.connect.spi.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author ASUS
  */
+@WebServlet("/loginServlet")
 public class loginServlet extends HttpServlet {
 
     // Database connection details - update these to match your local MySQL setup
@@ -74,8 +84,48 @@ public class loginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String email=request.getParameter("email");
-        String password-request.getParameter("password")
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+
+        try {
+            //1. Load Driver and Connect
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            java.sql.Connection conn = DriverManager.getConnection(dbURL, User, Password);
+
+            // 2. query to find user and their role
+            String sql = "SELECT role, fullname FROM user  WHERE email=? AND password = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            ps.setString(1, password);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                //login successful
+                String roleFromDB = rs.getString("role");
+                String userName = rs.getString("fullname");
+
+                //3. create session 
+                //this keeps the user logged in as they move between pages
+                HttpSession session = request.getSession();
+                session.setAttribute("userRole", roleFromDB);
+                session.setAttribute("userName", userName);
+
+                //4. redirect to the gatekeeper (StartBookingServlet)
+                //This servlet will decide which dashboard to open
+                response.sendRedirect("startBookingServlet");
+
+            } else {
+                //login failed
+                response.sendRedirect("login.jsp?error=invalid");
+            }
+            conn.close();
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            response.sendRedirect("login.jsp?error=db_error");
+
+        }
+
     }
 
     /**

@@ -11,90 +11,6 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                 <link rel="stylesheet" type="text/css" href="style.css">
 
-
-<!--        <style>
-            :root {
-                --edu-green: #1a3a32;
-                --soft-peach: #fff5eb;
-            }
-
-            body {
-                font-family: 'DM Sans', sans-serif;
-                background-color: var(--soft-peach);
-                min-height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 40px 0;
-            }
-
-            .register-card {
-                background: white;
-                padding: 45px;
-                border-radius: 24px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-                width: 100%;
-                max-width: 500px;
-            }
-
-            .brand-name {
-                color: var(--edu-green);
-                font-weight: 700;
-                font-size: 26px;
-                text-align: center;
-                margin-bottom: 25px;
-            }
-
-            .form-label {
-                font-weight: 600;
-                color: #555;
-                font-size: 13px;
-                letter-spacing: 0.5px;
-            }
-
-            .form-control {
-                border: 2px solid #f0f0f0;
-                border-radius: 12px;
-                padding: 10px 15px;
-                background: #fafafa;
-            }
-
-            .form-control:focus {
-                border-color: var(--edu-green);
-                box-shadow: none;
-                background: white;
-            }
-
-            .btn-register {
-                background-color: var(--edu-green);
-                color: white;
-                width: 100%;
-                padding: 14px;
-                border-radius: 12px;
-                font-weight: 700;
-                border: none;
-                margin-top: 15px;
-                transition: 0.3s;
-            }
-
-            .btn-register:hover {
-                opacity: 0.9;
-                transform: translateY(-2px);
-            }
-
-            .login-link {
-                text-align: center;
-                margin-top: 20px;
-                font-size: 14px;
-                color: #888;
-            }
-
-            .login-link a {
-                color: var(--edu-green);
-                font-weight: 700;
-                text-decoration: none;
-            }
-        </style>-->
     </head>
     <body>
 
@@ -104,7 +20,7 @@
             <h4 class="fw-bold mb-1 text-center">Join EduSpace</h4>
             <p class="text-muted small mb-4 text-center">Create your library booking account today.</p>
 
-            <form action="RegisterServlet" method="POST">
+            <form action="registerServlet" method="POST">
 
                 <div class="mb-3">
                     <label for="fullName" class="form-label text-uppercase">Full Name</label>

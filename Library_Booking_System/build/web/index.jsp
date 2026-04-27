@@ -20,7 +20,7 @@
             <div class="hero-content">
                 <h1 class="hero-title">Better space for<br>better grades.</h1>
                 <p>Access real-time schedules for library facilities.</p>
-                <a href="StartBookingServlet" class="btn-cta">Start Booking Now</a>
+                <a href="startBookingServlet" class="btn-cta">Start Booking Now</a>
 
             </div>
             <div class="visual-box"></div>

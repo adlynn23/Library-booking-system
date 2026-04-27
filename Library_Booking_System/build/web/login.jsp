@@ -10,7 +10,8 @@
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link rel="stylesheet" type="text/css" href="css/style.css">
-
+        
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
 
@@ -20,7 +21,7 @@
             <h4 class="fw-bold mb-2">Welcome Back</h4>
             <p class="text-muted small mb-4">Please enter your institutional credentials to continue.</p>
 
-            <form action="LoginServlet" method="POST">
+            <form action="loginServlet" method="POST">
                 <div class="mb-3">
                     <label for="email" class="form-label">Institutional Email</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="name@university.edu" required>
@@ -38,6 +39,18 @@
                 Don't have an account? <a href="registration.jsp">Register Now</a>
             </div>
         </div>
+
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('error') === 'invalid') {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Access Denied',
+                    text: 'Account not found! Please ensure you have registered first.',
+                    confirmButtonColor: '#1a3a32'
+                });
+            }
+        </script>
 
     </body>
 </html>

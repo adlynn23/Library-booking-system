@@ -2,6 +2,56 @@
     Author: Group 5
     Module: Global Styling for Header, Footer, and Forms
 */
+/*user_dashboard.jsp*/
+/* Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f9f9f9;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: var(--edu-green);
+    color: white;
+    padding: 30px 20px;
+}
+
+.user-profile {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.user-profile i { font-size: 50px; margin-bottom: 10px; }
+
+.sidebar-nav a {
+    display: block;
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.sidebar-nav a:hover, .sidebar-nav a.active {
+    background: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.main-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.peach-box {
+    background-color: var(--soft-peach);
+    padding: 30px;
+    border-radius: 20px;
+    margin-top: 20px;
+}
+
+.logout-link { color: #ff7675 !important; margin-top: 50px; }
 
 /*index.jsp*/
 /* --- EduSpace Global Style Variables --- */

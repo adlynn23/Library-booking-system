@@ -3,25 +3,27 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-import com.sun.jdi.connect.spi.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
+import javax.servlet.annotation.WebServlet;
 /**
  *
  * @author ASUS
  */
-
+@WebServlet("/registerServlet")
 public class registerServlet extends HttpServlet {
 
     // Database connection details
     private final String dbURL = "jdbc:mysql://localhost:3307/librarybooking";
-    private final String dbUser = "root";
-    private final String dbPass = "";
+    private final String User = "root";
+    private final String Password = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -99,12 +101,12 @@ public class registerServlet extends HttpServlet {
         try {
             // 3. Connect to the database [cite: 2703]
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass);
+            Connection conn = DriverManager.getConnection(dbURL, User, Password);
 
             // 4. Insert user details along with the assigned role [cite: 2704]
             String sql = "INSERT INTO users (fullName, email, phone, password, role) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, fullName);
+            ps.setString(1, fullname);
             ps.setString(2, email);
             ps.setString(3, phone);
             ps.setString(4, password);
