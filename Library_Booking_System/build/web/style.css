@@ -610,6 +610,26 @@ body {
 }
 
 /* lynnn Profile Icon */
+/* Fix for the overlapping profile header */
+.profile-header-row {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* This creates the physical space between icon and name */
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 15px;
+    border: 1px solid var(--border-tan);
+    margin-bottom: 25px;
+}
+
+.profile-avatar-container {
+    flex-shrink: 0; /* Prevents the icon from being squished by long names */
+}
+
+.profile-info-container {
+    flex-grow: 1;
+}
+
 .profile-icon-circle {
     width: 35px;
     height: 35px;
@@ -645,8 +665,6 @@ body {
     background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
     border: none;
 }
-<<<<<<< HEAD
-=======
 
 /*untuk custCareee*/
 /* style.css additions */
@@ -682,4 +700,3 @@ textarea.form-control {
     font-size: 0.85rem;
     border-radius: 8px;
 }
->>>>>>> 1716ded8fa7dc98be7d87693046c3663fdf861b7

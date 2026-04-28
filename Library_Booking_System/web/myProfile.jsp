@@ -11,9 +11,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>My Profile - Library Booking System</title>
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" type="text/css" href="style.css">-->
+        <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                <link rel="stylesheet" type="text/css" href="style.css">-->
     </head>
     <body>
         <%
@@ -40,13 +40,13 @@
                     <div class="profile-avatar me-3">
                         <i class="fas fa-user-circle fa-4x text-primary"></i>
                     </div>
-                    
+
                     <div class="d-flex flex-column">
-                        <h4 class="mb-0" style="font-weight: 700;"><%= userName.isEmpty() ? "New User" : userName%></h4>
-                        <p class="text-muted mb-0"><%= role%></p>
+                        <h4 class="mb-0 fw-bold" style="color: #008cc9;"><%= userName%></h4>
+                        <p class="text-muted mb-0 small"><%= role%></p>
                     </div>
                 </div>
-
+                    
                 <form action="UpdateProfileServlet" method="POST">
                     <div class="mb-3">
                         <label class="form-label small text-muted font-weight-bold">Full Name</label>
@@ -100,23 +100,23 @@
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <script>
-                                function enableEditing() {
-                                    // 1. Remove readonly from inputs
-                                    document.getElementById('fullName').readOnly = false;
-                                    document.getElementById('userEmail').readOnly = false;
-                                    document.getElementById('userPhone').readOnly = false;
+                            function enableEditing() {
+                                // 1. Remove readonly from inputs
+                                document.getElementById('fullName').readOnly = false;
+                                document.getElementById('userEmail').readOnly = false;
+                                document.getElementById('userPhone').readOnly = false;
 
-                                    // 2. Change input background to white to show they are active
-                                    document.getElementById('fullName').classList.replace('bg-light', 'bg-white');
-                                    document.getElementById('userEmail').classList.replace('bg-light', 'bg-white');
-                                    document.getElementById('userPhone').classList.replace('bg-light', 'bg-white');
-                                    // 3. Hide Edit button and show Save button
-                                    document.getElementById('editBtn').classList.add('d-none');
-                                    document.getElementById('saveBtn').classList.remove('d-none');
+                                // 2. Change input background to white to show they are active
+                                document.getElementById('fullName').classList.replace('bg-light', 'bg-white');
+                                document.getElementById('userEmail').classList.replace('bg-light', 'bg-white');
+                                document.getElementById('userPhone').classList.replace('bg-light', 'bg-white');
+                                // 3. Hide Edit button and show Save button
+                                document.getElementById('editBtn').classList.add('d-none');
+                                document.getElementById('saveBtn').classList.remove('d-none');
 
-                                    // 4. Focus on the first field
-                                    document.getElementById('fullName').focus();
-                                }
+                                // 4. Focus on the first field
+                                document.getElementById('fullName').focus();
+                            }
 
 
         </script>
