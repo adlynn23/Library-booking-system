@@ -6,11 +6,11 @@
     </servlet>
     <servlet>
         <servlet-name>startBookingServlet</servlet-name>
-        <servlet-class>startBookingServlet</servlet-class>
+        <servlet-class>controller.startBookingServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>loginServlet</servlet-name>
-        <servlet-class>loginServlet</servlet-class>
+        <servlet-class>controller.loginServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>RegisterServlet</servlet-name>
@@ -18,7 +18,11 @@
     </servlet>
     <servlet>
         <servlet-name>registerServlet</servlet-name>
-        <servlet-class>registerServlet</servlet-class>
+        <servlet-class>controller.registerServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateProfileServlet</servlet-name>
+        <servlet-class>UpdateProfileServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>MaintenanceServlet</servlet-name>
@@ -39,6 +43,10 @@
     <servlet-mapping>
         <servlet-name>registerServlet</servlet-name>
         <url-pattern>/registerServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateProfileServlet</servlet-name>
+        <url-pattern>/UpdateProfileServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
