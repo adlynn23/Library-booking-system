@@ -141,3 +141,38 @@ footer hr {
     background: linear-gradient(90deg, #00c6ff 0%, #0072ff 100%);
     border: none;
 }
+
+/*untuk custCareee*/
+/* style.css additions */
+.form-control {
+    border: 1px solid var(--border-tan);
+    border-radius: 10px;
+    padding: 12px;
+    background-color: #fcfcfc;
+    transition: 0.3s;
+}
+
+.form-control:focus {
+    border-color: var(--mocha-text);
+    box-shadow: 0 0 0 0.2rem rgba(74, 64, 58, 0.1);
+    background-color: #ffffff;
+}
+
+textarea.form-control {
+    resize: none; /* Prevents user from messing up the box size */
+}
+/* style.css adjustment */
+.border-end {
+    border-right: 1px solid var(--border-tan) !important;
+}
+
+/* Adjusting the container width specifically for this page */
+.maintenance-container {
+    transition: all 0.3s ease;
+}
+
+/* Make sure inputs match the neat and clean mocha style */
+.form-control-sm {
+    font-size: 0.85rem;
+    border-radius: 8px;
+}
