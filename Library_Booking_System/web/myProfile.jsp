@@ -11,11 +11,9 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>My Profile - Library Booking System</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link rel="stylesheet" type="text/css" href="style.css">
-
-
+        <link rel="stylesheet" type="text/css" href="style.css">-->
     </head>
     <body>
         <%
@@ -33,16 +31,17 @@
         <jsp:include page="header.jsp" />
         <%-- Including your renamed header [cite: 977] --%>
 
-        <div class="container mt-5 py-5">
+        <div class="container mt-3 ">
             <%-- This container now uses the white card style from your CSS [cite: 965] --%>
             <div class="maintenance-container mx-auto" style="max-width: 600px;">
                 <h2 class="mb-4" style="font-weight: 700; color: #008cc9;">My Profile </h2>
 
-                <div class="d-flex align-items-center mb-4">
+                <div class="d-flex align-items-center mb-4 p-2">
                     <div class="profile-avatar me-3">
                         <i class="fas fa-user-circle fa-4x text-primary"></i>
                     </div>
-                    <div>
+                    
+                    <div class="d-flex flex-column">
                         <h4 class="mb-0" style="font-weight: 700;"><%= userName.isEmpty() ? "New User" : userName%></h4>
                         <p class="text-muted mb-0"><%= role%></p>
                     </div>

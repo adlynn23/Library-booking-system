@@ -22,7 +22,11 @@
     </servlet>
     <servlet>
         <servlet-name>UpdateProfileServlet</servlet-name>
-        <servlet-class>UpdateProfileServlet</servlet-class>
+        <servlet-class>controller.UpdateProfileServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>FeedbackServlet</servlet-name>
+        <servlet-class>controller.FeedbackServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>MaintenanceServlet</servlet-name>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>UpdateProfileServlet</servlet-name>
         <url-pattern>/UpdateProfileServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FeedbackServlet</servlet-name>
+        <url-pattern>/FeedbackServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
