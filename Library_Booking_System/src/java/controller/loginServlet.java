@@ -85,7 +85,6 @@ public class loginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-<<<<<<< HEAD
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
@@ -128,11 +127,7 @@ public class loginServlet extends HttpServlet {
 
         }
 
-=======
-        String email=request.getParameter("email");
-        String password-request.getParameter("password");
->>>>>>> 1716ded8fa7dc98be7d87693046c3663fdf861b7
-    }
+            }
 
     /**
      * Returns a short description of the servlet.

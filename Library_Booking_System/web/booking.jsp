@@ -75,7 +75,7 @@
             }
         </style>
     </head>
-    <body>
+   <body>
 
         <nav class="navbar navbar-expand-lg sticky-top">
             <div class="container">
@@ -109,7 +109,18 @@
                             <input type="time" class="form-control" id="endTime" name="endTime" required>
                         </div>
                     </div>
-
+                    <div class="mb-4">
+                        <label for="facilityName" class="form-label">FACILITY NAME</label>
+                        <select class="form-control" id="facilityName" name="facilityName" required>
+                            <option value="">-- Select Facility --</option>
+                            <option value="Mangrove Room">Mangrove Room</option>
+                            <option value="Wetland Room">Wetland Room</option>
+                            <option value="Orchid Study Room">Orchid Study Room</option>
+                            <option value="Bamboo Discussion Room">Bamboo Discussion Room</option>
+                            <option value="Lotus Study Hall">Lotus Study Hall</option>
+                        </select>
+                    </div>
+                    
                     <div class="mb-4">
                         <label for="purpose" class="form-label">PURPOSE OF BOOKING</label>
                         <textarea class="form-control" id="purpose" name="purpose" rows="4" placeholder="Describe your activity (e.g., Exam revision, Group project)" required></textarea>
