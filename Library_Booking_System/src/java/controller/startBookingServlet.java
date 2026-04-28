@@ -1,3 +1,5 @@
+package controller;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
@@ -9,17 +11,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author ASUS
  */
-public class loginServlet extends HttpServlet {
-
-    // Database connection details - update these to match your local MySQL setup
-    private final String dbURL = "jdbc:mysql://localhost:3307/librarybooking";
-    private final String User = "root";
-    private final String Password = "";
+public class startBookingServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +36,10 @@ public class loginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet loginServlet</title>");
+            out.println("<title>Servlet startBookingServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet loginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet startBookingServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,8 +57,28 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+
+//retrieve the current session, do not create if it doesn't exist
+HttpSession session=request.getSession(false);
+
+//1. if no session exists, the user must login or register
+if(session==null || session.getAttribute("userRole")==null){
+    response.sendRedirect("login.jsp");
+}else{
+    //2.retrieve role from session (set during LoginServlet database check)
+    String role=(String) session.getAttribute("userRole");
+    
+    //3.redirect to role-based dashboard
+    if("Librarian".equalsIgnoreCase(role)){
+        response.sendRedirect("adminDashboard.jsp");
+} else if("Student".equalsIgnoreCase(role)||"Staff".equalsIgnoreCase(role)){
+    response.sendRedirect("userDashboard.jsp");
+}else{
+            response.sendRedirect("login.jsp");
+            }
     }
+}
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -73,9 +91,7 @@ public class loginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        String email=request.getParameter("email");
-        String password-request.getParameter("password")
+        processRequest(request, response);
     }
 
     /**

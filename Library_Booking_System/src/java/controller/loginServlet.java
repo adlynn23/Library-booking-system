@@ -1,9 +1,10 @@
+package controller;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-import com.sun.jdi.connect.spi.Connection;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -15,13 +16,12 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author ASUS
  */
+public class loginServlet extends HttpServlet {
 
-public class registerServlet extends HttpServlet {
-
-    // Database connection details
+    // Database connection details - update these to match your local MySQL setup
     private final String dbURL = "jdbc:mysql://localhost:3307/librarybooking";
-    private final String dbUser = "root";
-    private final String dbPass = "";
+    private final String User = "root";
+    private final String Password = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +40,10 @@ public class registerServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet registerServlet</title>");
+            out.println("<title>Servlet loginServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet registerServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet loginServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -76,56 +76,9 @@ public class registerServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-//1. get user data from registration.jsp
-        String fullname = request.getParameter("fullname");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String password = request.getParameter("password");
-
-        String assignedRole = "Guest"; // Default fallback
-
-        // 2. Logic to determine role based on the first letter of email 
-        if (email != null && !email.isEmpty()) {
-            char firstChar = Character.toUpperCase(email.charAt(0));
-
-            if (firstChar == 'S') {
-                assignedRole = "Student";
-            } else if (firstChar == 'L') {
-                assignedRole = "Staff";
-            } else if (firstChar == 'A') {
-                assignedRole = "Librarian";
-            }
-        }
-        try {
-            // 3. Connect to the database [cite: 2703]
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass);
-
-            // 4. Insert user details along with the assigned role [cite: 2704]
-            String sql = "INSERT INTO users (fullName, email, phone, password, role) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, fullName);
-            ps.setString(2, email);
-            ps.setString(3, phone);
-            ps.setString(4, password);
-            ps.setString(5, assignedRole);
-
-            int result = ps.executeUpdate();
-
-            if (result > 0) {
-                // 5. Success: Redirect to login page with a success message [cite: 2705]
-                response.sendRedirect("login.jsp?registration=success");
-            } else {
-                response.sendRedirect("registration.jsp?error=failed");
-            }
-
-            conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("registration.jsp?error=db_error");
-        }
+        String email=request.getParameter("email");
+        String password-request.getParameter("password")
     }
-    
 
     /**
      * Returns a short description of the servlet.

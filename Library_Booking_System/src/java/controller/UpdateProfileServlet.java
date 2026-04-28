@@ -1,3 +1,5 @@
+package controller;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
@@ -9,12 +11,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author DELL
  */
-public class FeedbackServlet extends HttpServlet {
+public class UpdateProfileServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -33,10 +36,10 @@ public class FeedbackServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet FeedbackServlet</title>");
+            out.println("<title>Servlet UpdateProfileServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet FeedbackServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateProfileServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -69,19 +72,26 @@ public class FeedbackServlet extends HttpServlet {
    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        // 1. Retrieve the data from the "custCare.jsp" form [cite: 366]
-        String subject = request.getParameter("subject");
-        String message = request.getParameter("message");
+        // 1. Retrieve typed data from the Input Design form [cite: 457, 460]
+        String fullName = request.getParameter("fullName");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
 
-        // 2. Business Logic: For now, we will print it to the console.
-        // In a full implementation, you would use a FeedbackDAO to save this to MySQL[cite: 367].
-        System.out.println("New Feedback Received:");
-        System.out.println("Subject: " + subject);
-        System.out.println("Message: " + message);
+        // 2. Validate data to maintain Data Integrity [cite: 464]
+        if (fullName != null && !fullName.isEmpty()) {
+            
+            // 3. Update the Session (In a full SAD implementation, you would also call a DAO method here to update the DB)
+            HttpSession session = request.getSession();
+            session.setAttribute("userName", fullName);
+            session.setAttribute("userEmail", email);
+            session.setAttribute("userPhone", phone);
 
-        // 3. Success Feedback: Redirect back to the page with a success status
-        // You can add a popup or message on the JSP to confirm receipt[cite: 348].
-        response.sendRedirect("custCare.jsp?status=success");
+            // 4. Redirect back to profile with a success message
+            request.setAttribute("message", "Profile updated successfully!");
+        }
+
+        // Return the user to the profile view [cite: 417]
+        response.sendRedirect("myProfile.jsp");
     }
     @Override
     public String getServletInfo() {

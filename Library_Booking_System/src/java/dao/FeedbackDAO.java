@@ -6,6 +6,7 @@
 import java.sql.*;
 import java.util.*;
 import model.Feedback; // You will need a simple Feedback model class too
+import util.DBConnection;
 
 public class FeedbackDAO {
     // Method to save student submission
