@@ -126,7 +126,8 @@ public class loginServlet extends HttpServlet {
             response.sendRedirect("login.jsp?error=db_error");
 
         }
-    }
+
+            }
 
     /**
      * Returns a short description of the servlet.

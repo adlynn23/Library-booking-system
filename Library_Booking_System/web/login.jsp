@@ -12,18 +12,94 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
         
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
+        <style>
+    :root {
+        --edu-green: #1a3a32;
+        --soft-peach: #fdf0e6;
+        --accent-gold: #d4a373;
+        --text-dark: #2d3436;
+    }
+
+    body {
+        font-family: 'DM Sans', sans-serif;
+        background-color: var(--soft-peach);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+    }
+
+    .login-card {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .brand-name {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--edu-green);
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        font-size: 0.9rem;
+        color: var(--text-dark);
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px;
+        border: 1px solid #ddd;
+        margin-bottom: 1rem;
+    }
+
+    .btn-signin {
+        background-color: var(--edu-green);
+        color: white;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        transition: 0.3s;
+    }
+
+    .btn-signin:hover {
+        background-color: #122924;
+        transform: translateY(-2px);
+    }
+
+    .register-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        font-size: 0.85rem;
+    }
+
+    .register-link a {
+        color: var(--edu-green);
+        text-decoration: none;
+        font-weight: 700;
+    }
+</style>
     </head>
     <body>
 
         <div class="login-card">
             <div class="brand-name">eduspace<span style="color: #d4a373;">.</span></div>
 
-            <h4 class="fw-bold mb-2">Welcome Back</h4>
-            <p class="text-muted small mb-4">Please enter your institutional credentials to continue.</p>
+            <p class="text-muted small mb-4">Welcome Back</p>
 
             <form action="loginServlet" method="POST">
                 <div class="mb-3">
-                    <label for="email" class="form-label">Institutional Email</label>
+                    <label for="email" class="form-label"> Email</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="name@university.edu" required>
                 </div>
 
