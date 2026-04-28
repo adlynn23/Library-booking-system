@@ -12,7 +12,7 @@
         <link rel="stylesheet" type="text/css" href="css/style.css">
 
         <title>JSP Page</title>
-        <%@include file="header_landing.jsp" %>
+        <%@include file="header.jsp" %>
 
     </head>
     <body>

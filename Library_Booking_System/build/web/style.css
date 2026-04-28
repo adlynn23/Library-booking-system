@@ -3,16 +3,68 @@
     --mocha-text: #5d4037;
     --accent-brown: #8b4513;
     --soft-border: #e0e0e0;
-    --bg-light: #fdfaf9;
+    /* This is a classic soft peach hex code */
+    --light-peach: #fff5eb;
 }
 
 body {
-    background-color: #f8f9fa; /* Light gray background to make the white card pop */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    /* Use the variable here */
+    background-color: var(--light-peach) !important;
+    font-family: 'DM Sans', sans-serif; /* DM Sans fits the minimalist look better */
     margin: 0;
     padding: 0;
 }
+/* --- NAVIGATION BAR (CLEAN & INTERACTIVE) --- */
+.navbar {
+    background-color: #ffffff !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
+    padding: 1.2rem 0; /* Tambah padding supaya lebih luas */
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.02);
+}
 
+.navbar-brand {
+    font-weight: 800;
+    color: var(--mocha-text) !important; /* Tukar dari biru ke mocha */
+    font-size: 1.8rem; /* Besarkan font brand */
+    letter-spacing: -1px;
+}
+
+.navbar-brand span {
+    color: #d4a373; /* Titik warna tan/gold */
+}
+
+.nav-link {
+    color: #777 !important; /* Warna asal kelabu lembut */
+    font-weight: 600;
+    font-size: 1.05rem; /* Besarkan sedikit font link */
+    margin: 0 15px;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+/* KESAN "LIGHT UP" APABILA DIKLIK ATAU HOVER */
+.nav-link:hover, 
+.nav-link.active {
+    color: var(--accent-brown) !important; /* Berubah ke warna coklat bila hover/aktif */
+    text-shadow: 0 0 10px rgba(139, 69, 19, 0.2); /* Kesan glowing lembut */
+    transform: translateY(-1px);
+}
+
+/* Garisan halus di bawah perkataan apabila hover */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background-color: var(--accent-brown);
+    transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
 /* --- Customer Care Card --- */
 .maintenance-container {
     background-color: #ffffff;
@@ -21,6 +73,16 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     margin: 20px auto;
     border: 1px solid var(--soft-border);
+}
+
+
+/* Tambah sedikit shadow halus supaya nampak premium */
+.maintenance-container {
+    background: #fff;
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0,0,0,0.02);
 }
 
 /* --- Typography --- */
@@ -94,14 +156,14 @@ h5 {
     .maintenance-container {
         padding: 1.5rem;
     }
-    
+
     .border-end {
         border-end: none !important;
         border-bottom: 1px solid var(--soft-border);
         padding-bottom: 2rem;
         margin-bottom: 2rem;
     }
-    
+
     .ps-4 {
         padding-left: 0 !important;
     }

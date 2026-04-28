@@ -77,7 +77,7 @@ public class loginServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String email=request.getParameter("email");
-        String password-request.getParameter("password")
+        String password-request.getParameter("password");
     }
 
     /**
