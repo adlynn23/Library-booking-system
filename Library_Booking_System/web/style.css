@@ -566,10 +566,10 @@ body {
 }
 /* maintenance*/
 .maintenance-container {
-    color: white;
+    color: var(--mocha-text);
     max-width: 900px;
     margin: 60px auto;
-    background: var(--card-white);
+    background: white;
     padding: 40px;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(74, 64, 58, 0.05);
