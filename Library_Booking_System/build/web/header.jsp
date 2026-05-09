@@ -69,7 +69,7 @@
                 </li>
                 <%
                     // Pastikan session userName diambil di bahagian atas header.jsp
-                    String userSession = (String) session.getAttribute("userName");
+//                    String userSession = (String) session.getAttribute("userName");
                 %>
 
                 <li class="nav-item">
