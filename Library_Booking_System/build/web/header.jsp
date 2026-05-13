@@ -27,9 +27,9 @@
 
 <div class="d-flex align-items-center">
     <% if (userSession == null) { %>
-        <a href="login.jsp" class="btn btn-outline-primary btn-sm px-4 rounded-pill fw-bold">
+<!--        <a href="login.jsp" class="btn btn-outline-primary btn-sm px-4 rounded-pill fw-bold">
             Sign In
-        </a>
+        </a>-->
     <% } else { %>
         <div class="d-flex align-items-center">
             <span class="me-3 small text-muted d-none d-md-inline">Hi, <%= userSession %></span>
