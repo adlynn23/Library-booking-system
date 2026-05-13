@@ -51,7 +51,7 @@
     <div class="container"> <%-- Gunakan container (bukan container-fluid) supaya lebih kemas di tengah --%>
 
         <%-- BUANG 'text-primary' supaya tidak jadi biru --%>
-        <a class="navbar-brand" href="dashboard.jsp">
+        <a class="navbar-brand" href="index.jsp">
             eduspace<span>.</span>
         </a>
 
@@ -98,7 +98,7 @@
 </nav>
 
 <%-- Letakkan JS di bahagian bawah --%>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> <li class="nav-item">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> <li class="nav-item">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
