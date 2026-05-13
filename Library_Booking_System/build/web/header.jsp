@@ -65,7 +65,7 @@
                     <a class="nav-link" href="index.jsp">Home</a>
                 </li>
                 <li>
-                    <a class="nav-link px-3" href="#">Facility</a>
+                    <a class="nav-link px-3" href="facility.jsp">Facility</a>
                 </li>
                 <%
                     // Pastikan session userName diambil di bahagian atas header.jsp
