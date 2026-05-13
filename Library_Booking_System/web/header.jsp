@@ -73,12 +73,8 @@
                 %>
 
                 <li class="nav-item">
-                    <% if (userSession == null) { %>
-                    <a class="nav-link px-3" href="javascript:void(0);" onclick="showLoginAlert()">MyBooking</a>
-                    <% } else { %>
-                    <a class="nav-link px-3" href="booking.jsp">MyBooking</a>
-                    <% } %>
-                </li>
+                
+                    <a class="nav-link px-3" href="booking.jsp">MyBooking</a>                </li>
                 <%-- LOGIK PERBEZAAN NAVIGASI DI SINI --%>
                 <% if ("Staff".equalsIgnoreCase(role) || "Admin".equalsIgnoreCase(role)) { %>
                 <%-- Menu untuk Admin/Librarian --%>

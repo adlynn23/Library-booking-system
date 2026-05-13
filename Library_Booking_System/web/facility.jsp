@@ -149,11 +149,8 @@
 </head>
 <body>
    <div class="content-wrapper">  
-        <div class="tab-bar-white">
-            <div class="tab-btn active">Browse Facilities</div>
-            <div class="tab-btn">Book Now</div>
-            <div class="tab-btn">My Bookings</div>
-        </div>
+        
+        
         <h1 style="color:#333; margin-bottom:25px;">Available Facilities</h1>
 
 <div class="facility-grid">

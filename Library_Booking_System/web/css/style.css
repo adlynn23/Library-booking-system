@@ -176,7 +176,6 @@ body {
 .navbar {
     padding: 1.2rem 0;
     background: white;
-    border-bottom: 1px solid #f0f0f0;
     box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 
@@ -311,7 +310,6 @@ body {
 /* Navbar Neat Styles */
 .navbar {
     background-color: #ffffff;
-    border-bottom: 1px solid var(--border-tan);
     padding: 1rem 0;
 }
 
