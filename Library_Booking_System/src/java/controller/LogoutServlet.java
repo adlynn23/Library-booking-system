@@ -6,11 +6,6 @@ package controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +16,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author ASUS
  */
-public class LoginServlet extends HttpServlet {
+
+public class LogoutServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +36,10 @@ public class LoginServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginServlet</title>");
+            out.println("<title>Servlet LogoutServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet LogoutServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,8 +57,20 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        
+
+        // 1. Get session
+        HttpSession session = request.getSession(false);
+
+        // 2. Destroy session if exists
+        if (session != null) {
+            session.invalidate();
+        }
+
+        // 3. Redirect to homepage
+        response.sendRedirect("index.jsp");
     }
+
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -75,84 +83,7 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String matric = request.getParameter("matricNo");
-        String pass = request.getParameter("password");
-
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-             conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/librarydb", "root", "");
-
-            // CHECK USER EXIST
-            String sql = "SELECT * FROM users WHERE matric_no = ?";
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, matric);
-
-            rs = ps.executeQuery();
-
-            // USER NOT EXIST
-            if (!rs.next()) {
-
-                response.sendRedirect("login.jsp?error=user");
-
-            } else {
-                // GET DATABASE PASSWORD
-                String dbPassword = rs.getString("password");
-
-                // WRONG PASSWORD
-                if (!dbPassword.equals(pass)) {
-
-                    response.sendRedirect("login.jsp?error=pass");
-
-                } else {
-
-                    // LOGIN SUCCESS
-                    HttpSession session = request.getSession();
-
-                    session.setAttribute("userName", rs.getString("name"));
-                    session.setAttribute("userRole", rs.getString("role"));
-                    session.setAttribute("matricNo", rs.getString("matric_no"));
-
-                    // CHECK ROLE
-                    String role = rs.getString("role");
-
-                    if (role.equalsIgnoreCase("Admin")) {
-
-                        response.sendRedirect("admin_dashboard.jsp");
-
-                    } else {
-
-                        // STUDENT + LECTURER
-                        response.sendRedirect("facility.jsp");
-                    }
-                }
-            }
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-        } finally {
-
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (conn != null) {
-                    conn.close();
-                }
-
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-        }
+        processRequest(request, response);
     }
 
     /**

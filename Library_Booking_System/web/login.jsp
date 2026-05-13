@@ -9,7 +9,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        
+
         <style>
             :root {
                 --edu-green: #1a3a32;
@@ -94,18 +94,18 @@
 
         <div class="login-card">
             <div class="brand-name">eduspace<span style="color: var(--accent-gold);">.</span></div>
-            
+
             <form action="LoginServlet" method="POST">
                 <div class="mb-3">
                     <label class="form-label small fw-bold">Matric / ID Number</label>
                     <input type="text" class="form-control" name="matricNo" placeholder="e.g. S75776" required>
                 </div>
-                
+
                 <div class="mb-4">
                     <label class="form-label small fw-bold">Password</label>
                     <input type="password" class="form-control" name="password" placeholder="••••••••" required>
                 </div>
-                
+
                 <button type="submit" class="btn-signin shadow-sm">Sign In</button>
             </form>
 
@@ -115,8 +115,12 @@
         </div>
 
         <script>
+
             const params = new URLSearchParams(window.location.search);
+
+            // REGISTER SUCCESS
             if (params.get('status') === 'success') {
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Success!',
@@ -124,14 +128,40 @@
                     confirmButtonColor: '#1a3a32'
                 });
             }
-            if (params.get('error') === 'failed') {
+
+            // USER NOT FOUND
+            if (params.get('error') === 'user') {
+
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Login Failed',
-                    text: 'Invalid ID or Password.',
+                    icon: 'warning',
+                    title: 'User Not Found',
+                    text: 'Matric number does not exist. Please register first.',
                     confirmButtonColor: '#1a3a32'
                 });
             }
+
+            // WRONG PASSWORD
+            if (params.get('error') === 'pass') {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Wrong Password',
+                    text: 'Incorrect password. Please try again.',
+                    confirmButtonColor: '#1a3a32'
+                });
+            }
+
+            // OPTIONAL: OLD FAILED (keep for safety)
+            if (params.get('error') === 'failed') {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: 'Invalid credentials.',
+                    confirmButtonColor: '#1a3a32'
+                });
+            }
+
         </script>
     </body>
 </html>
