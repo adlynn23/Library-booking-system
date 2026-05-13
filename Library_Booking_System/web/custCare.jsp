@@ -37,6 +37,7 @@
                                 <option value="Damaged Facility">Damaged Facility</option>
                                 <option value="Booking Issue">Booking Issue</option>
                                 <option value="General Feedback">General Feedback</option>
+                                <option value="Others">Others</option>
                             </select>
                         </div>
 
