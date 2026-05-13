@@ -9,6 +9,8 @@
 <html>
 <head>
     <meta charset="UTF-8">
+        <jsp:include page="header.jsp" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facility List| EduSpace</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -146,21 +148,7 @@
 </style>
 </head>
 <body>
- 
-    <nav class="navbar navbar-expand-lg sticky-top">
-        <div class="container">
-            <a class="navbar-brand" href="index.jsp">EduSpace.</a>
-        </div> 
-        <div class="ms-auto d-flex gap-2 align-items-center">
-            <button class="btn-signup" onclick="location.href='register.jsp'">Sign up with email</button>
-            <button class="btn-google" onclick="location.href='https://accounts.google.com/signin'">
-            Continue with Google
-            </button>
-            <a href="logout" class="btn btn-sm btn-outline-danger rounded-pill px-3">Logout</a>
-        </div>
-    </nav>
-
-    <div class="content-wrapper">  
+   <div class="content-wrapper">  
         <div class="tab-bar-white">
             <div class="tab-btn active">Browse Facilities</div>
             <div class="tab-btn">Book Now</div>
