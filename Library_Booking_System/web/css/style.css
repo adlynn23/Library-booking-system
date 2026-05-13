@@ -34,6 +34,12 @@
     transition: 0.3s;
 }
 
+.navbar {
+    border-bottom: none !important;      /* Removes the border-bottom line  */
+    box-shadow: none !important;        /* Removes the subtle shadow that looks like a line [cite: 1881, 1935] */
+    outline: none !important;           /* Ensures no focus outlines remain */
+}
+
 .sidebar-nav a:hover, .sidebar-nav a.active {
     background: rgba(255,255,255,0.1);
     color: white;

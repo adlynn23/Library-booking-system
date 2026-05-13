@@ -9,7 +9,6 @@
 <html>
 <head>
     <meta charset="UTF-8">
-        <jsp:include page="header.jsp" />
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Facility List| EduSpace</title>
@@ -148,6 +147,7 @@
 </style>
 </head>
 <body>
+<jsp:include page="header.jsp" />
    <div class="content-wrapper">  
         
         
