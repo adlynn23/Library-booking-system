@@ -5,6 +5,14 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%
+    //Security check: only allow librarians
+    if (session.getAttribute("userRole") == null || !session.getAttribute("userRole").equals("Librarian")) {
+        response.sendRedirect("login.jsp?msg=unauthorized");
+        return;
+    }
+    String name = (String) session.getAttribute("userName");
+%>
 
 <%@include file="admin_header.jsp" %>
 <div class="dashboard-container">
