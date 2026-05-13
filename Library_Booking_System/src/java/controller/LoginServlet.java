@@ -94,7 +94,7 @@ public class LoginServlet extends HttpServlet {
             if (rs.getString("role").equals("Admin")) {
                 response.sendRedirect("admin_dashboard.jsp");
             } else {
-                response.sendRedirect("user_dashboard.jsp");
+                response.sendRedirect("facility.jsp");
             }
         } else {
             response.sendRedirect("login.jsp?error=failed");

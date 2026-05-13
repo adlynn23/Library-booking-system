@@ -1,3 +1,4 @@
+
 package controller;
 
 import java.io.IOException;
@@ -9,8 +10,10 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Corrected RegisterServlet
+ *
  * @author ASUS
  */
+
 public class RegisterServlet extends HttpServlet {
 
     @Override
@@ -51,7 +54,7 @@ public class RegisterServlet extends HttpServlet {
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/librarydb", "root", "");
 
             // 4. SQL Statement (5 columns)
-            String sql = "INSERT INTO users (matric_no, name, email, password, role) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO users (matric_no,name,email,password,role) VALUES (?, ?, ?, ?, ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, matric);
             ps.setString(2, name);
@@ -74,10 +77,10 @@ public class RegisterServlet extends HttpServlet {
             // Duplicate Primary Key (User already exists)
             response.sendRedirect("registration.jsp?error=exists");
         } catch (Exception e) {
-            e.printStackTrace();
-            // Handle other errors (like DB connection failure)
-            response.sendRedirect("registration.jsp?error=db_error");
-        } finally {
+    response.setContentType("text/html");
+    e.printStackTrace(response.getWriter());
+}
+        finally {
             // 6. Properly close resources
             try {
                 if (ps != null) ps.close();
@@ -87,6 +90,7 @@ public class RegisterServlet extends HttpServlet {
             }
         }
     }
+    
 
     @Override
     public String getServletInfo() {

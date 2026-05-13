@@ -19,11 +19,11 @@
         <form action="RegisterServlet" method="POST" onsubmit="return validateForm()">
             <div class="mb-3">
                 <label class="form-label small fw-bold">Full Name</label>
-                <input type="text" class="form-control" name="fullName" placeholder="Enter Name" required>
+                <input type="text" class="form-control" name="fullName"  required>
             </div>
             <div class="mb-3">
                 <label class="form-label small fw-bold">Matric No</label>
-                <input type="text" class="form-control" name="matricNo" placeholder="Enter Matric Number" required>
+                <input type="text" class="form-control" name="matricNo" required>
             </div>
             <div class="mb-3">
                 <label class="form-label small fw-bold">University Email</label>
