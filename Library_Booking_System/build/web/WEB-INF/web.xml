@@ -28,6 +28,22 @@
         <servlet-name>FeedbackServlet</servlet-name>
         <servlet-class>controller.FeedbackServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UserViewServlet</servlet-name>
+        <servlet-class>controller.UserViewServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserDeleteServlet</servlet-name>
+        <servlet-class>controller.UserDeleteServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserInsertServlet</servlet-name>
+        <servlet-class>controller.UserInsertServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UserUpdateServlet</servlet-name>
+        <servlet-class>controller.UserUpdateServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>MaintenanceServlet</servlet-name>
         <url-pattern>/MaintenanceServlet</url-pattern>
@@ -55,6 +71,22 @@
     <servlet-mapping>
         <servlet-name>FeedbackServlet</servlet-name>
         <url-pattern>/FeedbackServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserViewServlet</servlet-name>
+        <url-pattern>/UserViewServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserDeleteServlet</servlet-name>
+        <url-pattern>/UserDeleteServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserInsertServlet</servlet-name>
+        <url-pattern>/UserInsertServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UserUpdateServlet</servlet-name>
+        <url-pattern>/UserUpdateServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
