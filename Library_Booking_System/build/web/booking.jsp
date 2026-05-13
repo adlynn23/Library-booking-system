@@ -8,6 +8,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <jsp:include page="header.jsp" />
 
         <style>
             :root {
@@ -75,18 +76,7 @@
             }
         </style>
     </head>
-    <body>
-
-        <nav class="navbar navbar-expand-lg sticky-top">
-            <div class="container">
-                <a class="navbar-brand" href="index.jsp">EduSpace.</a>
-                <div class="ms-auto">
-                    <span class="text-muted me-3">Welcome, User</span>
-                    <a href="logout" class="btn btn-sm btn-outline-danger rounded-pill px-3">Logout</a>
-                </div>
-            </div>
-        </nav>
-
+   <body>
         <div class="container">
             <div class="booking-container">
                 <h2 class="fw-bold mb-2">Facility Reservation</h2>
@@ -109,7 +99,18 @@
                             <input type="time" class="form-control" id="endTime" name="endTime" required>
                         </div>
                     </div>
-
+                    <div class="mb-4">
+                        <label for="facilityName" class="form-label">FACILITY NAME</label>
+                        <select class="form-control" id="facilityName" name="facilityName" required>
+                            <option value="">-- Select Facility --</option>
+                            <option value="Mangrove Room">Mangrove Room</option>
+                            <option value="Wetland Room">Wetland Room</option>
+                            <option value="Orchid Study Room">Orchid Study Room</option>
+                            <option value="Bamboo Discussion Room">Bamboo Discussion Room</option>
+                            <option value="Lotus Study Hall">Lotus Study Hall</option>
+                        </select>
+                    </div>
+                    
                     <div class="mb-4">
                         <label for="purpose" class="form-label">PURPOSE OF BOOKING</label>
                         <textarea class="form-control" id="purpose" name="purpose" rows="4" placeholder="Describe your activity (e.g., Exam revision, Group project)" required></textarea>
