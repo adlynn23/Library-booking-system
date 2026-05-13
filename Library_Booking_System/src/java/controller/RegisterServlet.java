@@ -1,4 +1,3 @@
-
 package controller;
 
 import java.io.IOException;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author ASUS
  */
-
 public class RegisterServlet extends HttpServlet {
 
     @Override
@@ -26,11 +24,12 @@ public class RegisterServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         // 1. Get Form Parameters
         String name = request.getParameter("fullName");
         String matric = request.getParameter("matricNo") != null ? request.getParameter("matricNo").trim() : "";
         String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
         String pass = request.getParameter("password");
 
         // 2. Auto-assign role based on first letter of Matric No
@@ -54,13 +53,14 @@ public class RegisterServlet extends HttpServlet {
             conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/librarydb", "root", "");
 
             // 4. SQL Statement (5 columns)
-            String sql = "INSERT INTO users (matric_no,name,email,password,role) VALUES (?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO users (matric_no,name,email,phone,password,role) VALUES (?, ?, ?,?, ?, ?)";
             ps = conn.prepareStatement(sql);
             ps.setString(1, matric);
             ps.setString(2, name);
             ps.setString(3, email);
-            ps.setString(4, pass);
-            ps.setString(5, role);
+            ps.setString(4, phone);
+            ps.setString(5, pass);
+            ps.setString(6, role);
 
             // 5. Execute Update
             int result = ps.executeUpdate();
@@ -77,20 +77,22 @@ public class RegisterServlet extends HttpServlet {
             // Duplicate Primary Key (User already exists)
             response.sendRedirect("registration.jsp?error=exists");
         } catch (Exception e) {
-    response.setContentType("text/html");
-    e.printStackTrace(response.getWriter());
-}
-        finally {
+            response.setContentType("text/html");
+            e.printStackTrace(response.getWriter());
+        } finally {
             // 6. Properly close resources
             try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
+                if (ps != null) {
+                    ps.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
         }
     }
-    
 
     @Override
     public String getServletInfo() {
