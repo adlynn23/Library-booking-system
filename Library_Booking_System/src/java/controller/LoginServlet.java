@@ -84,7 +84,7 @@ public class LoginServlet extends HttpServlet {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-             conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/librarydb", "root", "");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/librarydb", "root", "");
 
             // CHECK USER EXIST
             String sql = "SELECT * FROM users WHERE matric_no = ?";
@@ -115,7 +115,7 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("userName", rs.getString("name"));
                     session.setAttribute("userRole", rs.getString("role"));
                     session.setAttribute("matricNo", rs.getString("matric_no"));
-
+                    session.setAttribute("userPhone", rs.getString("phone"));
                     // CHECK ROLE
                     String role = rs.getString("role");
 

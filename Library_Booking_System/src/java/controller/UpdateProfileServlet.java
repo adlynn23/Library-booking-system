@@ -4,7 +4,6 @@ package controller;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -12,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Connection;
 
 /**
  *
@@ -69,33 +71,76 @@ public class UpdateProfileServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        // 1. Retrieve typed data from the Input Design form [cite: 457, 460]
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
 
-        // 2. Validate data to maintain Data Integrity [cite: 464]
-        if (fullName != null && !fullName.isEmpty()) {
-            
-            // 3. Update the Session (In a full SAD implementation, you would also call a DAO method here to update the DB)
-            HttpSession session = request.getSession();
-            session.setAttribute("userName", fullName);
-            session.setAttribute("userEmail", email);
-            session.setAttribute("userPhone", phone);
+        // 1. Get session (to identify user)
+        HttpSession session = request.getSession(false);
 
-            // 4. Redirect back to profile with a success message
-            request.setAttribute("message", "Profile updated successfully!");
+        if (session == null || session.getAttribute("matricNo") == null) {
+            response.sendRedirect("login.jsp");
+            return;
         }
 
-        // Return the user to the profile view [cite: 417]
-        response.sendRedirect("myProfile.jsp");
-    }
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+        String matricNo = (String) session.getAttribute("matricNo");
 
-}
+        // 2. Get updated data from form
+        String fullName = request.getParameter("fullName");
+        String email = request.getParameter("email");   // if you add email field later
+        String phone = request.getParameter("phone");   // optional
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        try {
+            // 3. DB connection
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3307/librarydb",
+                    "root",
+                    ""
+            );
+
+            // 4. UPDATE query (adjust columns if needed)
+            String sql = "UPDATE users SET name = ?, email = ? WHERE matric_no = ?";
+
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, fullName);
+            ps.setString(2, email);
+            ps.setString(4, matricNo);
+
+            int result = ps.executeUpdate();
+            if (result > 0) {
+
+                // 5. Update session too (VERY IMPORTANT)
+                session.setAttribute("userName", fullName);
+
+                response.sendRedirect("myProfile.jsp?status=success");
+
+            } else {
+                response.sendRedirect("myProfile.jsp?status=failed");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("myProfile.jsp?status=error");
+
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+            @Override
+            public String getServletInfo
+        
+            
+                () {
+        return "Short description";
+            }// </editor-fold>
+
+        }
