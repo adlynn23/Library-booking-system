@@ -8,7 +8,7 @@ public class DBConnection {
     // Update these values to match your local MySQL configuration
     private static final String URL = "jdbc:mysql://localhost:3307/librarysystem";
     private static final String USER = "root";
-    private static final String PASSWORD = "password123";
+    private static final String PASSWORD = "";
 
     public static Connection getConnection() throws SQLException {
         try {

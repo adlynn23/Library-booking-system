@@ -7,7 +7,12 @@
             <minimum-ant-version>1.6.5</minimum-ant-version>
             <web-module-libraries>
                 <library dirs="200">
+<<<<<<< HEAD
+                    <file>${file.reference.mysql-connector-j-9.6.0.jar-1}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+=======
                     <file>${file.reference.mysql-connector-j-9.6.0.jar}</file>
+>>>>>>> 748fa0ece72f5f1d55a8bf8d18dd17cacbdc7cfc
                 </library>
             </web-module-libraries>
             <web-module-additional-libraries/>
