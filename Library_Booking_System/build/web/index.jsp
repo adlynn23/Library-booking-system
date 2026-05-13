@@ -119,6 +119,10 @@
                 <p>Your smart solution for library facility bookings. Reserve study rooms, computers, and more with just a few clicks.</p>
                 
                 <a href="startBookingServlet" class="btn-main">Start Booking Now</a>
+                <h1 class="hero-title">Better space for<br>better grades.</h1>
+                <p>Access real-time schedules for library facilities.</p>
+                <a href="booking.jsp" class="btn-cta">Start Booking Now</a>
+
             </div>
         </div>
     </div>
