@@ -1,117 +1,95 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.sql.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.*;
 
 /**
- *
+ * Corrected RegisterServlet
  * @author ASUS
  */
 public class RegisterServlet extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet RegisterServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet RegisterServlet at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        // Redirect GET requests to the registration page
+        response.sendRedirect("registration.jsp");
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        // 1. Get Form Parameters
         String name = request.getParameter("fullName");
-        String matric = request.getParameter("matricNo").trim();
+        String matric = request.getParameter("matricNo") != null ? request.getParameter("matricNo").trim() : "";
         String email = request.getParameter("email");
         String pass = request.getParameter("password");
-        
-        // Auto-assign role based on first letter of Matric No
-        String role = "Student"; 
-        char prefix = Character.toUpperCase(matric.charAt(0));
-        if (prefix == 'L') role = "Lecturer";
-        else if (prefix == 'A') role = "Admin";
+
+        // 2. Auto-assign role based on first letter of Matric No
+        String role = "Student";
+        if (!matric.isEmpty()) {
+            char prefix = Character.toUpperCase(matric.charAt(0));
+            if (prefix == 'L') {
+                role = "Lecturer";
+            } else if (prefix == 'A') {
+                role = "Admin";
+            }
+        }
+
+        Connection conn = null;
+        PreparedStatement ps = null;
 
         try {
+            // 3. Database Connection
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/librarydb", "root", "");
+            // Ensure port 3307 and database name "librarydb" match your XAMPP/WAMP setup
+            conn = DriverManager.getConnection("jdbc:mysql://localhost:3307/librarydb", "root", "");
 
-            // SQL Statement for 5 columns
+            // 4. SQL Statement (5 columns)
             String sql = "INSERT INTO users (matric_no, name, email, password, role) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement ps = conn.prepareStatement(sql);
+            ps = conn.prepareStatement(sql);
             ps.setString(1, matric);
             ps.setString(2, name);
             ps.setString(3, email);
             ps.setString(4, pass);
             ps.setString(5, role);
 
-            ps.executeUpdate();
-            response.sendRedirect("login.jsp?status=success");
-            conn.close();
+            // 5. Execute Update
+            int result = ps.executeUpdate();
+
+            if (result > 0) {
+                // Success: Redirect to login page with success message
+                response.sendRedirect("login.jsp?status=success");
+            } else {
+                // Database didn't update but didn't crash
+                response.sendRedirect("registration.jsp?error=failed");
+            }
+
         } catch (SQLIntegrityConstraintViolationException e) {
-            // This error fires if the matric_no is already in the DB
+            // Duplicate Primary Key (User already exists)
             response.sendRedirect("registration.jsp?error=exists");
         } catch (Exception e) {
             e.printStackTrace();
-        }}
+            // Handle other errors (like DB connection failure)
+            response.sendRedirect("registration.jsp?error=db_error");
+        } finally {
+            // 6. Properly close resources
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "Handles user registration and auto-role assignment";
+    }
 }
