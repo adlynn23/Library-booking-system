@@ -21,8 +21,16 @@
         <servlet-class>controller.startBookingServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Maintenance_Servlet</servlet-name>
-        <servlet-class>controller.Maintenance_Servlet</servlet-class>
+        <servlet-name>FacilityServlet</servlet-name>
+        <servlet-class>controller.FacilityServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>BookingServlet</servlet-name>
+        <servlet-class>controller.BookingServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>CheckAvailabilityServlet</servlet-name>
+        <servlet-class>controller.CheckAvailabilityServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>startBookingServlet</servlet-name>
@@ -69,8 +77,16 @@
         <url-pattern>/LogoutServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Maintenance_Servlet</servlet-name>
-        <url-pattern>/Maintenance_Servlet</url-pattern>
+        <servlet-name>FacilityServlet</servlet-name>
+        <url-pattern>/FacilityServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>BookingServlet</servlet-name>
+        <url-pattern>/BookingServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>CheckAvailabilityServlet</servlet-name>
+        <url-pattern>/CheckAvailabilityServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
