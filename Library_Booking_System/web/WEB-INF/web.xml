@@ -20,6 +20,10 @@
         <servlet-name>startBookingServlet</servlet-name>
         <servlet-class>controller.startBookingServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Maintenance_Servlet</servlet-name>
+        <servlet-class>controller.Maintenance_Servlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>startBookingServlet</servlet-name>
         <url-pattern>/startBookingServlet</url-pattern>
@@ -63,6 +67,10 @@
     <servlet-mapping>
         <servlet-name>LogoutServlet</servlet-name>
         <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Maintenance_Servlet</servlet-name>
+        <url-pattern>/Maintenance_Servlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

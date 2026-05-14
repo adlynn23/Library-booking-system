@@ -14,18 +14,19 @@ public class MaintenanceDAO {
     // Method to fetch all maintenance records for the admin dashboard [cite: 655]
     public static List<Maintenance> getAllMaintenance() {
         List<Maintenance> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection()) {
-            String sql = "SELECT * FROM maintenance";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            
+        try (Connection con = DBConnection.getConnection()) {
+            String sql = "SELECT * FROM maintenance ORDER BY maintenance_id DESC";
+          PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+
             while (rs.next()) {
                 Maintenance m = new Maintenance();
                 m.setMaintenanceId(rs.getInt("maintenance_id"));
-                m.setFacilityId(rs.getInt("facility_id"));
+                m.setDescription(rs.getString("description"));
+                m.setFacilityId(rs.getString("facility_id"));
                 m.setStartDate(rs.getString("start_date"));
                 m.setEndDate(rs.getString("end_date"));
-                m.setStatus(rs.getString("status"));
+                m.setStatus(rs.getString("maintenance_status"));
                 list.add(m);
             }
         } catch (Exception e) {
@@ -42,7 +43,7 @@ public class MaintenanceDAO {
             conn.setAutoCommit(false); // Use transaction for data consistency 
 
             // 1. Update maintenance task status
-            String sqlMaintenance = "UPDATE maintenance SET status = ? WHERE maintenance_id = ?";
+            String sqlMaintenance = "UPDATE maintenance SET maintenance_status = ? WHERE maintenance_id = ?";
             PreparedStatement psM = conn.prepareStatement(sqlMaintenance);
             psM.setString(1, status);
             psM.setInt(2, maintenanceId);
@@ -59,11 +60,19 @@ public class MaintenanceDAO {
             conn.commit();
             return true;
         } catch (Exception e) {
-            if (conn != null) try { conn.rollback(); } catch (SQLException ex) { ex.printStackTrace(); }
+            if (conn != null) try {
+                conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
             e.printStackTrace();
             return false;
         } finally {
-            if (conn != null) try { conn.close(); } catch (SQLException e) { e.printStackTrace(); }
+            if (conn != null) try {
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

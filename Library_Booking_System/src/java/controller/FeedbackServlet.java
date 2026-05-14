@@ -4,9 +4,10 @@ package controller;
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 import java.io.IOException;
 import java.io.PrintWriter;
+import dao.FeedbackDAO;
+import model.Feedback;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -65,24 +66,31 @@ public class FeedbackServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
-   protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
-        // 1. Retrieve the data from the "custCare.jsp" form [cite: 366]
-        String subject = request.getParameter("subject");
-        String message = request.getParameter("message");
+   @Override
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
 
-        // 2. Business Logic: For now, we will print it to the console.
-        // In a full implementation, you would use a FeedbackDAO to save this to MySQL[cite: 367].
-        System.out.println("New Feedback Received:");
-        System.out.println("Subject: " + subject);
-        System.out.println("Message: " + message);
+    String subject = request.getParameter("subject");
+    String message = request.getParameter("message");
 
-        // 3. Success Feedback: Redirect back to the page with a success status
-        // You can add a popup or message on the JSP to confirm receipt[cite: 348].
-        response.sendRedirect("custCare.jsp?status=success");
+    // get student matric number from session
+    String matric_no = (String) request.getSession().getAttribute("matric_no");
+
+    Feedback f = new Feedback();
+
+    f.setMatric_no(matric_no);
+    f.setSubject(subject);
+    f.setMessage(message);
+
+    int status = FeedbackDAO.insertFeedback(f);
+
+    if(status > 0){
+        response.sendRedirect("custCare.jsp?success=true");
+    } else {
+        response.sendRedirect("custCare.jsp?error=true");
     }
+}
+
     @Override
     public String getServletInfo() {
         return "Short description";
