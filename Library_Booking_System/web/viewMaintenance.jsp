@@ -1,103 +1,89 @@
-<%-- 
-    Document   : viewMaintenance
-    Created on : 27 Apr 2026, 6:40:51 pm
-    Author     : DELL
---%>
-
-<%@page import="java.util.*"%>
+<%@page import="java.util.List"%>
 <%@page import="model.Maintenance"%>
 <%@page import="dao.MaintenanceDAO"%>
 <%@page import="dao.FeedbackDAO"%>
+<%@page import="model.Feedback"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
-<jsp:include page="header.jsp" />
+<jsp:include page="admin_header.jsp" />
 
-<div class="container mt-5 py-4">
-    <%-- SECTION 1: Maintenance Tasks (Staff Only) --%>
-    <% if ("Staff".equals(session.getAttribute("role"))) { %>
-        <div class="maintenance-container mb-5">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2 class="fw-bold" style="color: var(--mocha-text);">Maintenance Dashboard</h2>
-                <a href="addMaintenance.jsp" class="btn btn-primary rounded-pill px-4 shadow-sm">+ Add New Task</a>
-            </div>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: var(--mocha-text);">Manage Maintenance</h2>
+        <button type="button" class="btn-update" data-bs-toggle="modal" data-bs-target="#addModal">
+            + Key In New Repair
+        </button>
+    </div>
 
-            <div class="table-responsive">
-                <table class="table table-hover align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>ID</th>
-                            <th>FACILITY</th>
-                            <th>STATUS</th>
-                            <th>ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% 
-                            List<Maintenance> list = MaintenanceDAO.getAllMaintenance();
-                            for (Maintenance m : list) { 
-                        %>
-                        <tr>
-                            <td class="fw-bold text-muted">#<%= m.getMaintenanceId() %></td>
-                            <td>Facility <%= m.getFacilityId() %></td>
-                            <td>
-                                <span class="badge rounded-pill <%= m.getStatus().equals("Done") ? "bg-success" : "bg-warning text-dark" %>">
-                                    <%= m.getStatus() %>
-                                </span>
-                            </td>
-                            <td>
-                                <a href="editMaintenance.jsp?id=<%= m.getMaintenanceId() %>" class="btn btn-sm btn-outline-secondary">Edit</a>
-                            </td>
-                        </tr>
-                        <% } %>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+    <div class="maintenance-container mb-5">
+        <h5>Active Repair Schedule</h5>
+        <table class="table">
+            <thead>
+                <tr><th>Facility</th><th>Description</th><th>Status</th><th>Action</th></tr>
+            </thead>
+            <tbody>
+                <%
+                    List<Maintenance> mList = dao.MaintenanceDAO.getAllMaintenance();
+                    if (mList == null || mList.isEmpty()) {
+                %>
+                <tr><td colspan="4" class="text-center text-muted">No active maintenance logs found.</td></tr>
+                <%
+                } else {
+                    for (Maintenance m : mList) {
+                %>
+                <tr>
+                    <td><%= m.getFacilityId()%></td>
+                    <td><%= m.getDescription()%></td>
+                    <td><span class="badge bg-warning text-dark"><%= m.getStatus()%></span></td>
+                    <td><a href="UpdateStatusServlet?id=<%= m.getMaintenanceId()%>" class="btn-update">Mark Done</a></td>
+                </tr>
+                <%     }
+                    }
+                %>
+            </tbody>
+        </table>
+    </div>
 
-        <%-- SECTION 2: Student Feedback & Issues (Staff Only) --%>
-        <div class="maintenance-container">
-            <h3 class="fw-bold mb-4" style="color: #8b4513;">Student Feedback & Issues</h3>
-            <div class="table-responsive">
-                <table class="table table-hover border-top">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Date</th>
-                            <th>Subject</th>
-                            <th>Message</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% 
-                            List<Map<String, String>> feedbackList = FeedbackDAO.getAllFeedback();
-                            if (feedbackList.isEmpty()) {
-                        %>
-                            <tr><td colspan="3" class="text-center text-muted">No new feedback received.</td></tr>
-                        <% 
-                            } else {
-                                for (Map<String, String> fb : feedbackList) { 
-                        %>
-                        <tr>
-                            <td class="small text-muted"><%= fb.get("date") %></td>
-                            <td><span class="badge bg-info text-dark"><%= fb.get("subject") %></span></td>
-                            <td><%= fb.get("message") %></td>
-                        </tr>
-                        <% 
-                                }
-                            } 
-                        %>
-                    </tbody>
-                </table>
+    <div class="maintenance-container">
+        <h5>Student Reports (from Customer Care)</h5>
+        <table class="table">
+            <thead>
+                <tr><th>Student</th><th>Subject</th><th>Message</th></tr>
+            </thead>
+            <tbody>
+                <% List<Feedback> fList = FeedbackDAO.getAllFeedback();
+                    for (Feedback f : fList) {%>
+                <tr>
+                    <td><strong><%= f.getMatric_no()%></strong></td>
+                    <td><%= f.getSubject()%></td>
+                    <td><%= f.getMessage()%></td>
+                </tr>
+                <% }%>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content" style="border-radius: 15px; background: var(--soft-peach);">
+            <div class="modal-header">
+                <h5 class="modal-title">Report New Maintenance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
+            <form action="Maintenance_Servlet" method="POST">
+                <div class="modal-body">
+                    <label>Facility ID</label>
+                    <input type="text" name="facilityId" class="form-control mb-3" required>
+                    <label>Issue Description</label>
+                    <textarea name="description" class="form-control" rows="3" required></textarea>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="submit" class="btn-submit">Save Report</button>
+                </div>
+            </form>
         </div>
-    <% } else { %>
-        <%-- Access Denied Message for Students --%>
-        <div class="text-center py-5">
-            <i class="fas fa-lock fa-3x text-muted mb-3"></i>
-            <h3 class="text-muted">Access Restricted</h3>
-            <p>Only administrative staff can view the maintenance logs.</p>
-            <a href="dashboard.jsp" class="btn btn-primary">Return Home</a>
-        </div>
-    <% } %>
+    </div>
 </div>
 
 <jsp:include page="footer.jsp" />

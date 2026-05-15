@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>custCare | EduSpace</title>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
 <body>
     <jsp:include page="header.jsp" />
@@ -53,5 +55,45 @@
         </div>
     </div>
 
+    <%
+    String success = request.getParameter("success");
+    String error = request.getParameter("error");
+%>
+
+<% if("true".equals(success)) { %>
+
+<script>
+Swal.fire({
+    icon: "success",
+    title: "Feedback Submitted ?",
+    text: "Your feedback has been successfully sent.",
+    confirmButtonText: "Great!",
+    confirmButtonColor: "#1a3a32",
+    background: "#ffffff",
+    color: "#1a3a32",
+    iconColor: "#1a3a32",
+    showClass: {
+        popup: "animate__animated animate__fadeInDown"
+    },
+    hideClass: {
+        popup: "animate__animated animate__fadeOutUp"
+    }
+});
+</script>
+
+<% } %>
+
+<% if("true".equals(error)) { %>
+
+<script>
+Swal.fire({
+    icon: "error",
+    title: "Submission Failed",
+    text: "Unable to send feedback.",
+    confirmButtonColor: "#8b0000"
+});
+</script>
+
+<% } %>
     <jsp:include page="footer.jsp" />
 </body>

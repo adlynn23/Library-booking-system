@@ -1,39 +1,44 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */package dao;
+package dao;
 
 import java.sql.*;
-import java.util.*;
-import model.Feedback; // You will need a simple Feedback model class too
-import util.DBConnection;
+import java.util.ArrayList;
+import java.util.List;
+import model.Feedback;
+import util.DBConnection; // Ensure you have this utility class [cite: 1824]
 
 public class FeedbackDAO {
-    // Method to save student submission
-    public boolean insertFeedback(String subject, String message) {
-        try (Connection conn = DBConnection.getConnection()) {
-            String sql = "INSERT INTO feedback (subject, message) VALUES (?, ?)";
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, subject);
-            ps.setString(2, message);
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) { e.printStackTrace(); return false; }
+
+    // Saves student feedback from custCare.jsp [cite: 1159, 1782]
+    public static int insertFeedback(Feedback f) {
+        int status = 0;
+        try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement(
+                "INSERT INTO feedback (matric_no, subject, message) VALUES (?, ?, ?)");
+            ps.setString(1, f.getMatric_no());
+            ps.setString(2, f.getSubject());
+            ps.setString(3, f.getMessage());
+            status = ps.executeUpdate();
+            con.close();
+        } catch (Exception e) { e.printStackTrace(); }
+        return status;
     }
 
-    // Method for Admin to fetch all feedback
-    public static List<Map<String, String>> getAllFeedback() {
-        List<Map<String, String>> list = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection()) {
-            String sql = "SELECT * FROM feedback ORDER BY created_at DESC";
-            Statement st = conn.createStatement();
-            ResultSet rs = st.executeQuery(sql);
+    // Fetches all feedback for the admin dashboard 
+    public static List<Feedback> getAllFeedback() {
+        List<Feedback> list = new ArrayList<>();
+        try {
+            Connection con = DBConnection.getConnection();
+            PreparedStatement ps = con.prepareStatement("SELECT * FROM student_feedback ORDER BY id DESC");
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Map<String, String> f = new HashMap<>();
-                f.put("subject", rs.getString("subject"));
-                f.put("message", rs.getString("message"));
-                f.put("date", rs.getString("created_at"));
+                Feedback f = new Feedback();
+                f.setMatric_no(rs.getString("matric_no"));
+                f.setSubject(rs.getString("subject"));
+                f.setMessage(rs.getString("message"));
                 list.add(f);
             }
+            con.close();
         } catch (Exception e) { e.printStackTrace(); }
         return list;
     }
