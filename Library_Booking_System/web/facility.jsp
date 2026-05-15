@@ -146,7 +146,7 @@
 
             <div class="facility-grid">
 
-                <!-- ================= DB FACILITIES (NEW FIX) ================= -->
+                <!-- ================= DB FACILITIES ================= -->
                 <%
                     if (!facilities.isEmpty()) {
                         for (Map<String,String> f : facilities) {
@@ -185,8 +185,6 @@
                         }
                     }
                 %>
-
-                <!-- ================= YOUR STATIC UI (KEPT EXACT) ================= -->
 
                 <!-- STUDY ROOM -->
                 <div class="facility-card" onclick="this.classList.toggle('active')">
@@ -366,6 +364,93 @@
                             <span>Computer Lab B</span>
                             <button class="btn-book"
                                     onclick="event.stopPropagation(); location.href='booking.jsp?unit=Computer Lab B'">
+                                Book
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- SEMINAR HALL -->
+                <div class="facility-card" onclick="this.classList.toggle('active')">
+
+                    <img src="https://d3211p0nhvzn27.cloudfront.net/wp-content/uploads/2018/09/22071109/how-to-make-a-university-seminar-hall-world-class.jpg"
+                         class="card-img">
+
+                    <div style="padding:20px;">
+
+                        <h3>Seminar Hall</h3>
+
+                        <p style="font-size:0.85rem;color:#555;">
+                            Large auditorium for presentations and events
+                        </p>
+
+                        <p style="font-size:0.85rem;color:#666;">
+                            Capacity: 100 people
+                        </p>
+
+                        <span style="color:#28a745;font-weight:bold;font-size:0.85rem;">
+                            ● Available
+                        </span>
+
+                    </div>
+
+                    <div class="unit-list">
+
+                        <div class="unit-row">
+                            <span>Auditorium A</span>
+
+                            <button class="btn-book"
+                                    onclick="event.stopPropagation(); location.href='booking.jsp?unit=Auditorium A'">
+                                Book
+                            </button>
+                        </div>
+
+                        <div class="unit-row">
+                            <span>Auditorium B</span>
+
+                            <button class="btn-book"
+                                    onclick="event.stopPropagation(); location.href='booking.jsp?unit=Auditorium B'">
+                                Book
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- MEDIA PRODUCTION ROOM -->
+                <div class="facility-card" onclick="this.classList.toggle('active')">
+
+                    <img src="https://th.bing.com/th/id/OIP.ynhQU5b4y_hPy0O5Fq9fHAHaE_?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3"
+                         class="card-img">
+
+                    <div style="padding:20px;">
+
+                        <h3>Media Production Room</h3>
+
+                        <p style="font-size:0.85rem;color:#555;">
+                            Professional recording and editing equipment
+                        </p>
+
+                        <p style="font-size:0.85rem;color:#666;">
+                            Capacity: 8 people
+                        </p>
+
+                        <span style="color:#28a745;font-weight:bold;font-size:0.85rem;">
+                            ● Available
+                        </span>
+
+                    </div>
+
+                    <div class="unit-list">
+
+                        <div class="unit-row">
+                            <span>Media Space</span>
+
+                            <button class="btn-book"
+                                    onclick="event.stopPropagation(); location.href='booking.jsp?unit=Media Space'">
                                 Book
                             </button>
                         </div>
