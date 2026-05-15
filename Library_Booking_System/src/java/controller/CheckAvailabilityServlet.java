@@ -62,21 +62,32 @@ public class CheckAvailabilityServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        response.setContentType("application/json");
+
         String facility = request.getParameter("facility");
         String date = request.getParameter("date");
         String start = request.getParameter("start");
         String end = request.getParameter("end");
 
-        response.setContentType("application/json");
+        boolean available = true;
 
-        try (Connection conn = DriverManager.getConnection(dbURL, dbUser, dbPass)) {
+        Connection conn = null;
 
-            String sql
-                    = "SELECT COUNT(*) FROM booking "
-                    + "WHERE facility_name=? AND booking_date=? "
-                    + "AND NOT (end_time <= ? OR start_time >= ?)";
-            
+        try {
+
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            conn = DriverManager.getConnection(dbURL, dbUser, dbPass);
+
+            String sql =
+                    "SELECT * FROM booking " +
+                    "WHERE facility_name = ? " +
+                    "AND booking_date = ? " +
+                    "AND status != 'REJECTED' " +
+                    "AND NOT (end_time <= ? OR start_time >= ?)";
+
             PreparedStatement ps = conn.prepareStatement(sql);
+
             ps.setString(1, facility);
             ps.setString(2, date);
             ps.setString(3, start);
@@ -84,29 +95,27 @@ public class CheckAvailabilityServlet extends HttpServlet {
 
             ResultSet rs = ps.executeQuery();
 
-            rs.next();
-            boolean available = rs.getInt(1) == 0;
-
-            response.getWriter().write("{\"available\":" + available + "}");
+            if (rs.next()) {
+                available = false;
+            }
 
         } catch (Exception e) {
-            response.getWriter().write("{\"available\":false}");
+            e.printStackTrace();
+        }
+
+        PrintWriter out = response.getWriter();
+
+        out.print("{\"available\":" + available + "}");
+
+        out.flush();
+
+        try {
+            if (conn != null) conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
 
     /**
      * Returns a short description of the servlet.
