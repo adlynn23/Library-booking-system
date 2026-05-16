@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Generation Time: May 13, 2026 at 12:36 PM
+-- Generation Time: May 16, 2026 at 06:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,16 +32,19 @@ CREATE TABLE `users` (
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `role` varchar(20) NOT NULL
+  `role` varchar(20) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`matric_no`, `name`, `email`, `password`, `role`) VALUES
-('A22567', 'Ali', 'A22567@university.edu', '12', 'Admin'),
-('s75776', 'Syafiqah', 's75776@university.edu.my', '123456', 'Student');
+INSERT INTO `users` (`matric_no`, `name`, `email`, `password`, `role`, `phone`) VALUES
+('A22567', 'Ali', 'A22567@university.edu', '12', 'Admin', NULL),
+('S26587', 'Zarif Irfan', 'S26587@university.edu', '123456', 'Student', '016-7894567'),
+('s75776', 'Syafiqah', 's75776@university.edu.my', '123456', 'Student', NULL),
+('s76244', 'adlynnsya', 's76244@university.edu', '123456', 'Student', '0169874202');
 
 --
 -- Indexes for dumped tables
