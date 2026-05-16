@@ -14,7 +14,7 @@ public class FeedbackDAO {
         try {
             Connection con = DBConnection.getConnection();
             PreparedStatement ps = con.prepareStatement(
-                "INSERT INTO feedback (matric_no, subject, message) VALUES (?, ?, ?)");
+                "INSERT INTO student_feedback (matric_no, subject, message) VALUES (?, ?, ?)");
             ps.setString(1, f.getMatric_no());
             ps.setString(2, f.getSubject());
             ps.setString(3, f.getMessage());

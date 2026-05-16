@@ -71,7 +71,6 @@
                                        id="userPhone"
                                        class="form-control bg-light border-0"
                                        value="<%= userPhone%>"
-                                       placeholder="123456789"
                                        readonly>
                             </div>
                         </div>
@@ -110,41 +109,43 @@
 
         <jsp:include page="footer.jsp" />
 
-        <script>
-            function enableEdit() {
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            document.getElementById("fullName").readOnly = false;
-            document.getElementById("editBtn").classList.add("d-none");
-            document.getElementById("saveBtn").classList.remove("d-none");
-            }
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function enableEdit() {
 
-    <script>
-const params = new URLSearchParams(window.location.search); 
-        if (param
-    s.get("status") === "success")
-    {
+        document.getElementById("fullName").readOnly = false;
+        document.getElementById("userPhone").readOnly = false;
 
-                    Swal.fire({
-                    icon: "success",
-                            title: "Updated!",
-                            text: "Profile updat
-                            ed successfully!"
-                    });
-        }
+        document.getElementById("fullName").classList.remove("bg-light");
+        document.getElementById("userPhone").classList.remove("bg-light");
 
-        if (params.get("status")  === "error") {
-                    Swal.fire({
-                    icon: "error",
-                            title: "Error!",
-                            text: "Something went wrong."
-                    });
-                }
+        document.getElementById("editBtn").classList.add("d-none");
+        document.getElementById("saveBtn").classList.remove("d-none");
+    }
 
-              
-                        }
-                        </script>
+    const params = new URLSearchParams(window.location.search);
 
+    if (params.get("status") === "success") {
+
+        Swal.fire({
+            icon: "success",
+            title: "Updated!",
+            text: "Profile updated successfully!",
+            confirmButtonColor: "#198754"
+        });
+    }
+
+    if (params.get("status") === "error") {
+
+        Swal.fire({
+            icon: "error",
+            title: "Error!",
+            text: "Something went wrong.",
+            confirmButtonColor: "#dc3545"
+        });
+    }
+</script>
 
   </body>
 </html>

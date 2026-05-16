@@ -74,7 +74,7 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
     String message = request.getParameter("message");
 
     // get student matric number from session
-    String matric_no = (String) request.getSession().getAttribute("matric_no");
+    String matric_no = (String) request.getSession().getAttribute("matricNo");
 
     Feedback f = new Feedback();
 
