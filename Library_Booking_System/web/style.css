@@ -3,14 +3,13 @@
     --mocha-text: #5d4037;
     --accent-brown: #8b4513;
     --soft-border: #e0e0e0;
-    /* This is a classic soft peach hex code */
     --light-peach: #fff5eb;
 }
 
 body {
     /* Use the variable here */
-    background-color: var(--light-peach) !important;
-    font-family: 'DM Sans', sans-serif; /* DM Sans fits the minimalist look better */
+    background-color: #f3f4f6 !important;
+    font-family: 'DM Sans', sans-serif; 
     margin: 0;
     padding: 0;
 }
@@ -19,7 +18,7 @@ body {
     background-color: #ffffff !important;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
     padding: 1.2rem 0; /* Tambah padding supaya lebih luas */
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.02);
+    box-shadow:0 10px 30px rgba(15,23,42,0.06);
 }
 
 .navbar-brand {
@@ -255,7 +254,7 @@ footer hr {
 /* --- EduSpace Global Style Variables --- */
 :root {
     --edu-green: #1a3a32;      /* Signature Dark Green */
-    --soft-peach: #fff5eb;     /* Peach accent color */
+    --soft-peach: #f3f4f6;     /* Peach accent color */
     --text-dark: #112d32;      /* Headings */
     --text-muted: #666666;     /* Subtitles */
     --white: #ffffff;

@@ -63,7 +63,7 @@
 /* --- EduSpace Global Style Variables --- */
 :root {
     --edu-green: #1a3a32;      /* Signature Dark Green */
-    --soft-peach: #fff5eb;     /* Peach accent color */
+    --soft-peach: #f3f4f6;     /* Peach accent color */
     --text-dark: #112d32;      /* Headings */
     --text-muted: #666666;     /* Subtitles */
     --white: #ffffff;
@@ -172,7 +172,7 @@ body {
 /* --- Global Reset & Body --- */
 body {
     font-family: 'DM Sans', sans-serif;
-    background-color: #ffffff;
+    background-color: #f3f4f6;
     color: var(--text-dark);
     margin: 0;
     padding: 0;
