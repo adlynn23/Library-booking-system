@@ -178,37 +178,82 @@ body {
     padding: 0;
 }
 
-/* --- Navigation Header --- */
+/* --- PREMIUM NAVIGATION BAR --- */
 .navbar {
-    padding: 1.2rem 0;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    background-color: #ffffff !important;
+    /* Ultra-clean, subtle border separator instead of heavy lines */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04); 
+    /* Padding balanced for breathing room without wasting screen real estate */
+    padding: 0.9rem 0; 
+    /* Smooth, soft ambient shadow to separate navbar from page content */
+    box-shadow: 0 4px 20px rgba(26, 58, 50, 0.04);
 }
 
 .navbar-brand {
-    font-size: 26px;
-    color: var(--edu-green) !important;
     font-weight: 700;
+    color: var(--edu-green) !important; /* Unified with your main app brand color */
+    font-size: 1.8rem;
     letter-spacing: -0.5px;
-    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.navbar-brand:hover {
+    opacity: 0.9;
 }
 
 .navbar-brand span {
-    color: var(--accent-gold); /* The dot at the end of eduspace. */
+    color: var(--accent-gold); /* Golden dot component matching login */
 }
 
 .nav-link {
-    color: var(--text-muted) !important;
-    font-weight: 500;
-    margin: 0 15px;
-    transition: 0.3s ease;
+    color: #555555 !important; /* Crisper gray text for a high-contrast read */
+    font-weight: 500; /* Medium weight is cleaner for body-text navigation */
+    font-size: 0.95rem; /* Standardized sizing for dashboard balance */
+    margin: 0 12px;
+    padding: 6px 0 !important;
+    transition: color 0.25s ease, transform 0.25s ease;
+    position: relative;
 }
 
-.nav-link:hover {
+/* HIGH-END INTERACTIVE STATES */
+.nav-link:hover, 
+.nav-link.active {
+    color: var(--edu-green) !important; /* Transitions cleanly to your brand green */
+    transform: translateY(-1px); /* Slight hover micro-lift */
+}
+
+/* Premium underline expanding seamlessly from the center outward */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 50%; /* Start line positioning at dead center */
+    background-color: var(--accent-gold); /* Accent line uses your premium gold color */
+    transition: width 0.25s ease, left 0.25s ease;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    width: 100%;
+    left: 0; /* Expands symmetrically across the text container boundary */
+}
+
+/* OPTIONAL: Sleek User Profile / Logout Button inside navbar if you use one */
+.nav-btn-logout {
+    border: 1px solid var(--edu-green);
     color: var(--edu-green) !important;
+    border-radius: 8px;
+    padding: 6px 16px !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
 }
 
-/* --- Custom Buttons --- */
+.nav-btn-logout:hover {
+    background-color: var(--edu-green);
+    color: #ffffff !important;
+}/* --- Custom Buttons --- */
 .btn-login {
     background-color: var(--edu-green);
     color: white !important;
