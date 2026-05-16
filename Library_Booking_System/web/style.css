@@ -13,56 +13,81 @@ body {
     margin: 0;
     padding: 0;
 }
-/* --- NAVIGATION BAR (CLEAN & INTERACTIVE) --- */
+/* --- PREMIUM NAVIGATION BAR --- */
 .navbar {
     background-color: #ffffff !important;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05); 
-    padding: 1.2rem 0; /* Tambah padding supaya lebih luas */
-    box-shadow:0 10px 30px rgba(15,23,42,0.06);
+    /* Ultra-clean, subtle border separator instead of heavy lines */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04); 
+    /* Padding balanced for breathing room without wasting screen real estate */
+    padding: 0.9rem 0; 
+    /* Smooth, soft ambient shadow to separate navbar from page content */
+    box-shadow: 0 4px 20px rgba(26, 58, 50, 0.04);
 }
 
 .navbar-brand {
-    font-weight: 800;
-    color: var(--mocha-text) !important; /* Tukar dari biru ke mocha */
-    font-size: 1.8rem; /* Besarkan font brand */
-    letter-spacing: -1px;
+    font-weight: 700;
+    color: var(--edu-green) !important; /* Unified with your main app brand color */
+    font-size: 1.8rem;
+    letter-spacing: -0.5px;
+    transition: opacity 0.2s ease;
+}
+
+.navbar-brand:hover {
+    opacity: 0.9;
 }
 
 .navbar-brand span {
-    color: #d4a373; /* Titik warna tan/gold */
+    color: var(--accent-gold); /* Golden dot component matching login */
 }
 
 .nav-link {
-    color: #777 !important; /* Warna asal kelabu lembut */
-    font-weight: 600;
-    font-size: 1.05rem; /* Besarkan sedikit font link */
-    margin: 0 15px;
-    transition: all 0.3s ease-in-out;
+    color: #555555 !important; /* Crisper gray text for a high-contrast read */
+    font-weight: 500; /* Medium weight is cleaner for body-text navigation */
+    font-size: 0.95rem; /* Standardized sizing for dashboard balance */
+    margin: 0 12px;
+    padding: 6px 0 !important;
+    transition: color 0.25s ease, transform 0.25s ease;
     position: relative;
 }
 
-/* KESAN "LIGHT UP" APABILA DIKLIK ATAU HOVER */
+/* HIGH-END INTERACTIVE STATES */
 .nav-link:hover, 
 .nav-link.active {
-    color: var(--accent-brown) !important; /* Berubah ke warna coklat bila hover/aktif */
-    text-shadow: 0 0 10px rgba(139, 69, 19, 0.2); /* Kesan glowing lembut */
-    transform: translateY(-1px);
+    color: var(--edu-green) !important; /* Transitions cleanly to your brand green */
+    transform: translateY(-1px); /* Slight hover micro-lift */
 }
 
-/* Garisan halus di bawah perkataan apabila hover */
+/* Premium underline expanding seamlessly from the center outward */
 .nav-link::after {
     content: '';
     position: absolute;
     width: 0;
     height: 2px;
-    bottom: -5px;
-    left: 0;
-    background-color: var(--accent-brown);
-    transition: width 0.3s;
+    bottom: 0;
+    left: 50%; /* Start line positioning at dead center */
+    background-color: var(--accent-gold); /* Accent line uses your premium gold color */
+    transition: width 0.25s ease, left 0.25s ease;
 }
 
-.nav-link:hover::after {
+.nav-link:hover::after,
+.nav-link.active::after {
     width: 100%;
+    left: 0; /* Expands symmetrically across the text container boundary */
+}
+
+/* OPTIONAL: Sleek User Profile / Logout Button inside navbar if you use one */
+.nav-btn-logout {
+    border: 1px solid var(--edu-green);
+    color: var(--edu-green) !important;
+    border-radius: 8px;
+    padding: 6px 16px !important;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.nav-btn-logout:hover {
+    background-color: var(--edu-green);
+    color: #ffffff !important;
 }
 /* --- Customer Care Card --- */
 .maintenance-container {
@@ -505,32 +530,9 @@ body {
     color: var(--mocha-text);
 }
 
-/* Navbar Neat Styles */
-.navbar {
-    background-color: #ffffff;
-    border-bottom: 1px solid var(--border-tan);
-    padding: 1rem 0;
-}
 
-.navbar-brand {
-    font-weight: 700;
-    font-size: 1.5rem;
-    color: var(--mocha-text) !important;
-}
-
-.nav-link {
-    color: var(--mocha-text) !important;
-    font-weight: 500;
-    font-size: 0.95rem;
-    margin: 0 10px;
-    transition: color 0.3s ease;
-}
-
-.nav-link:hover {
-    color: #8b4513 !important; /* Muted brown hover */
-}
-
-/* Dropdown Menu Styles */
+/*
+ Dropdown Menu Styles 
 .dropdown-menu {
     background-color: #ffffff;
     border-radius: 12px;
@@ -548,7 +550,7 @@ body {
 .dropdown-item:hover {
     background-color: var(--soft-peach);
     color: #8b4513;
-}
+}*/
 
 /* Logout Button */
 .btn-logout {
