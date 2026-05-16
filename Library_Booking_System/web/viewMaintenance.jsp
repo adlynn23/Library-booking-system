@@ -5,6 +5,7 @@
 <%@page import="model.Feedback"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
+<head>
 <jsp:include page="admin_header.jsp" />
 <title>Admin Portal | Facility Management</title>
 
@@ -132,7 +133,7 @@
     box-shadow: 0 0 0 0.15rem rgba(176, 137, 104, 0.25);
 }
 </style>
-
+</head>
 
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
