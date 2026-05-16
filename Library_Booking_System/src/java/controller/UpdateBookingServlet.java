@@ -66,35 +66,54 @@ public class UpdateBookingServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-                throws ServletException, IOException {
+            throws ServletException, IOException {
 
-            int bookingId = Integer.parseInt(request.getParameter("booking_id"));
+        String bookingId = request.getParameter("booking_id");
         String status = request.getParameter("status");
-        String notes = request.getParameter("admin_notes");
+        String adminNotes = request.getParameter("admin_notes");
+
+        Connection conn = null;
+        PreparedStatement ps = null;
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3307/librarydb", "root", "");
 
-            String sql = "UPDATE booking SET status=?, admin_notes=? WHERE id=?";
+            conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3307/librarydb",
+                "root",
+                ""
+            );
 
-            PreparedStatement ps = conn.prepareStatement(sql);
+            String sql = "UPDATE booking SET status=?, admin_notes=? WHERE booking_id=?";
+
+            ps = conn.prepareStatement(sql);
             ps.setString(1, status);
-            ps.setString(2, notes);
-            ps.setInt(3, bookingId);
+            ps.setString(2, adminNotes);
+            ps.setInt(3, Integer.parseInt(bookingId));
 
-            ps.executeUpdate();
+            int rowsUpdated = ps.executeUpdate();
 
-            conn.close();
+            if (rowsUpdated > 0) {
+                response.sendRedirect("adminBooking.jsp?success=1");
+            } else {
+                response.sendRedirect("adminBooking.jsp?success=0");
+            }
 
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
+            response.sendRedirect("adminBooking.jsp?success=error");
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (conn != null) conn.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-
-        response.sendRedirect("adminBooking.jsp");
     }
 
 
