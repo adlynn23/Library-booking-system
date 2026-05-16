@@ -152,8 +152,8 @@
                             <th>Date</th>
                             <th>Time</th>
                             <th>Purpose</th>
-                            <th>Status</th>
                             <th>Notes</th>
+                            <th>Status</th>
 
                         </tr>
                     </thead>

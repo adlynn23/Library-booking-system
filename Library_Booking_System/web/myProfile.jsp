@@ -82,7 +82,40 @@
                                    class="form-control"
                                    value="<%= userRole%>" readonly>
                         </div>
+                        <!-- PASSWORD SECTION -->
+                        <hr>
 
+                        <h5 class="mt-3">Change Password</h5>
+
+                        <div class="mb-3">
+                            <label>Current Password</label>
+                            <input type="password"
+                                   name="currentPassword"
+                                   id="currentPassword"
+                                   class="form-control"
+                                   placeholder="Enter current password"
+                                   disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>New Password</label>
+                            <input type="password"
+                                   name="newPassword"
+                                   id="newPassword"
+                                   class="form-control"
+                                   placeholder="Enter new password"
+                                   disabled>
+                        </div>
+
+                        <div class="mb-3">
+                            <label>Confirm Password</label>
+                            <input type="password"
+                                   name="confirmPassword"
+                                   id="confirmPassword"
+                                   class="form-control"
+                                   placeholder="Confirm new password"
+                                   disabled>
+                        </div>
                         <!-- BUTTONS -->
                         <div class="d-grid gap-2">
 
@@ -111,41 +144,44 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-    function enableEdit() {
+        <script>
+                                        function enableEdit() {
 
-        document.getElementById("fullName").readOnly = false;
-        document.getElementById("userPhone").readOnly = false;
+                                            document.getElementById("fullName").readOnly = false;
+                                            document.getElementById("userPhone").readOnly = false;
 
-        document.getElementById("fullName").classList.remove("bg-light");
-        document.getElementById("userPhone").classList.remove("bg-light");
+                                            document.getElementById("currentPassword").disabled = false;
+                                            document.getElementById("newPassword").disabled = false;
+                                            document.getElementById("confirmPassword").disabled = false;
 
-        document.getElementById("editBtn").classList.add("d-none");
-        document.getElementById("saveBtn").classList.remove("d-none");
-    }
+                                            document.getElementById("fullName").classList.remove("bg-light");
+                                            document.getElementById("userPhone").classList.remove("bg-light");
 
-    const params = new URLSearchParams(window.location.search);
+                                            document.getElementById("editBtn").classList.add("d-none");
+                                            document.getElementById("saveBtn").classList.remove("d-none");
+                                        }
+                                        const params = new URLSearchParams(window.location.search);
 
-    if (params.get("status") === "success") {
+                                        if (params.get("status") === "success") {
 
-        Swal.fire({
-            icon: "success",
-            title: "Updated!",
-            text: "Profile updated successfully!",
-            confirmButtonColor: "#198754"
-        });
-    }
+                                            Swal.fire({
+                                                icon: "success",
+                                                title: "Updated!",
+                                                text: "Profile updated successfully!",
+                                                confirmButtonColor: "#198754"
+                                            });
+                                        }
 
-    if (params.get("status") === "error") {
+                                        if (params.get("status") === "error") {
 
-        Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: "Something went wrong.",
-            confirmButtonColor: "#dc3545"
-        });
-    }
-</script>
+                                            Swal.fire({
+                                                icon: "error",
+                                                title: "Error!",
+                                                text: "Something went wrong.",
+                                                confirmButtonColor: "#dc3545"
+                                            });
+                                        }
+        </script>
 
-  </body>
+    </body>
 </html>

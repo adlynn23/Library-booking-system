@@ -70,7 +70,7 @@ public class UpdateProfileServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+   @Override
 protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
 
@@ -83,12 +83,15 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
 
     String matricNo = (String) session.getAttribute("matricNo");
 
-    // Get form data
     String fullName = request.getParameter("fullName");
     String phone = request.getParameter("phone");
 
+    // PASSWORD FIELDS (NEW)
+    String currentPassword = request.getParameter("currentPassword");
+    String newPassword = request.getParameter("newPassword");
+    String confirmPassword = request.getParameter("confirmPassword");
+
     Connection conn = null;
-    PreparedStatement ps = null;
 
     try {
 
@@ -100,47 +103,66 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
                 ""
         );
 
-        // UPDATE query
-        String sql = "UPDATE users SET name = ?, phone = ? WHERE matric_no = ?";
+        // 1. UPDATE BASIC INFO (NAME + PHONE)
+        String updateProfile =
+                "UPDATE users SET name=?, phone=? WHERE matric_no=?";
 
-        ps = conn.prepareStatement(sql);
+        PreparedStatement ps1 = conn.prepareStatement(updateProfile);
+        ps1.setString(1, fullName);
+        ps1.setString(2, phone);
+        ps1.setString(3, matricNo);
+        ps1.executeUpdate();
 
-        ps.setString(1, fullName);
-        ps.setString(2, phone);
-        ps.setString(3, matricNo);
+        // 2. CHECK IF USER WANTS TO CHANGE PASSWORD
+        if (currentPassword != null && !currentPassword.isEmpty()) {
 
-        int result = ps.executeUpdate();
+            // GET EXISTING PASSWORD
+            String sqlCheck = "SELECT password FROM users WHERE matric_no=?";
+            PreparedStatement psCheck = conn.prepareStatement(sqlCheck);
+            psCheck.setString(1, matricNo);
 
-        if (result > 0) {
+            var rs = psCheck.executeQuery();
 
-            // Update session
-            session.setAttribute("userName", fullName);
-            session.setAttribute("userPhone", phone);
+            if (rs.next()) {
 
-            response.sendRedirect("myProfile.jsp?status=success");
+                String dbPassword = rs.getString("password");
 
-        } else {
+                // CHECK OLD PASSWORD
+                if (!dbPassword.equals(currentPassword)) {
+                    response.sendRedirect("myProfile.jsp?status=wrongpassword");
+                    return;
+                }
 
-            response.sendRedirect("myProfile.jsp?status=failed");
+                // CHECK NEW PASSWORD MATCH
+                if (!newPassword.equals(confirmPassword)) {
+                    response.sendRedirect("myProfile.jsp?status=nomatch");
+                    return;
+                }
+
+                // UPDATE PASSWORD
+                String sqlPass =
+                        "UPDATE users SET password=? WHERE matric_no=?";
+
+                PreparedStatement ps2 = conn.prepareStatement(sqlPass);
+                ps2.setString(1, newPassword);
+                ps2.setString(2, matricNo);
+                ps2.executeUpdate();
+            }
         }
 
-    } catch (Exception e) {
+        // 3. UPDATE SESSION VALUES
+        session.setAttribute("userName", fullName);
+        session.setAttribute("userPhone", phone);
 
+        response.sendRedirect("myProfile.jsp?status=success");
+
+    } catch (Exception e) {
         e.printStackTrace();
         response.sendRedirect("myProfile.jsp?status=error");
 
     } finally {
-
         try {
-
-            if (ps != null) {
-                ps.close();
-            }
-
-            if (conn != null) {
-                conn.close();
-            }
-
+            if (conn != null) conn.close();
         } catch (Exception e) {
             e.printStackTrace();
         }

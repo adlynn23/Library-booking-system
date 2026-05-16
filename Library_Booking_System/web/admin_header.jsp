@@ -12,10 +12,35 @@
 <link rel="stylesheet" type="text/css" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<%@page import="java.sql.*"%>
 
 <%
     // Fetch administrator name if authenticated
     String userName = (String) session.getAttribute("userName");
+%>
+
+<%
+int unreadCount = 0;
+
+try {
+    Connection conn = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3307/librarydb",
+        "root",
+        ""
+    );
+
+    String sql = "SELECT COUNT(*) FROM notification WHERE status='UNREAD'";
+    PreparedStatement ps = conn.prepareStatement(sql);
+    ResultSet rs = ps.executeQuery();
+
+    if (rs.next()) {
+        unreadCount = rs.getInt(1);
+    }
+
+    conn.close();
+} catch(Exception e) {
+    out.println(e);
+}
 %>
 
 <nav class="navbar navbar-expand-lg bg-white shadow-sm py-3">
@@ -65,6 +90,27 @@
 
     </div>
 </nav>
+        <!-- NOTIFICATION BELL -->
+<div style="position:relative; display:inline-block; margin-left:20px;">
+
+    <a href="adminNotification.jsp" style="text-decoration:none; font-size:20px;">
+        🔔
+    </a>
+
+    <span style="
+        position:absolute;
+        top:-5px;
+        right:-10px;
+        background:red;
+        color:white;
+        font-size:12px;
+        border-radius:50%;
+        padding:2px 6px;
+    ">
+        <%= unreadCount %>
+    </span>
+
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 

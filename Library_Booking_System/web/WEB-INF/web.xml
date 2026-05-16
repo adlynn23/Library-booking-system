@@ -36,6 +36,10 @@
         <servlet-name>UpdateBookingServlet</servlet-name>
         <servlet-class>controller.UpdateBookingServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>MarkNotificationReadServlet</servlet-name>
+        <servlet-class>controller.MarkNotificationReadServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>startBookingServlet</servlet-name>
         <url-pattern>/startBookingServlet</url-pattern>
@@ -95,6 +99,10 @@
     <servlet-mapping>
         <servlet-name>UpdateBookingServlet</servlet-name>
         <url-pattern>/UpdateBookingServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>MarkNotificationReadServlet</servlet-name>
+        <url-pattern>/MarkNotificationReadServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

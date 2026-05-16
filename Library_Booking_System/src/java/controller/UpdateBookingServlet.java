@@ -68,51 +68,75 @@ public class UpdateBookingServlet extends HttpServlet {
      */
 
 
+   
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String bookingId = request.getParameter("booking_id");
+        int bookingId = Integer.parseInt(request.getParameter("booking_id"));
         String status = request.getParameter("status");
-        String adminNotes = request.getParameter("admin_notes");
-
-        Connection conn = null;
-        PreparedStatement ps = null;
+        String notes = request.getParameter("admin_notes");
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            conn = DriverManager.getConnection(
+            Connection conn = DriverManager.getConnection(
                 "jdbc:mysql://localhost:3307/librarydb",
                 "root",
                 ""
             );
 
-            String sql = "UPDATE booking SET status=?, admin_notes=? WHERE booking_id=?";
+            // 1. GET BOOKING INFO
+            String getSql = "SELECT matric_no, facility_name FROM booking WHERE booking_id=?";
+            PreparedStatement getPs = conn.prepareStatement(getSql);
+            getPs.setInt(1, bookingId);
+            ResultSet rs = getPs.executeQuery();
 
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, status);
-            ps.setString(2, adminNotes);
-            ps.setInt(3, Integer.parseInt(bookingId));
+            String matric = "";
+            String facility = "";
 
-            int rowsUpdated = ps.executeUpdate();
-
-            if (rowsUpdated > 0) {
-                response.sendRedirect("adminBooking.jsp?success=1");
-            } else {
-                response.sendRedirect("adminBooking.jsp?success=0");
+            if (rs.next()) {
+                matric = rs.getString("matric_no");
+                facility = rs.getString("facility_name");
             }
+
+            // 2. UPDATE BOOKING
+            String updateSql =
+                "UPDATE booking SET status=?, admin_notes=? WHERE booking_id=?";
+
+            PreparedStatement ps = conn.prepareStatement(updateSql);
+            ps.setString(1, status);
+            ps.setString(2, notes);
+            ps.setInt(3, bookingId);
+            ps.executeUpdate();
+
+            // 3. CREATE NOTIFICATION
+            String message;
+
+            if (status.equals("APPROVED")) {
+                message = "Your booking for " + facility + " has been APPROVED.";
+            } else if (status.equals("REJECTED")) {
+                message = "Your booking for " + facility + " has been REJECTED.";
+            } else {
+                message = "Your booking is under review.";
+            }
+
+            String notifSql =
+                "INSERT INTO notification (user_id, message, status) VALUES (?, ?, 'UNREAD')";
+
+            PreparedStatement notifPs = conn.prepareStatement(notifSql);
+            notifPs.setString(1, matric);
+            notifPs.setString(2, message);
+            notifPs.executeUpdate();
+
+            conn.close();
+
+            response.sendRedirect("adminBooking.jsp?success=true");
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("adminBooking.jsp?success=error");
-        } finally {
-            try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            response.getWriter().println("Error: " + e.getMessage());
         }
     }
 
