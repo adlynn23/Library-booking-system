@@ -90,12 +90,12 @@ try {
 
     </div>
 </nav>
-        <!-- NOTIFICATION BELL -->
+<!--         NOTIFICATION BELL 
 <div style="position:relative; display:inline-block; margin-left:20px;">
 
     <a href="adminNotification.jsp" style="text-decoration:none; font-size:20px;">
         🔔
-    </a>
+    </a>-->
 
     <span style="
         position:absolute;

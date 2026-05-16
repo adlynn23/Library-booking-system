@@ -1,7 +1,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page import="java.sql.*"%>
+
 <!DOCTYPE html>
 <html>
+
     <head>
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -14,7 +18,9 @@
 
         <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
               rel="stylesheet">
+
         <jsp:include page="admin_header.jsp" />
+
         <style>
 
             :root{
@@ -41,13 +47,11 @@
                 color:var(--text);
             }
 
-            /* PAGE */
             .page-wrapper{
                 padding:40px 50px;
                 background-color:#f3f4f6;
             }
 
-            /* TOP */
             .page-top{
                 display:flex;
                 justify-content:space-between;
@@ -66,7 +70,6 @@
                 margin:0;
             }
 
-            /* TABS */
             .admin-tabs{
                 display:flex;
                 justify-content:center;
@@ -98,7 +101,6 @@
                 color:white;
             }
 
-            /* CARD */
             .admin-list-container{
                 background:var(--card);
                 border-radius:24px;
@@ -107,7 +109,6 @@
                 box-shadow:0 10px 30px rgba(15,23,42,0.05);
             }
 
-            /* FACILITY ROW */
             .admin-row{
                 display:flex;
                 justify-content:space-between;
@@ -141,7 +142,6 @@
                 color:#9ca3af;
             }
 
-            /* BADGE */
             .badge-active{
                 background:var(--success-bg);
                 color:var(--success-text);
@@ -152,7 +152,6 @@
                 margin-left:10px;
             }
 
-            /* UNIT LIST */
             .admin-unit-list{
                 max-height:0;
                 overflow:hidden;
@@ -164,7 +163,6 @@
                 padding-bottom:20px;
             }
 
-            /* UNIT */
             .unit-management-row{
                 display:flex;
                 justify-content:space-between;
@@ -173,7 +171,6 @@
                 border-top:1px solid #f3f4f6;
             }
 
-            /* BUTTONS */
             .btn-primary-custom{
                 background:var(--primary);
                 color:white;
@@ -182,12 +179,6 @@
                 border-radius:12px;
                 font-weight:600;
                 cursor:pointer;
-                transition:0.2s;
-            }
-
-            .btn-primary-custom:hover{
-                opacity:0.92;
-                transform:translateY(-1px);
             }
 
             .btn-secondary-custom{
@@ -207,11 +198,6 @@
                 border-radius:10px;
                 background:#f9fafb;
                 cursor:pointer;
-                transition:0.2s;
-            }
-
-            .icon-btn:hover{
-                background:#f3f4f6;
             }
 
         </style>
@@ -219,8 +205,6 @@
     </head>
 
     <body>
-
-
 
         <div class="page-wrapper">
 
@@ -234,7 +218,8 @@
                         User Management
                     </button>
 
-                    <button class="tab-btn active">
+                    <button class="tab-btn active"
+                            onclick="switchTab('facility')">
                         Facility Management
                     </button>
 
@@ -242,497 +227,610 @@
 
             </div>
 
-            <!-- TOP -->
-            <div class="page-top">
+            <!-- USER MANAGEMENT -->
+            <div id="userSection"
+                 class="admin-list-container mb-4"
+                 style="display:none;">
 
-                <div class="page-title">
-                    <h2>Facility Management</h2>
-                    <p>
-                        Manage learning spaces, room availability and facility status.
-                    </p>
-                </div>
+                <h4 class="mb-3 mt-3">
+                    User Management
+                </h4>
 
-                <button class="btn-primary-custom"
-                        onclick="addFacility()">
-                    + Add Facility
-                </button>
+                <table class="table table-hover">
+
+                    <thead>
+                        <tr>
+                            <th>Matric No</th>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <%
+
+                            Connection conn = null;
+                            PreparedStatement ps = null;
+                            ResultSet rs = null;
+
+                            try {
+
+                                Class.forName("com.mysql.cj.jdbc.Driver");
+
+                                conn = DriverManager.getConnection(
+                                        "jdbc:mysql://localhost:3307/librarydb",
+                                        "root",
+                                        ""
+                                );
+
+                                String sql
+                                        = "SELECT matric_no, name, phone, role FROM users";
+
+                                ps = conn.prepareStatement(sql);
+
+                                rs = ps.executeQuery();
+
+                                boolean hasData = false;
+
+                                while (rs.next()) {
+
+                                    hasData = true;
+                        %>
+
+                        <tr>
+
+                            <td>
+                                <%= rs.getString("matric_no")%>
+                            </td>
+
+                            <td>
+                                <%= rs.getString("name")%>
+                            </td>
+
+                            <td>
+                                <%= rs.getString("phone")%>
+                            </td>
+
+                            <td>
+                                <%= rs.getString("role")%>
+                            </td>
+
+                        </tr>
+
+                        <%
+
+                            }
+
+                            if (!hasData) {
+                        %>
+
+                        <tr>
+                            <td colspan="4" class="text-center">
+                                No users found
+                            </td>
+                        </tr>
+
+                        <%
+                            }
+
+                        } catch (Exception e) {
+                        %>
+
+                        <tr>
+                            <td colspan="4" class="text-danger">
+                                Error:
+                                <%= e.getMessage()%>
+                            </td>
+                        </tr>
+
+                        <%
+
+                            } finally {
+
+                                if (rs != null) {
+                                    rs.close();
+                                }
+
+                                if (ps != null) {
+                                    ps.close();
+                                }
+
+                                if (conn != null) {
+                                    conn.close();
+                                }
+                            }
+
+                        %>
+
+                    </tbody>
+
+                </table>
 
             </div>
 
-            <!-- CARD -->
-            <div class="admin-list-container">
+            <!-- FACILITY SECTION -->
+            <div id="facilitySection">
 
-                <!-- STUDY ROOM -->
-                <div class="admin-row"
-                     onclick="toggleAccordion(this)">
+                <div class="page-top">
 
-                    <div class="facility-info">
+                    <div class="page-title">
 
-                        <div class="d-flex align-items-center">
-
-                            <h3>Study Room</h3>
-
-                            <span class="badge-active">
-                                Active
-                            </span>
-
-                        </div>
+                        <h2>
+                            Facility Management
+                        </h2>
 
                         <p>
-                            Quiet individual study room
+                            Manage learning spaces, room availability and facility status.
                         </p>
 
-                        <small>
-                            Total: 5 Units
-                        </small>
-
                     </div>
 
-                    <div onclick="event.stopPropagation();">
-
-                        <button class="btn-secondary-custom"
-                                onclick="toggleStatus(this, 'Study Room')">
-                            Deactivate All
-                        </button>
-
-                        <button class="icon-btn"
-                                onclick="editFacility('Study Room')">
-
-                            <i class="fa-solid fa-pen text-success"></i>
-
-                        </button>
-
-                    </div>
+                    <button class="btn-primary-custom"
+                            onclick="addFacility()">
+                        + Add Facility
+                    </button>
 
                 </div>
 
-                <div class="admin-unit-list">
+                <div class="admin-list-container">
 
-                    <% for (int i = 1; i <= 5; i++) {%>
+                    <!-- STUDY ROOM -->
+                    <div class="admin-row" onclick="toggleAccordion(this)">
 
-                    <div class="unit-management-row">
+                        <div class="facility-info">
 
-                        <span>
-                            Study Room <%= (char) ('A' + i - 1)%>
-                            <small class="badge-active">Active</small>
-                        </span>
+                            <div class="d-flex align-items-center">
+                                <h3>Study Room</h3>
 
-                        <div class="d-flex gap-2">
+                                <span class="badge-active">
+                                    Active
+                                </span>
+                            </div>
+
+                            <p>Quiet individual study room</p>
+
+                            <small>Total: 5 Units</small>
+
+                        </div>
+
+                        <div onclick="event.stopPropagation();">
 
                             <button class="btn-secondary-custom"
-                                    onclick="toggleStatus(this, 'Room')">
-                                Deactivate
+                                    onclick="toggleStatus(this)">
+                                Deactivate All
                             </button>
 
                             <button class="icon-btn">
-
                                 <i class="fa-solid fa-pen text-success"></i>
-
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-trash text-danger"></i>
-
                             </button>
 
                         </div>
 
                     </div>
 
-                    <% }%>
+                    <div class="admin-unit-list">
 
-                </div>
+                        <% for (int i = 1; i <= 5; i++) {%>
 
-                <!-- DISCUSSION ROOM -->
-                <div class="admin-row"
-                     onclick="toggleAccordion(this)">
+                        <div class="unit-management-row">
 
-                    <div class="facility-info">
-
-                        <div class="d-flex align-items-center">
-
-                            <h3>Group Discussion Room</h3>
-
-                            <span class="badge-active">
-                                Active
+                            <span>
+                                Study Room <%= (char) ('A' + i - 1)%>
+                                <small class="badge-active">Active</small>
                             </span>
 
+                            <div class="d-flex gap-2">
+
+                                <button class="btn-secondary-custom"
+                                        onclick="toggleStatus(this)">
+                                    Deactivate
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-pen text-success"></i>
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </button>
+
+                            </div>
+
                         </div>
 
-                        <p>
-                            Collaborative discussion space
-                        </p>
-
-                        <small>
-                            Total: 2 Units
-                        </small>
+                        <% }%>
 
                     </div>
 
-                    <div onclick="event.stopPropagation();">
+                    <!-- GROUP DISCUSSION ROOM -->
+                    <div class="admin-row" onclick="toggleAccordion(this)">
 
-                        <button class="btn-secondary-custom">
-                            Deactivate All
-                        </button>
+                        <div class="facility-info">
 
-                        <button class="icon-btn">
+                            <div class="d-flex align-items-center">
 
-                            <i class="fa-solid fa-pen text-success"></i>
+                                <h3>Group Discussion Room</h3>
 
-                        </button>
+                                <span class="badge-active">
+                                    Active
+                                </span>
+
+                            </div>
+
+                            <p>Collaborative discussion space</p>
+
+                            <small>Total: 2 Units</small>
+
+                        </div>
+
+                        <div onclick="event.stopPropagation();">
+
+                            <button class="btn-secondary-custom"
+                                    onclick="toggleStatus(this)">
+                                Deactivate All
+                            </button>
+
+                            <button class="icon-btn">
+                                <i class="fa-solid fa-pen text-success"></i>
+                            </button>
+
+                        </div>
 
                     </div>
 
-                </div>
+                    <div class="admin-unit-list">
 
-                <!-- COMPUTER LAB -->
-                <div class="admin-row"
-                     onclick="toggleAccordion(this)">
+                        <div class="unit-management-row">
 
-                    <div class="facility-info">
-
-                        <div class="d-flex align-items-center">
-
-                            <h3>Computer Lab</h3>
-
-                            <span class="badge-active">
-                                Active
+                            <span>
+                                Discussion Room A
+                                <small class="badge-active">Active</small>
                             </span>
 
-                        </div>
+                            <div class="d-flex gap-2">
 
-                        <p>
-                            High-performance computers with specialized software
-                        </p>
+                                <button class="btn-secondary-custom"
+                                        onclick="toggleStatus(this)">
+                                    Deactivate
+                                </button>
 
-                        <small>
-                            Total: 2 Units
-                        </small>
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-pen text-success"></i>
+                                </button>
 
-                    </div>
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </button>
 
-                    <div onclick="event.stopPropagation();">
-
-                        <button class="btn-secondary-custom">
-                            Deactivate All
-                        </button>
-
-                        <button class="icon-btn">
-
-                            <i class="fa-solid fa-pen text-success"></i>
-
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="admin-unit-list">
-
-                    <div class="unit-management-row">
-
-                        <span>
-                            Computer Lab A
-                            <small class="badge-active">Active</small>
-                        </span>
-
-                        <div class="d-flex gap-2">
-
-                            <button class="btn-secondary-custom">
-                                Deactivate
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-pen text-success"></i>
-
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-trash text-danger"></i>
-
-                            </button>
+                            </div>
 
                         </div>
 
-                    </div>
+                        <div class="unit-management-row">
 
-                    <div class="unit-management-row">
-
-                        <span>
-                            Computer Lab B
-                            <small class="badge-active">Active</small>
-                        </span>
-
-                        <div class="d-flex gap-2">
-
-                            <button class="btn-secondary-custom">
-                                Deactivate
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-pen text-success"></i>
-
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-trash text-danger"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- SEMINAR HALL -->
-                <div class="admin-row"
-                     onclick="toggleAccordion(this)">
-
-                    <div class="facility-info">
-
-                        <div class="d-flex align-items-center">
-
-                            <h3>Seminar Hall</h3>
-
-                            <span class="badge-active">
-                                Active
+                            <span>
+                                Discussion Room B
+                                <small class="badge-active">Active</small>
                             </span>
 
+                            <div class="d-flex gap-2">
+
+                                <button class="btn-secondary-custom"
+                                        onclick="toggleStatus(this)">
+                                    Deactivate
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-pen text-success"></i>
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </button>
+
+                            </div>
+
                         </div>
 
-                        <p>
-                            Large auditorium for presentations and events
-                        </p>
-
-                        <small>
-                            Total: 2 Units
-                        </small>
-
                     </div>
 
-                    <div onclick="event.stopPropagation();">
+                    <!-- COMPUTER LAB -->
+                    <div class="admin-row" onclick="toggleAccordion(this)">
 
-                        <button class="btn-secondary-custom">
-                            Deactivate All
-                        </button>
+                        <div class="facility-info">
 
-                        <button class="icon-btn">
+                            <div class="d-flex align-items-center">
 
-                            <i class="fa-solid fa-pen text-success"></i>
+                                <h3>Computer Lab</h3>
 
-                        </button>
+                                <span class="badge-active">
+                                    Active
+                                </span>
 
-                    </div>
+                            </div>
 
-                </div>
+                            <p>High-performance computers with specialized software</p>
 
-                <div class="admin-unit-list">
+                            <small>Total: 2 Units</small>
 
-                    <div class="unit-management-row">
+                        </div>
 
-                        <span>
-                            Auditorium A
-                            <small class="badge-active">Active</small>
-                        </span>
+                        <div onclick="event.stopPropagation();">
 
-                        <div class="d-flex gap-2">
-
-                            <button class="btn-secondary-custom">
-                                Deactivate
+                            <button class="btn-secondary-custom"
+                                    onclick="toggleStatus(this)">
+                                Deactivate All
                             </button>
 
                             <button class="icon-btn">
-
                                 <i class="fa-solid fa-pen text-success"></i>
-
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-trash text-danger"></i>
-
                             </button>
 
                         </div>
 
                     </div>
 
-                    <div class="unit-management-row">
+                    <div class="admin-unit-list">
 
-                        <span>
-                            Auditorium B
-                            <small class="badge-active">Active</small>
-                        </span>
+                        <div class="unit-management-row">
 
-                        <div class="d-flex gap-2">
-
-                            <button class="btn-secondary-custom">
-                                Deactivate
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-pen text-success"></i>
-
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-trash text-danger"></i>
-
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- MEDIA ROOM -->
-                <div class="admin-row"
-                     onclick="toggleAccordion(this)">
-
-                    <div class="facility-info">
-
-                        <div class="d-flex align-items-center">
-
-                            <h3>Media Production Room</h3>
-
-                            <span class="badge-active">
-                                Active
+                            <span>
+                                Computer Lab A
+                                <small class="badge-active">Active</small>
                             </span>
 
+                            <div class="d-flex gap-2">
+
+                                <button class="btn-secondary-custom"
+                                        onclick="toggleStatus(this)">
+                                    Deactivate
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-pen text-success"></i>
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </button>
+
+                            </div>
+
                         </div>
 
-                        <p>
-                            Professional recording and editing equipment
-                        </p>
+                        <div class="unit-management-row">
 
-                        <small>
-                            Total: 1 Unit
-                        </small>
+                            <span>
+                                Computer Lab B
+                                <small class="badge-active">Active</small>
+                            </span>
+
+                            <div class="d-flex gap-2">
+
+                                <button class="btn-secondary-custom"
+                                        onclick="toggleStatus(this)">
+                                    Deactivate
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-pen text-success"></i>
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </button>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
-                    <div onclick="event.stopPropagation();">
+                    <!-- SEMINAR HALL -->
+                    <div class="admin-row" onclick="toggleAccordion(this)">
 
-                        <button class="btn-secondary-custom">
-                            Deactivate All
-                        </button>
+                        <div class="facility-info">
 
-                        <button class="icon-btn">
+                            <div class="d-flex align-items-center">
 
-                            <i class="fa-solid fa-pen text-success"></i>
+                                <h3>Seminar Hall</h3>
 
-                        </button>
+                                <span class="badge-active">
+                                    Active
+                                </span>
 
-                    </div>
+                            </div>
 
-                </div>
+                            <p>Large auditorium for presentations and events</p>
 
-                <div class="admin-unit-list">
+                            <small>Total: 2 Units</small>
 
-                    <div class="unit-management-row">
+                        </div>
 
-                        <span>
-                            Media Space
-                            <small class="badge-active">Active</small>
-                        </span>
+                        <div onclick="event.stopPropagation();">
 
-                        <div class="d-flex gap-2">
-
-                            <button class="btn-secondary-custom">
-                                Deactivate
+                            <button class="btn-secondary-custom"
+                                    onclick="toggleStatus(this)">
+                                Deactivate All
                             </button>
 
                             <button class="icon-btn">
-
                                 <i class="fa-solid fa-pen text-success"></i>
-
-                            </button>
-
-                            <button class="icon-btn">
-
-                                <i class="fa-solid fa-trash text-danger"></i>
-
                             </button>
 
                         </div>
 
                     </div>
 
-                </div>
+                    <div class="admin-unit-list">
 
-            </div>
+                        <div class="unit-management-row">
 
-        </div>
+                            <span>
+                                Auditorium A
+                                <small class="badge-active">Active</small>
+                            </span>
+
+                            <div class="d-flex gap-2">
+
+                                <button class="btn-secondary-custom"
+                                        onclick="toggleStatus(this)">
+                                    Deactivate
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-pen text-success"></i>
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="unit-management-row">
+
+                            <span>
+                                Auditorium B
+                                <small class="badge-active">Active</small>
+                            </span>
+
+                            <div class="d-flex gap-2">
+
+                                <button class="btn-secondary-custom"
+                                        onclick="toggleStatus(this)">
+                                    Deactivate
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-pen text-success"></i>
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- MEDIA ROOM -->
+                    <div class="admin-row" onclick="toggleAccordion(this)">
+
+                        <div class="facility-info">
+
+                            <div class="d-flex align-items-center">
+
+                                <h3>Media Production Room</h3>
+
+                                <span class="badge-active">
+                                    Active
+                                </span>
+
+                            </div>
+
+                            <p>Professional recording and editing equipment</p>
+
+                            <small>Total: 1 Unit</small>
+
+                        </div>
+
+                        <div onclick="event.stopPropagation();">
+
+                            <button class="btn-secondary-custom"
+                                    onclick="toggleStatus(this)">
+                                Deactivate All
+                            </button>
+
+                            <button class="icon-btn">
+                                <i class="fa-solid fa-pen text-success"></i>
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                    <div class="admin-unit-list">
+
+                        <div class="unit-management-row">
+
+                            <span>
+                                Media Space
+                                <small class="badge-active">Active</small>
+                            </span>
+
+                            <div class="d-flex gap-2">
+
+                                <button class="btn-secondary-custom"
+                                        onclick="toggleStatus(this)">
+                                    Deactivate
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-pen text-success"></i>
+                                </button>
+
+                                <button class="icon-btn">
+                                    <i class="fa-solid fa-trash text-danger"></i>
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <script>
+
+                        function toggleStatus(id, status) {
+
+                            let newStatus = (status === "AVAILABLE")
+                                    ? "NOT AVAILABLE"
+                                    : "AVAILABLE";
+
+                            window.location.href =
+                                    "updateFacilityStatus.jsp?id=" + id +
+                                    "&status=" + encodeURIComponent(newStatus);
+                        }
+
+                        function toggleAccordion(row) {
+                            row.classList.toggle('active');
+                        }
+
+                        function addFacility() {
+                            alert("Add Facility");
+                        }
+
+                        function switchTab(tab) {
+
+                            const userSection = document.getElementById("userSection");
+                            const facilitySection = document.getElementById("facilitySection");
+                            const buttons = document.querySelectorAll(".tab-btn");
+
+                            buttons.forEach(btn => btn.classList.remove("active"));
+
+                            if (tab === 'user') {
+                                userSection.style.display = "block";
+                                facilitySection.style.display = "none";
+                                buttons[0].classList.add("active");
+                            } else {
+                                userSection.style.display = "none";
+                                facilitySection.style.display = "block";
+                                buttons[1].classList.add("active");
+                            }
+                        }
+
+                    </script>
 
 
-        <script>
+                    <jsp:include page="footer.jsp" />
 
-            function toggleAccordion(row) {
-                row.classList.toggle('active');
-            }
+                    </body>
 
-            function toggleStatus(btn, name) {
-
-                const container =
-                        btn.closest('.admin-row')
-                        || btn.closest('.unit-management-row');
-
-                const badge =
-                        container.querySelector('.badge-active');
-
-                if (btn.innerText.includes("Deactivate")) {
-
-                    badge.innerText = "Inactive";
-                    badge.style.background = "#f3f4f6";
-                    badge.style.color = "#6b7280";
-
-                    btn.innerText =
-                            btn.innerText.includes("All")
-                            ? "Activate All"
-                            : "Activate";
-
-                } else {
-
-                    badge.innerText = "Active";
-                    badge.style.background = "#ecfdf3";
-                    badge.style.color = "#027a48";
-
-                    btn.innerText =
-                            btn.innerText.includes("All")
-                            ? "Deactivate All"
-                            : "Deactivate";
-
-                }
-
-            }
-
-            function addFacility() {
-                alert("Add Facility");
-            }
-
-            function editFacility(name) {
-                alert("Editing " + name);
-            }
-
-            function switchTab(tab) {
-
-                if (tab === 'user') {
-                    alert("Switch to User Management");
-                }
-
-            }
-
-        </script>
- <jsp:include page="footer.jsp" />
-
-    </body>
-</html>
+                    </html>
