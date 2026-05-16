@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" type="text/css" href="style.css?v=<%= System.currentTimeMillis() %>">
+<link rel="stylesheet" type="text/css" href="style.css?v=<%= System.currentTimeMillis()%>">
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -18,15 +18,15 @@
 
     body {
         font-family: 'DM Sans', sans-serif;
-        background-color: #fcfaf7; /* Elegant soft workspace background canvas tint */
+        background-color: #fcfaf7; 
         color: var(--text-dark);
     }
 
     /* --- PREMIUM NAVIGATION CONFIGURATIONS --- */
     .navbar {
         background-color: #ffffff !important;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important; 
-        padding: 0.8rem 0 !important; 
+        border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+        padding: 0.8rem 0 !important;
         box-shadow: 0 4px 20px rgba(26, 58, 50, 0.04) !important;
     }
 
@@ -74,7 +74,7 @@
         left: 0;
     }
 
-    /* User Profile Micro-Icon Interface Link */
+    /* User Profile Micro-Icon Link */
     .profile-icon-link {
         color: #555;
         font-size: 1.1rem;
@@ -84,7 +84,7 @@
         color: var(--edu-green);
     }
 
-    /* Customized Premium Action Buttons */
+    /* Customized Action Buttons */
     .btn-edu-logout {
         background-color: #e63946;
         color: white !important;
@@ -116,7 +116,9 @@
     String role = (String) session.getAttribute("userRole");
     String userName = (String) session.getAttribute("userName");
 
-    if (role == null) role = "guest";
+    if (role == null) {
+        role = "guest";
+    }
 %>
 
 <nav class="navbar navbar-expand-lg navbar-light">
@@ -132,7 +134,7 @@
 
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
             <ul class="navbar-nav">
-                
+
                 <li class="nav-item">
                     <a class="nav-link" href="facility.jsp">Facility</a>
                 </li>
@@ -141,15 +143,9 @@
                     <a class="nav-link" href="myBooking.jsp">My Booking</a>
                 </li>
 
-                <% if ("Admin".equalsIgnoreCase(role) || "Lecturer".equalsIgnoreCase(role)) { %>
-                    <li class="nav-item">
-                        <a class="nav-link" href="viewMaintenance.jsp">Maintenance</a>
-                    </li>
-                <% } else { %>
-                    <li class="nav-item">
-                        <a class="nav-link" href="custCare.jsp">Customer Care</a>
-                    </li>
-                <% } %>
+                <li class="nav-item">
+                    <a class="nav-link" href="custCare.jsp">Customer Care</a>
+                </li>
 
             </ul>
         </div>
@@ -157,7 +153,7 @@
         <div class="d-flex align-items-center">
             <% if (userName != null) { %>
                 <span class="me-3 small fw-medium text-secondary d-none d-md-inline">
-                    Hi, <strong><%= userName %></strong>
+                    Hi, <strong><%= userName%></strong>
                 </span>
 
                 <a href="myProfile.jsp" class="me-3 profile-icon-link" title="My Profile">
@@ -171,7 +167,7 @@
                 <a href="login.jsp" class="btn btn-edu-login btn-sm px-3 rounded-pill">
                     Login
                 </a>
-            <% } %>
+            <% }%>
         </div>
 
     </div>
@@ -180,22 +176,22 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-function confirmLogout(event) {
-    event.preventDefault();
+    function confirmLogout(event) {
+        event.preventDefault();
 
-    Swal.fire({
-        title: 'Logout?',
-        text: "Are you sure you want to logout?",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#e63946',
-        cancelButtonColor: '#6c757d',
-        confirmButtonText: 'Yes, logout',
-        cancelButtonText: 'Cancel'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            window.location.href = 'LogoutServlet';
-        }
-    });
-}
+        Swal.fire({
+            title: 'Logout?',
+            text: "Are you sure you want to logout?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e63946',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, logout',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = 'LogoutServlet';
+            }
+        });
+    }
 </script>

@@ -26,7 +26,11 @@
 
     <body>
 
-        <jsp:include page="header.jsp" />
+     <% if ("Admin".equalsIgnoreCase(userRole)) { %>
+            <jsp:include page="admin_header.jsp" />
+        <% } else { %>
+            <jsp:include page="header.jsp" />
+        <% } %>
 
         <div class="container mt-4">
 
@@ -36,11 +40,31 @@
                     <h3 class="mb-4 text-center">My Profile</h3>
 
                     <!-- PROFILE HEADER -->
-                    <div class="text-center mb-4">
-                        <i class="fas fa-user-circle fa-5x text-primary"></i>
-                        <h4 class="mt-2 mb-0"><%= userName%></h4>
-                        <small class="text-muted"><%= userRole%></small>
-                    </div>
+   <div class="text-center mb-5 d-flex flex-column align-items-center">
+    
+    <div class="position-relative" style="width: 120px; height: 120px; display: block; margin: 0 auto;">
+        
+        <div class="w-100 h-100 rounded-circle d-flex align-items-center justify-content-center" 
+             style="background-color: rgba(26, 58, 50, 0.05); border: 2px dashed rgba(214, 163, 115, 0.3);">
+            <i class="fa-solid fa-user-gear" style="font-size: 3.5rem; color: #1a3a32; line-height: 1; display: inline-block; margin: 0; padding: 0;"></i>
+        </div>
+        
+        <% if ("Admin".equalsIgnoreCase(userRole)) { %>
+            <span class="position-absolute bg-danger text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" 
+                  style="width: 32px; height: 32px; bottom: 0; right: 0; border: 3px solid #ffffff; font-size: 0.8rem; z-index: 10;" 
+                  title="Admin Access Verified">
+                <i class="fa-solid fa-shield-halved" style="margin: 0; padding: 0; font-size: 0.8rem; color: white !important;"></i>
+            </span>
+        <% } %>
+        
+    </div>
+    
+    <h3 class="mt-4 fw-bold mb-0 text-dark" style="letter-spacing: -0.5px;"><%= userName %></h3>
+    <span class="badge text-secondary border px-3 py-2 mt-2 rounded-pill fw-semibold small text-uppercase tracking-wider" 
+          style="background-color: rgba(0,0,0,0.02); font-size: 0.75rem;">
+        <%= userRole %> Panel Access
+    </span>
+</div>
 
                     <!-- FORM -->
                     <form action="UpdateProfileServlet" method="POST">

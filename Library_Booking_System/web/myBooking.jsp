@@ -13,269 +13,294 @@
 %>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>My Booking</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Booking | EduSpace</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
         <style>
-            .table-card{
-                margin-top:30px;
-                background:white;
-                border-radius:18px;
-                box-shadow:0 15px 40px rgba(0,0,0,0.06);
-                overflow:hidden;
+            :root {
+                --edu-green: #1a3a32;
+                --edu-green-hover: #112621;
+                --accent-gold: #d4a373;
+                --text-dark: #2d3436;
             }
 
-            /* Table base */
-            .modern-table{
-                width:100%;
-                border-collapse:collapse;
-                font-size:0.95rem;
+            body {
+                background-color: #fcfaf7;
+                color: var(--text-dark);
             }
 
-            /* Header */
-            .modern-table thead{
-                background:linear-gradient(90deg, #163832, #1f4d45);
-                color:white;
+            .page-title {
+                color: var(--edu-green);
+                font-weight: 700;
+                border-left: 4px solid var(--accent-gold);
+                padding-left: 12px;
+                margin-bottom: 1.5rem;
+                letter-spacing: -0.5px;
             }
 
-            .modern-table th{
-                padding:16px;
-                text-align:left;
-                font-weight:700;
-                letter-spacing:0.3px;
-            }
-
-            /* Body rows */
-            .modern-table td{
-                padding:16px;
-                border-bottom:1px solid #f0e6dc;
-                color:#374151;
-            }
-
-            /* Hover effect */
-            .modern-table tbody tr{
-                transition:0.2s ease;
-            }
-
-            .modern-table tbody tr:hover{
-                background:#fff8f1;
-                transform:scale(1.01);
-            }
-
-            /* Status badges */
-            .status-badge{
-                padding:6px 12px;
-                border-radius:999px;
-                font-size:0.85rem;
-                font-weight:700;
-                display:inline-block;
-            }
-
-            /* Status colors */
-            .status-approved{
-                background:#dcfce7;
-                color:#166534;
-            }
-
-            .status-pending{
-                background:#fef9c3;
-                color:#854d0e;
-            }
-
-            .status-rejected{
-                background:#fee2e2;
-                color:#991b1b;
-            }
-
-            .status-default{
-                background:#e5e7eb;
-                color:#374151;
-            }
-
-            /* Responsive */
-            @media (max-width: 768px){
-                .modern-table th,
-                .modern-table td{
-                    padding:12px;
-                    font-size:0.85rem;
-                }
-            }
-
-            .filter-bar{
-                display:flex;
-                gap:12px;
-                margin:20px 0;
-                flex-wrap:wrap;
+            /* Optimized Filter Container Layout */
+            .filter-bar {
+                display: flex;
+                gap: 16px;
+                margin-bottom: 24px;
+                flex-wrap: wrap;
+                background: #ffffff;
+                padding: 16px;
+                border-radius: 12px;
+                border: 1px solid rgba(0, 0, 0, 0.04);
+                box-shadow: 0 4px 15px rgba(26, 58, 50, 0.02);
             }
 
             .filter-bar input,
-            .filter-bar select{
-                padding:12px 14px;
-                border-radius:12px;
-                border:1px solid #e5d6c7;
-                font-size:0.95rem;
-                outline:none;
-                transition:0.2s ease;
-                background:white;
+            .filter-bar select {
+                padding: 10px 14px;
+                border-radius: 8px;
+                border: 1px solid #dcdcdc;
+                font-size: 0.95rem;
+                outline: none;
+                transition: all 0.2s ease;
+                background: #ffffff;
             }
 
-            .filter-bar input{
-                flex:1;
-                min-width:200px;
+            .filter-bar input {
+                flex: 1;
+                min-width: 280px;
+            }
+
+            .filter-bar select {
+                min-width: 160px;
             }
 
             .filter-bar input:focus,
-            .filter-bar select:focus{
-                border-color:#163832;
-                box-shadow:0 0 0 3px rgba(22,56,50,0.12);
+            .filter-bar select:focus {
+                border-color: var(--accent-gold);
+                box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.15);
+            }
+
+            /* Modern Table Canvas Layout Container */
+            .table-card {
+                background: #ffffff;
+                border-radius: 16px;
+                border: 1px solid rgba(0, 0, 0, 0.04);
+                box-shadow: 0 8px 30px rgba(26, 58, 50, 0.03);
+                overflow: hidden;
+            }
+
+            .modern-table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 0.95rem;
+                margin-bottom: 0;
+            }
+
+            /* Symmetrical, Accessible Headers */
+            .modern-table thead {
+                background-color: var(--edu-green);
+                color: #ffffff;
+            }
+
+            .modern-table th {
+                padding: 16px 20px;
+                text-align: left;
+                font-weight: 600;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            .modern-table td {
+                padding: 16px 20px;
+                border-bottom: 1px solid #f1f1f1;
+                color: #4a5568;
+                vertical-align: middle;
+            }
+
+            .modern-table tbody tr {
+                transition: background-color 0.2s ease;
+            }
+
+            .modern-table tbody tr:hover {
+                background-color: #fdfbf7;
+            }
+
+            /* Clean Badge Micro-elements */
+            .status-badge {
+                padding: 6px 14px;
+                border-radius: 50px;
+                font-size: 0.8rem;
+                font-weight: 700;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                letter-spacing: 0.3px;
+                text-transform: uppercase;
+            }
+
+            .status-approved {
+                background: #e6f9ed;
+                color: #137333;
+            }
+
+            .status-pending {
+                background: #fef7e0;
+                color: #b06000;
+            }
+
+            .status-rejected {
+                background: #fce8e6;
+                color: #c5221f;
+            }
+
+            .status-default {
+                background: #f1f3f4;
+                color: #3c4043;
+            }
+
+            @media (max-width: 768px) {
+                .modern-table th, .modern-table td {
+                    padding: 12px 14px;
+                    font-size: 0.85rem;
+                }
             }
         </style>
 
         <jsp:include page="header.jsp"/>
-
     </head>
 
     <body>
 
         <div class="container mt-5">
+            <h2 class="page-title">My Bookings</h2>
 
-            <h2>My Bookings</h2>
+            <div class="filter-bar">
+                <input type="text" id="searchInput" placeholder="Search by facility, date, or purpose...">
+                <select id="statusFilter">
+                    <option value="all">All Statuses</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
 
             <div class="table-card">
-
                 <table class="modern-table">
-
                     <thead>
                         <tr>
                             <th>Facility</th>
                             <th>Date</th>
-                            <th>Time</th>
+                            <th>Time Slot</th>
                             <th>Purpose</th>
-                            <th>Notes</th>
-                            <th>Status</th>
-
+                            <th>Admin Notes</th>
+                            <th class="text-center">Status</th>
                         </tr>
                     </thead>
-
                     <tbody>
+                        <%
+                            try {
+                                Class.forName("com.mysql.cj.jdbc.Driver");
+                                Connection conn = DriverManager.getConnection(
+                                        "jdbc:mysql://localhost:3307/librarydb", "root", "");
 
-                    <div class="filter-bar">
+                                String sql = "SELECT * FROM booking WHERE matric_no=? ORDER BY booking_date DESC";
+                                PreparedStatement ps = conn.prepareStatement(sql);
+                                ps.setString(1, matricNo);
 
-                        <input type="text" id="searchInput" placeholder="Search facility, purpose, or date...">
+                                ResultSet rs = ps.executeQuery();
+                                boolean hasData = false;
 
-                        <select id="statusFilter">
-                            <option value="all">All Status</option>
-                            <option value="Approved">Approved</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Rejected">Rejected</option>
-                        </select>
+                                while (rs.next()) {
+                                    hasData = true;
+                        %>
+                        <tr>
+                            <td class="fw-medium text-dark"><%= rs.getString("facility_name")%></td>
+                            <td><i class="fa-regular fa-calendar me-2 text-muted"></i><%= rs.getString("booking_date")%></td>
+                            <td><i class="fa-regular fa-clock me-2 text-muted"></i><%= rs.getString("start_time")%> - <%= rs.getString("end_time")%></td>
+                            <td><%= rs.getString("purpose")%></td>
+                            <td class="text-muted fst-italic">
+                                <%= rs.getString("admin_notes") == null || rs.getString("admin_notes").trim().isEmpty() ? "No remarks attached" : rs.getString("admin_notes")%>
+                            </td>
+                            <td class="text-center">
+                                <%
+                                    String status = rs.getString("status");
+                                    String badgeClass = "status-default";
 
-                    </div>
-
-                    <%
-                        try {
-                            Class.forName("com.mysql.cj.jdbc.Driver");
-                            Connection conn = DriverManager.getConnection(
-                                    "jdbc:mysql://localhost:3307/librarydb", "root", "");
-
-                            String sql
-                                    = "SELECT * FROM booking WHERE matric_no=? ORDER BY booking_date DESC";
-
-                            PreparedStatement ps = conn.prepareStatement(sql);
-                            ps.setString(1, matricNo);
-
-                            ResultSet rs = ps.executeQuery();
-
-                            while (rs.next()) {
-                    %>
-
-                    <tr>
-                        <td><%= rs.getString("facility_name")%></td>
-                        <td><%= rs.getString("booking_date")%></td>
-                        <td><%= rs.getString("start_time")%> - <%= rs.getString("end_time")%></td>
-                        <td><%= rs.getString("purpose")%></td>
-                        <td>
-                            <%= rs.getString("admin_notes") == null ? "No notes yet" : rs.getString("admin_notes")%>
-                        </td>
-                        <td>
-                            <%
-                                String status = rs.getString("status");
-                                String badgeClass = "status-default";
-
-                                if (status.equalsIgnoreCase("Approved")) {
-                                    badgeClass = "status-approved";
-                                } else if (status.equalsIgnoreCase("Pending")) {
-                                    badgeClass = "status-pending";
-                                } else if (status.equalsIgnoreCase("Rejected")) {
-                                    badgeClass = "status-rejected";
+                                    if ("Approved".equalsIgnoreCase(status)) {
+                                        badgeClass = "status-approved";
+                                    } else if ("Pending".equalsIgnoreCase(status)) {
+                                        badgeClass = "status-pending";
+                                    } else if ("Rejected".equalsIgnoreCase(status)) {
+                                        badgeClass = "status-rejected";
+                                    }
+                                %>
+                                <span class="status-badge <%= badgeClass%>">
+                                    <%= status%>
+                                </span>
+                            </td>
+                        </tr>
+                        <%
                                 }
-                            %>
-
-                            <span class="status-badge <%= badgeClass%>">
-                                <%= status%>
-                            </span>
-                        </td>
-                    </tr>
-
-                    <%
+                                if (!hasData) {
+                        %>
+                        <tr>
+                            <td colspan="6" class="text-center py-5 text-muted">
+                                <i class="fa-regular fa-folder-open fa-2x mb-3 d-block text-secondary"></i>
+                                You haven't made any facility reservations yet.
+                            </td>
+                        </tr>
+                        <%
+                                }
+                                conn.close();
+                            } catch (Exception e) {
+                                out.println("<tr><td colspan='6' class='text-danger text-center'>Error connecting to database: " + e.getMessage() + "</td></tr>");
                             }
+                        %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                            conn.close();
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const searchInput = document.getElementById("searchInput");
+                const statusFilter = document.getElementById("statusFilter");
+                const tableRows = document.querySelectorAll(".modern-table tbody tr");
 
-                        } catch (Exception e) {
-                            out.println("Error: " + e.getMessage());
-                        }
-                    %>
+                function filterTable() {
+                    const searchValue = searchInput.value.toLowerCase().trim();
+                    const statusValue = statusFilter.value.toLowerCase().trim();
 
-                    <script>
+                    tableRows.forEach(row => {
+                        // Skip the fallback empty row message if it appears
+                        if(row.cells.length < 6) return;
 
-                        document.addEventListener("DOMContentLoaded", function () {
+                        const facility = row.cells[0].innerText.toLowerCase();
+                        const date = row.cells[1].innerText.toLowerCase();
+                        const purpose = row.cells[3].innerText.toLowerCase();
+                        const status = row.cells[5].innerText.toLowerCase().trim(); // Fixed Cell Index to 5
 
-                            const searchInput = document.getElementById("searchInput");
-                            const statusFilter = document.getElementById("statusFilter");
-                            const tableRows = document.querySelectorAll(".modern-table tbody tr");
-
-                            function filterTable() {
-
-                                const searchValue = searchInput.value.toLowerCase();
-                                const statusValue = statusFilter.value.toLowerCase();
-
-                                tableRows.forEach(row => {
-
-                                    const facility = row.cells[0].innerText.toLowerCase();
-                                    const date = row.cells[1].innerText.toLowerCase();
-                                    const purpose = row.cells[3].innerText.toLowerCase();
-                                    const status = row.cells[4].innerText.toLowerCase();
-
-                                    const matchSearch =
-                                            facility.includes(searchValue) ||
-                                            date.includes(searchValue) ||
+                        const matchSearch = facility.includes(searchValue) || 
+                                            date.includes(searchValue) || 
                                             purpose.includes(searchValue);
 
-                                    const matchStatus =
-                                            statusValue === "all" || status.includes(statusValue);
+                        const matchStatus = (statusValue === "all") || (status === statusValue);
 
-                                    if (matchSearch && matchStatus) {
-                                        row.style.display = "";
-                                    } else {
-                                        row.style.display = "none";
-                                    }
-                                });
-                            }
+                        if (matchSearch && matchStatus) {
+                            row.style.display = "";
+                        } else {
+                            row.style.display = "none";
+                        }
+                    });
+                }
 
-                            searchInput.addEventListener("input", filterTable);
-                            statusFilter.addEventListener("change", filterTable);
-
-                        });
-
-                    </script>
-                    </tbody>
-
-                </table>
-
-            </div>
-
-
+                searchInput.addEventListener("input", filterTable);
+                statusFilter.addEventListener("change", filterTable);
+            });
+        </script>
     </body>
 </html>
