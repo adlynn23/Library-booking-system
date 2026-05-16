@@ -71,76 +71,79 @@ public class UpdateProfileServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
 
-        // 1. Get session (to identify user)
-        HttpSession session = request.getSession(false);
+    HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("matricNo") == null) {
-            response.sendRedirect("login.jsp");
-            return;
+    if (session == null || session.getAttribute("matricNo") == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+
+    String matricNo = (String) session.getAttribute("matricNo");
+
+    // Get form data
+    String fullName = request.getParameter("fullName");
+    String phone = request.getParameter("phone");
+
+    Connection conn = null;
+    PreparedStatement ps = null;
+
+    try {
+
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        conn = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3307/librarydb",
+                "root",
+                ""
+        );
+
+        // UPDATE query
+        String sql = "UPDATE users SET name = ?, phone = ? WHERE matric_no = ?";
+
+        ps = conn.prepareStatement(sql);
+
+        ps.setString(1, fullName);
+        ps.setString(2, phone);
+        ps.setString(3, matricNo);
+
+        int result = ps.executeUpdate();
+
+        if (result > 0) {
+
+            // Update session
+            session.setAttribute("userName", fullName);
+            session.setAttribute("userPhone", phone);
+
+            response.sendRedirect("myProfile.jsp?status=success");
+
+        } else {
+
+            response.sendRedirect("myProfile.jsp?status=failed");
         }
 
-        String matricNo = (String) session.getAttribute("matricNo");
+    } catch (Exception e) {
 
-        // 2. Get updated data from form
-        String fullName = request.getParameter("fullName");
-        String email = request.getParameter("email");   // if you add email field later
-        String phone = request.getParameter("phone");   // optional
+        e.printStackTrace();
+        response.sendRedirect("myProfile.jsp?status=error");
 
-        Connection conn = null;
-        PreparedStatement ps = null;
+    } finally {
+
         try {
-            // 3. DB connection
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3307/librarydb",
-                    "root",
-                    ""
-            );
 
-            // 4. UPDATE query (adjust columns if needed)
-            String sql = "UPDATE users SET name = ?, email = ? WHERE matric_no = ?";
+            if (ps != null) {
+                ps.close();
+            }
 
-            ps = conn.prepareStatement(sql);
-            ps.setString(1, fullName);
-            ps.setString(2, email);
-            ps.setString(4, matricNo);
-
-            int result = ps.executeUpdate();
-            if (result > 0) {
-
-                // 5. Update session too (VERY IMPORTANT)
-                session.setAttribute("userName", fullName);
-
-                response.sendRedirect("myProfile.jsp?status=success");
-
-            } else {
-                response.sendRedirect("myProfile.jsp?status=failed");
+            if (conn != null) {
+                conn.close();
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("myProfile.jsp?status=error");
-
-        } finally {
-            try {
-                if (ps != null) ps.close();
-                if (conn != null) conn.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
     }
-
-
-            @Override
-            public String getServletInfo
-        
-            
-                () {
-        return "Short description";
-            }// </editor-fold>
-
-        }
+}
+}
