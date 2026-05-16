@@ -5,6 +5,7 @@
 <%@page import="model.Feedback"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
+<head>
 <jsp:include page="admin_header.jsp" />
 <title>Admin Portal | Facility Management</title>
 
@@ -226,7 +227,7 @@
         }
     }
 </style>
-
+</head>
 
 <div class="dashboard-wrapper">
     <div class="page-header">
