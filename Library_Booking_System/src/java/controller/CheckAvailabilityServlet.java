@@ -13,6 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 import java.sql.Connection;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.DayOfWeek;
+
 /**
  *
  * @author ASUS
@@ -64,57 +69,186 @@ public class CheckAvailabilityServlet extends HttpServlet {
 
         response.setContentType("application/json");
 
-        String facility = request.getParameter("facility");
-        String date = request.getParameter("date");
-        String start = request.getParameter("start");
-        String end = request.getParameter("end");
-
-        boolean available = true;
+        PrintWriter out = response.getWriter();
 
         Connection conn = null;
 
         try {
 
+            String facility =
+                    request.getParameter("facility");
+
+            String date =
+                    request.getParameter("date");
+
+            String start =
+                    request.getParameter("start");
+
+            String end =
+                    request.getParameter("end");
+
+            // ==========================
+            // NULL CHECK
+            // ==========================
+            if (facility == null || date == null
+                    || start == null || end == null
+                    || facility.isEmpty()
+                    || date.isEmpty()
+                    || start.isEmpty()
+                    || end.isEmpty()) {
+
+                out.print("{\"available\":false}");
+                return;
+            }
+
+            // ==========================
+            // DATE + TIME
+            // ==========================
+            LocalDate bookingDate =
+                    LocalDate.parse(date);
+
+            LocalTime startTime =
+                    LocalTime.parse(start);
+
+            LocalTime endTime =
+                    LocalTime.parse(end);
+
+            LocalDateTime now =
+                    LocalDateTime.now();
+
+            LocalDateTime bookingDateTime =
+                    LocalDateTime.of(
+                            bookingDate,
+                            startTime
+                    );
+
+            // ==========================
+            // PAST TIME
+            // ==========================
+            if (bookingDateTime.isBefore(now)) {
+
+                out.print("{\"available\":false}");
+                return;
+            }
+
+            // ==========================
+            // 1 HOUR EARLY RULE
+            // ==========================
+            if (bookingDateTime.isBefore(now.plusHours(1))) {
+
+                out.print("{\"available\":false}");
+                return;
+            }
+
+            // ==========================
+            // OPERATING HOURS
+            // ==========================
+            DayOfWeek day =
+                    bookingDate.getDayOfWeek();
+
+            boolean weekend =
+                    day == DayOfWeek.SATURDAY
+                    || day == DayOfWeek.SUNDAY;
+
+            int startHour =
+                    startTime.getHour();
+
+            int endHour =
+                    endTime.getHour();
+
+            if (!weekend) {
+
+                if (startHour < 8 || endHour > 22) {
+
+                    out.print("{\"available\":false}");
+                    return;
+                }
+
+            } else {
+
+                if (startHour < 9 || endHour > 18) {
+
+                    out.print("{\"available\":false}");
+                    return;
+                }
+
+            }
+
+            // ==========================
+            // DB CONNECTION
+            // ==========================
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            conn = DriverManager.getConnection(dbURL, dbUser, dbPass);
+            conn = DriverManager.getConnection(
+                    dbURL,
+                    dbUser,
+                    dbPass
+            );
 
+            // ==========================
+            // CHECK CONFLICT
+            // ==========================
             String sql =
-                    "SELECT * FROM booking " +
-                    "WHERE facility_name = ? " +
-                    "AND booking_date = ? " +
-                    "AND status != 'REJECTED' " +
-                    "AND NOT (end_time <= ? OR start_time >= ?)";
+                    "SELECT * FROM booking "
+                    + "WHERE facility_name = ? "
+                    + "AND booking_date = ? "
+                    + "AND status != 'REJECTED' "
+                    + "AND NOT "
+                    + "(end_time <= ? "
+                    + "OR start_time >= ?)";
 
-            PreparedStatement ps = conn.prepareStatement(sql);
+            PreparedStatement ps =
+                    conn.prepareStatement(sql);
 
             ps.setString(1, facility);
             ps.setString(2, date);
             ps.setString(3, start);
             ps.setString(4, end);
 
-            ResultSet rs = ps.executeQuery();
+            ResultSet rs =
+                    ps.executeQuery();
 
-            if (rs.next()) {
-                available = false;
+            boolean available =
+                    !rs.next();
+
+            out.print(
+                    "{\"available\":"
+                    + available
+                    + "}"
+            );
+
+        }
+
+        catch (Exception e) {
+
+            e.printStackTrace();
+
+            out.print("{\"available\":false}");
+
+        }
+
+        finally {
+
+            try {
+
+                if (conn != null) {
+
+                    conn.close();
+
+                }
+
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            catch (Exception e) {
+
+                e.printStackTrace();
+
+            }
+
         }
 
-        PrintWriter out = response.getWriter();
-
-        out.print("{\"available\":" + available + "}");
-
-        out.flush();
-
-        try {
-            if (conn != null) conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
+
 
 
     /**

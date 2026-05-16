@@ -180,11 +180,20 @@ public class BookingServlet extends HttpServlet {
                 return;
             }
 
-            // ==========================
-// 1 HOUR EARLIER RULE
 // ==========================
+// CURRENT DATE & TIME
+// ==========================
+            java.time.LocalDate currentDate
+                    = java.time.LocalDate.now();
+
+            java.time.LocalTime currentTime
+                    = java.time.LocalTime.now();
+
             java.time.LocalDateTime now
-                    = java.time.LocalDateTime.now();
+                    = java.time.LocalDateTime.of(
+                            currentDate,
+                            currentTime
+                    );
 
             java.time.LocalDateTime bookingDateTime
                     = java.time.LocalDateTime.of(
@@ -192,12 +201,51 @@ public class BookingServlet extends HttpServlet {
                             startTime
                     );
 
-            if (bookingDateTime.isBefore(now.plusHours(1))) {
+// ==========================
+// PAST TIME CHECK
+// ==========================
+            if (bookingDate.isEqual(currentDate)) {
+
+                // booking already passed
+                if (startTime.isBefore(currentTime)) {
+
+                    response.sendRedirect(
+                            "booking.jsp?unit="
+                            + facility
+                            + "&error=pasttime"
+                    );
+
+                    return;
+                }
+            }
+
+// ==========================
+// 1 HOUR EARLIER RULE
+// ==========================
+            long minutes
+                    = java.time.Duration
+                            .between(now, bookingDateTime)
+                            .toMinutes();
+
+            if (minutes < 60) {
 
                 response.sendRedirect(
                         "booking.jsp?unit="
                         + facility
                         + "&error=onehour"
+                );
+
+                return;
+            }
+// ==========================
+// PAST TIME CHECK
+// ==========================
+            if (bookingDateTime.isBefore(now)) {
+
+                response.sendRedirect(
+                        "booking.jsp?unit="
+                        + facility
+                        + "&error=pasttime"
                 );
 
                 return;

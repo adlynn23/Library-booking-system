@@ -12,85 +12,126 @@
 <html lang="en">
 
     <head>
+
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <title>Booking | EduSpace</title>
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+              rel="stylesheet">
+
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
+              rel="stylesheet">
+
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <style>
-            :root {
-                --edu-green: #1a3a32;
-                --soft-peach: #fff5eb;
+
+            :root{
+                --edu-green:#163832;
+                --soft-bg:#f7efe5;
             }
 
-            body {
-                font-family: 'DM Sans', sans-serif;
-                background: var(--soft-peach);
+            body{
+                background:var(--soft-bg);
+                font-family:'DM Sans',sans-serif;
             }
 
-            .booking-container {
-                max-width: 750px;
-                margin: 60px auto;
-                background: white;
-                padding: 40px;
-                border-radius: 20px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            .booking-container{
+                max-width:850px;
+                margin:50px auto;
+                background:white;
+                padding:40px;
+                border-radius:25px;
+                box-shadow:0 10px 30px rgba(0,0,0,0.05);
             }
 
-            .form-label {
-                font-weight: 600;
-                color: var(--edu-green);
+            h1{
+                font-weight:700;
+                color:#2b2b2b;
             }
 
-            .form-control {
-                border-radius: 10px;
+            .form-label{
+                font-weight:700;
+                color:#374151;
+                margin-bottom:10px;
             }
 
-            .btn-submit {
-                background: var(--edu-green);
-                color: white;
-                border: none;
-                padding: 15px;
-                width: 100%;
-                border-radius: 10px;
-                font-weight: 700;
+            .form-control{
+                height:60px;
+                border-radius:15px;
+                border:1px solid #e5d6c7;
             }
 
-            .btn-submit:hover {
-                opacity: 0.9;
+            textarea.form-control{
+                height:auto;
             }
 
-            .info-box {
-                background: #f8f8f8;
-                padding: 10px;
-                border-left: 4px solid var(--edu-green);
-                border-radius: 8px;
-                margin-bottom: 15px;
-                font-size: 13px;
+            .info-box{
+                background:#f8f8f8;
+                border-left:5px solid var(--edu-green);
+                padding:15px;
+                border-radius:10px;
+                margin-bottom:25px;
             }
+
+            .btn-submit{
+                width:100%;
+                background:#9a4f0f;
+                border:none;
+                color:white;
+                font-weight:700;
+                padding:16px;
+                border-radius:12px;
+                font-size:1.1rem;
+            }
+
+            .btn-submit:hover{
+                opacity:0.9;
+            }
+
+            #statusBox{
+                font-weight:600;
+                margin-top:5px;
+            }
+
+            .success{
+                color:green;
+            }
+
+            .error{
+                color:red;
+            }
+
         </style>
+
     </head>
 
     <body>
 
-        <jsp:include page="header.jsp" />
+        <jsp:include page="header.jsp"/>
 
         <div class="container">
 
             <div class="booking-container">
 
-                <h2 class="fw-bold">Facility Reservation</h2>
-                <p class="text-muted">Fill in your booking details</p>
+                <h1>Facility Reservation</h1>
 
-                <form action="BookingServlet" method="POST" onsubmit="return validateBooking()">
+                <p class="text-muted mb-4">
+                    Fill in your booking details
+                </p>
+
+                <form action="BookingServlet"
+                      method="POST"
+                      onsubmit="return validateBooking()">
 
                     <!-- FACILITY -->
-                    <div class="mb-3">
+                    <div class="mb-4">
 
-                        <label class="form-label">Facility</label>
+                        <label class="form-label">
+                            Facility
+                        </label>
 
                         <input type="text"
                                class="form-control"
@@ -100,71 +141,94 @@
                         <input type="hidden"
                                name="facilityName"
                                value="<%= facilityName%>">
+
                     </div>
 
                     <!-- DATE -->
-                    <div class="mb-2">
+                    <div class="mb-3">
 
-                        <label class="form-label">Booking Date</label>
+                        <label class="form-label">
+                            Booking Date
+                        </label>
 
                         <input type="date"
                                id="bookingDate"
                                name="bookingDate"
                                class="form-control"
-                               onchange="validateDateNotPast(); updateRules()"
                                required>
+
                     </div>
 
-                    <!-- INFO -->
+                    <!-- INFO BOX -->
                     <div class="info-box">
-                        Selected Day: <b id="selectedDay">-</b><br>
-                        Operating Hours: <b id="operatingHours">-</b>
+
+                        <div>
+                            Selected Day:
+                            <b id="selectedDay">-</b>
+                        </div>
+
+                        <div>
+                            Operating Hours:
+                            <b id="operatingHours">-</b>
+                        </div>
+
                     </div>
 
                     <!-- TIME -->
                     <div class="row">
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-4">
 
-                            <label class="form-label">Start Time</label>
+                            <label class="form-label">
+                                Start Time
+                            </label>
 
                             <input type="time"
                                    id="startTime"
                                    name="startTime"
                                    class="form-control"
-                                   oninput="liveValidate()"
                                    required>
+
                         </div>
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-md-6 mb-4">
 
-                            <label class="form-label">End Time</label>
+                            <label class="form-label">
+                                End Time
+                            </label>
 
                             <input type="time"
                                    id="endTime"
                                    name="endTime"
                                    class="form-control"
-                                   oninput="liveValidate()"
                                    required>
+
                         </div>
+
                     </div>
 
                     <!-- STATUS -->
-                    <div id="statusBox" class="mb-3 small"></div>
+                    <div id="statusBox"></div>
 
                     <!-- PURPOSE -->
-                    <div class="mb-3">
+                    <div class="mb-4 mt-3">
 
-                        <label class="form-label">Purpose</label>
+                        <label class="form-label">
+                            Purpose
+                        </label>
 
-                        <textarea class="form-control"
-                                  name="purpose"
-                                  rows="4"
+                        <textarea name="purpose"
+                                  class="form-control"
+                                  rows="5"
                                   required></textarea>
+
                     </div>
 
-                    <button type="submit" class="btn-submit">
+                    <button type="submit"
+                            class="btn-submit">
+
                         CONFIRM BOOKING
+
                     </button>
 
                 </form>
@@ -175,333 +239,287 @@
 
         <script>
 
+            const bookingDate =
+                    document.getElementById("bookingDate");
 
+            const startTime =
+                    document.getElementById("startTime");
 
-            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const endTime =
+                    document.getElementById("endTime");
 
-            let allowedStart = 8;
-            let allowedEnd = 22;
-            let selectedDay = -1;
+            const statusBox =
+                    document.getElementById("statusBox");
+
+            const selectedDayText =
+                    document.getElementById("selectedDay");
+
+            const operatingHoursText =
+                    document.getElementById("operatingHours");
+
             let isSlotAvailable = true;
 
         // ==========================
-        // UPDATE RULES
+        // DISABLE PAST DATE
         // ==========================
-            function updateRules() {
+            const today =
+                    new Date().toISOString().split("T")[0];
 
-                const dateVal = document.getElementById("bookingDate").value;
+            bookingDate.min = today;
 
-                if (!dateVal)
+        // ==========================
+        // DAY + OPERATING HOURS
+        // ==========================
+            function updateOperatingHours() {
+
+                const value = bookingDate.value;
+
+                if (!value)
                     return;
 
-                const d = new Date(dateVal);
+                const date =
+                        new Date(value);
 
-                selectedDay = d.getDay();
+                const day =
+                        date.getDay();
 
-                document.getElementById("selectedDay").innerText =
-                        days[selectedDay];
+                const days =
+                        ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+                selectedDayText.innerText =
+                        days[day];
 
                 // WEEKDAY
-                if (selectedDay >= 1 && selectedDay <= 5) {
+                if (day >= 1 && day <= 5) {
 
-                    allowedStart = 8;
-                    allowedEnd = 22;
+                    operatingHoursText.innerText =
+                            "08:00 - 22:00";
 
                 }
 
                 // WEEKEND
                 else {
 
-                    allowedStart = 9;
-                    allowedEnd = 18;
+                    operatingHoursText.innerText =
+                            "09:00 - 18:00";
 
                 }
 
-                document.getElementById("operatingHours").innerText =
-                        format(allowedStart) + " - " + format(allowedEnd);
-
-                liveValidate();
-            }
-
-            function format(h) {
-
-                return (h < 10 ? "0" + h : h) + ":00";
-
             }
 
         // ==========================
-        // LIVE VALIDATION
+        // MAIN VALIDATION
         // ==========================
-           function liveValidate() {
+            async function validateTimeRules() {
 
-    const start = document.getElementById("startTime").value;
-    const end = document.getElementById("endTime").value;
-
-    const box = document.getElementById("statusBox");
-
-    if (!start || !end || selectedDay === -1) return;
-
-    const s = parseInt(start.split(":")[0]);
-    const e = parseInt(end.split(":")[0]);
-
-    const selectedDate =
-        document.getElementById("bookingDate").value;
-
-    const now = new Date();
-
-    const bookingDateTime =
-        new Date(selectedDate + "T" + start);
-
-    const oneHourLater =
-        new Date(now.getTime() + (60 * 60 * 1000));
-
-    let error = "";
-
-    // =========================
-    // 1 HOUR EARLY RULE
-    // =========================
-    if (bookingDateTime < oneHourLater) {
-
-        error =
-            "Booking must be made at least 1 hour earlier";
-    }
-
-    else if (e <= s) {
-
-        error =
-            "End time must be after start time";
-    }
-
-    else if ((e - s) > 2) {
-
-        error =
-            "Maximum booking duration is 2 hours only";
-    }
-
-    else if (s < allowedStart || e > allowedEnd) {
-
-        error =
-            "Outside operating hours";
-    }
-
-    if (error === "") {
-
-        box.innerHTML =
-            "<span class='text-success'>✔ Valid booking time</span>";
-
-    } else {
-
-        box.innerHTML =
-            "<span class='text-danger'>⚠ " + error + "</span>";
-    }
-}
-
-                // CHECK SLOT
-                checkAvailability();
-            }
-
-        // ==========================
-        // DATE VALIDATION
-        // ==========================
-            function validateDateNotPast() {
-
-                const dateInput = document.getElementById("bookingDate");
-
-                const selectedDate = new Date(dateInput.value);
-
-                const today = new Date();
-
-                selectedDate.setHours(0, 0, 0, 0);
-
-                today.setHours(0, 0, 0, 0);
-
-                if (selectedDate < today) {
-
-                    Swal.fire({
-                        icon: "error",
-                        title: "Invalid Date",
-                        text: "You cannot book past dates"
-                    });
-
-                    dateInput.value = "";
-
-                    return false;
-                }
-
-                return true;
-            }
-
-        // ==========================
-        // MIN DATE
-        // ==========================
-            document.getElementById("bookingDate").min =
-                    new Date().toISOString().split("T")[0];
-
-        // ==========================
-        // CHECK SLOT AVAILABILITY
-        // ==========================
-            async function checkAvailability() {
-
-                const facility =
-                        document.querySelector("input[name='facilityName']").value;
+                statusBox.innerHTML = "";
 
                 const date =
-                        document.getElementById("bookingDate").value;
+                        bookingDate.value;
 
                 const start =
-                        document.getElementById("startTime").value;
+                        startTime.value;
 
                 const end =
-                        document.getElementById("endTime").value;
+                        endTime.value;
 
-                const box =
-                        document.getElementById("statusBox");
-
-                if (!facility || !date || !start || !end) {
+                if (!date || !start || !end) {
                     return;
                 }
 
+                const selectedDate =
+                        new Date(date);
+
+                const now =
+                        new Date();
+
+                const day =
+                        selectedDate.getDay();
+
+                const startHour =
+                        parseInt(start.split(":")[0]);
+
+                const endHour =
+                        parseInt(end.split(":")[0]);
+
+                // ==========================
+                // END AFTER START
+                // ==========================
+                if (end <= start) {
+
+                    statusBox.innerHTML =
+                            "<span class='error'>⚠ End time must be after start time</span>";
+
+                    return;
+                }
+
+                // ==========================
+                // MAX 2 HOURS
+                // ==========================
+                const startDateTime =
+                        new Date(date + "T" + start);
+
+                const endDateTime =
+                        new Date(date + "T" + end);
+
+                const diffHours =
+                        (endDateTime - startDateTime)
+                        / (1000 * 60 * 60);
+
+                if (diffHours > 2) {
+
+                    statusBox.innerHTML =
+                            "<span class='error'>⚠ Maximum booking is 2 hours only</span>";
+
+                    return;
+                }
+
+                // ==========================
+                // OPERATING HOURS
+                // ==========================
+
+                // WEEKDAY
+                if (day >= 1 && day <= 5) {
+
+                    if (startHour < 8 || endHour > 22) {
+
+                        statusBox.innerHTML =
+                                "<span class='error'>⚠ Booking allowed only between 8AM - 10PM</span>";
+
+                        return;
+                    }
+
+                }
+
+                // WEEKEND
+                else {
+
+                    if (startHour < 9 || endHour > 18) {
+
+                        statusBox.innerHTML =
+                                "<span class='error'>⚠ Booking allowed only between 9AM - 6PM</span>";
+
+                        return;
+                    }
+
+                }
+
+                // ==========================
+                // 1 HOUR EARLY RULE
+                // ==========================
+                const currentDateTime =
+                        new Date();
+
+                const oneHourDiff =
+                        (startDateTime - currentDateTime)
+                        / (1000 * 60);
+
+                if (oneHourDiff < 60) {
+
+                    statusBox.innerHTML =
+                            "<span class='error'>⚠ Booking must be made at least 1 hour earlier</span>";
+
+                    return;
+                }
+
+                // ==========================
+                // CHECK SLOT AVAILABILITY
+                // ==========================
+                const facility =
+                        document.querySelector("input[name='facilityName']").value;
+
                 try {
 
-                    const response = await fetch(
-                            "CheckAvailabilityServlet?facility="
-                            + encodeURIComponent(facility)
-                            + "&date=" + encodeURIComponent(date)
-                            + "&start=" + encodeURIComponent(start)
-                            + "&end=" + encodeURIComponent(end)
-                            );
+                    const response =
+                            await fetch(
+                                    "CheckAvailabilityServlet"
+                                    + "?facility=" + encodeURIComponent(facility)
+                                    + "&date=" + date
+                                    + "&start=" + start
+                                    + "&end=" + end
+                                    );
 
-                    const data = await response.json();
+                    const data =
+                            await response.json();
 
                     if (data.available) {
 
                         isSlotAvailable = true;
 
-                        box.innerHTML =
-                                "<span class='text-success'>✔ Slot available</span>";
+                        statusBox.innerHTML =
+                                "<span class='success'>✔ Slot available</span>";
 
                     } else {
 
                         isSlotAvailable = false;
 
-                        box.innerHTML =
-                                "<span class='text-danger'>⚠ Slot already booked</span>";
+                        statusBox.innerHTML =
+                                "<span class='error'>⚠ Slot already booked</span>";
+
                     }
 
-                } catch (error) {
+                } catch (e) {
 
-                    console.log(error);
+                    statusBox.innerHTML =
+                            "<span class='error'>⚠ Error checking slot</span>";
 
-                    box.innerHTML =
-                            "<span class='text-danger'>⚠ Error checking availability</span>";
                 }
+
             }
 
         // ==========================
-        // FINAL SUBMIT VALIDATION
+        // SUBMIT VALIDATION
         // ==========================
             function validateBooking() {
 
-                const box = document.getElementById("statusBox");
-
-                // SLOT TAK AVAILABLE
-                if (!isSlotAvailable) {
+                if (statusBox.innerText.includes("⚠")) {
 
                     Swal.fire({
                         icon: "error",
-                        title: "Slot Not Available",
-                        text: "Please choose another booking time"
+                        title: "Invalid Booking",
+                        text: "Please fix the booking details first"
                     });
 
                     return false;
                 }
 
-                // OTHER ERROR
-                if (box.innerText.includes("⚠")) {
+                if (!isSlotAvailable) {
 
                     Swal.fire({
                         icon: "error",
-                        title: "Invalid Booking",
-                        text: "Please fix booking details"
+                        title: "Slot Unavailable",
+                        text: "Please choose another time"
                     });
 
                     return false;
                 }
 
                 return true;
-            }
-
-        // ==========================
-        // ALERT MESSAGE
-        // ==========================
-            const params = new URLSearchParams(window.location.search);
-
-            if (params.get("success") === "1") {
-
-                Swal.fire({
-                    icon: "success",
-                    title: "Booking Submitted",
-                    text: "Waiting for admin approval"
-                });
 
             }
 
-            if (params.get("error") === "conflict") {
+        // ==========================
+        // EVENT LISTENERS
+        // ==========================
+            bookingDate.addEventListener("change", () => {
 
+                updateOperatingHours();
+                validateTimeRules();
+
+            });
+
+            startTime.addEventListener("change", validateTimeRules);
+
+            endTime.addEventListener("change", validateTimeRules);
+
+            if (params.get("error") === "pasttime") {
                 Swal.fire({
                     icon: "error",
-                    title: "Slot Unavailable",
-                    text: "Selected slot has already been booked"
+                    title: "Past Time",
+                    text: "Selected booking time has already passed."
                 });
-
             }
+        </script>
 
-            if (params.get("error") === "session") {
-
-                Swal.fire({
-                    icon: "warning",
-                    title: "Session Expired",
-                    text: "Please login again"
-                });
-
-            }
-
-        // ==========================
-        // EVENT LISTENER
-        // ==========================
-            document.getElementById("bookingDate")
-                    .addEventListener("change", function () {
-
-                        validateDateNotPast();
-
-                        updateRules();
-
-                    });
-
-            document.getElementById("startTime")
-                    .addEventListener("input", liveValidate);
-
-            document.getElementById("endTime")
-                    .addEventListener("input", liveValidate);
-
-
-            document.getElementById("bookingDate")
-                    .addEventListener("change", checkAvailability);
-
-            document.getElementById("startTime")
-                    .addEventListener("change", checkAvailability);
-
-            document.getElementById("endTime")
-                    .addEventListener("change", checkAvailability);
-       
-        
-        if (params.get("error") === "onehourrule") {
-
-    Swal.fire({
-        icon: "error",
-        title: "Booking Too Late",
-        text: "Bookings must be made at least 1 hour earlier"
-    });
-}</script>
     </body>
 </html>

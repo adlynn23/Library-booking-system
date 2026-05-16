@@ -39,7 +39,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="booking.jsp">My Booking</a>
+                    <a class="nav-link" href="myBooking.jsp">My Booking</a>
                 </li>
 
                 <% if ("Admin".equalsIgnoreCase(role) || "Lecturer".equalsIgnoreCase(role)) { %>
