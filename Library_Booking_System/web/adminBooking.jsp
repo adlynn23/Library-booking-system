@@ -304,7 +304,7 @@
                                         <p><strong>Date Specified:</strong> <%= rs.getString("booking_date") %></p>
                                     </div>
                                     <div class="col-sm-6">
-                                        <p><strong>Time Window:</strong> <%= rs.getString("start_time") %> - <%= rs.getString("end_time") %></p>
+                                        <p><strong>Booking Time </strong> <%= rs.getString("start_time") %> - <%= rs.getString("end_time") %></p>
                                         <p><strong>Declared Purpose:</strong> <%= rs.getString("purpose") %></p>
                                     </div>
                                 </div>
