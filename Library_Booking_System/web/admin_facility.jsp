@@ -1,391 +1,737 @@
-<%-- 
-    Document   : admin_facility
-    Created on : 8 May 2026, 11:49:30 pm
-    Author     : H O N O R
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin Portal | Facility Management</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
+        <title>Admin Portal | Facility Management</title>
+
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
+              rel="stylesheet">
+        <jsp:include page="admin_header.jsp" />
         <style>
+
             :root{
-                --edu-green:#163832;
-                --soft-bg:#f7efe5;
-                --danger:#ff4d4d;
+                --primary:#163832;
+                --bg:#f3f4f6;
+                --card:#ffffff;
+                --border:#e5e7eb;
+                --text:#1f2937;
+                --muted:#6b7280;
+                --success-bg:#ecfdf3;
+                --success-text:#027a48;
+                --danger:#dc2626;
             }
-            /* BODY */
-            body{
+
+            *{
                 margin:0;
-                font-family:'DM Sans',sans-serif;
-                background:var(--soft-bg);
+                padding:0;
+                box-sizing:border-box;
             }
-            /* NAVBAR */
-            .top-admin-nav{
-                height:85px;
-                background:white;
-                border-bottom:2px solid var(--edu-green);
+
+            body{
+                font-family:'DM Sans',sans-serif;
+                background-color:var(--bg);
+                color:var(--text);
+            }
+
+            /* PAGE */
+            .page-wrapper{
+                padding:40px 50px;
+            }
+
+            /* TOP */
+            .page-top{
                 display:flex;
                 justify-content:space-between;
                 align-items:center;
-                padding:0 60px;
-            }
-            .navbar-brand{
-                font-weight: 700;
-                color: var(--edu-green) !important;
-                font-size: 1.5rem;
+                margin-bottom:25px;
             }
 
-            /* MENU */
-            .admin-menu-horizontal{
+            .page-title h2{
+                font-size:2rem;
+                font-weight:700;
+                margin-bottom:6px;
+            }
+
+            .page-title p{
+                color:var(--muted);
+                margin:0;
+            }
+
+            /* TABS */
+            .admin-tabs{
                 display:flex;
-                gap:15px;
-                list-style:none;
+                justify-content:center;
+                margin-bottom:35px;
             }
-            .admin-menu-horizontal li{
-                padding:12px 18px;
-                border-radius:12px;
-                cursor:pointer;
+
+            .tabs-wrapper{
+                background:white;
+                padding:8px;
+                border-radius:14px;
+                display:flex;
+                gap:10px;
+                box-shadow:0 4px 20px rgba(0,0,0,0.05);
+            }
+
+            .tab-btn{
+                border:none;
+                background:transparent;
+                padding:12px 22px;
+                border-radius:10px;
                 font-weight:600;
+                color:#777;
+                cursor:pointer;
+                transition:0.2s;
             }
-            .admin-menu-horizontal li.active{
-                background:var(--edu-green);
+
+            .tab-btn.active{
+                background:var(--primary);
                 color:white;
             }
-            /* CONTENT */
-            .content-wrapper{
-                padding:50px 60px;
-            }
-            /* CONTAINER */
+
+            /* CARD */
             .admin-list-container{
-                background:white;
-                border-radius:25px;
-                padding:20px 30px;
-                box-shadow:0 10px 25px rgba(0,0,0,0.05);
+                background:var(--card);
+                border-radius:24px;
+                padding:10px 30px;
+                border:1px solid var(--border);
+                box-shadow:0 10px 30px rgba(15,23,42,0.05);
             }
-            /* ROW */
+
+            /* FACILITY ROW */
             .admin-row{
                 display:flex;
                 justify-content:space-between;
                 align-items:center;
-                padding:22px 0;
-                border-bottom:1px solid #eee;
+                padding:28px 0;
+                border-bottom:1px solid #f1f1f1;
                 cursor:pointer;
+                transition:0.2s;
             }
+
+            .admin-row:hover{
+                background:#fafafa;
+            }
+
             .admin-row:last-child{
                 border-bottom:none;
             }
+
+            .facility-info h3{
+                font-size:1.2rem;
+                margin-bottom:6px;
+            }
+
+            .facility-info p{
+                font-size:0.9rem;
+                color:var(--muted);
+                margin-bottom:4px;
+            }
+
+            .facility-info small{
+                color:#9ca3af;
+            }
+
+            /* BADGE */
+            .badge-active{
+                background:var(--success-bg);
+                color:var(--success-text);
+                padding:6px 12px;
+                border-radius:30px;
+                font-size:0.75rem;
+                font-weight:700;
+                margin-left:10px;
+            }
+
             /* UNIT LIST */
             .admin-unit-list{
                 max-height:0;
                 overflow:hidden;
                 transition:max-height 0.4s ease;
-                background:#fcfaf7;
             }
+
             .admin-row.active + .admin-unit-list{
                 max-height:600px;
-                padding:15px 0;
+                padding-bottom:20px;
             }
-            /* UNIT ROW */
+
+            /* UNIT */
             .unit-management-row{
                 display:flex;
                 justify-content:space-between;
                 align-items:center;
-                padding:14px 0;
-                border-bottom:1px dashed #ddd;
+                padding:16px 10px;
+                border-top:1px solid #f3f4f6;
             }
+
             /* BUTTONS */
-            .btn-add{
-                background:var(--edu-green);
+            .btn-primary-custom{
+                background:var(--primary);
                 color:white;
                 border:none;
-                padding:12px 18px;
+                padding:12px 20px;
                 border-radius:12px;
-                cursor:pointer;
                 font-weight:600;
-            }
-            .btn-delete-unit{
-                background:white;
-                color:var(--danger);
-                border:1px solid var(--danger);
-                padding:8px 12px;
-                border-radius:10px;
                 cursor:pointer;
-            }
-            /* BUTTONS */
-            .btn-signup{
-                background:var(--edu-green);
-                color:white;
-                border:none;
-                padding:10px 14px;
-                border-radius:10px;
-                cursor:pointer;
-                font-weight:600;
-            }
-            .btn-google{
-                background:white;
-                border:1px solid #ddd;
-                padding:10px 18px;
-                border-radius:12px;
-                cursor:pointer;
-            }
-            /* ACTIVE BADGE */
-            .badge-active{
-                background:#e6fcf5;
-                color:#20c997;
-                padding:4px 10px;
-                border-radius:20px;
-                font-size:0.75rem;
-                font-weight:bold;
-                margin-left:10px;
-            }
-            /* DEACTIVATE BUTTON */
-            .btn-deactivate{
-                background:#f1f3f5;
-                color:#495057;
-                border:none;
-                padding:8px 14px;
-                border-radius:10px;
-                cursor:pointer;
-            }
-            /* EDIT BUTTON */
-            .btn-edit-icon{
-                background:var(--edu-green);
-                color:white;
-                border:none;
-                width:36px;
-                height:36px;
-                border-radius:10px;
-                cursor:pointer;
-            }
-            /* FOOTER */
-            footer{
-                text-align:center;
-                padding:30px;
-                color:#666;
-            }
-            .btn-light:hover{
-                transform:translateY(-2px);
                 transition:0.2s;
             }
+
+            .btn-primary-custom:hover{
+                opacity:0.92;
+                transform:translateY(-1px);
+            }
+
+            .btn-secondary-custom{
+                background:#f3f4f6;
+                border:none;
+                color:#374151;
+                padding:9px 14px;
+                border-radius:10px;
+                cursor:pointer;
+                font-size:0.85rem;
+            }
+
+            .icon-btn{
+                width:36px;
+                height:36px;
+                border:none;
+                border-radius:10px;
+                background:#f9fafb;
+                cursor:pointer;
+                transition:0.2s;
+            }
+
+            .icon-btn:hover{
+                background:#f3f4f6;
+            }
+
         </style>
+
     </head>
+
     <body>
-        <jsp:include page="admin_header.jsp" />
-        <div style="margin-top: 70px; padding: 0 50px;">
-            <div style="display:flex; justify-content:center; margin-bottom:30px;">
-                <div style="background:white; padding:8px; border-radius:12px; display:flex; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                    <button onclick="switchTab('user')" style="background:none; border:none; padding:10px 25px; cursor:pointer; color:#999;">User Management</button>
-                    <button style="background:#163832; color:white; border:none; padding:10px 25px; border-radius:8px; font-weight:bold;">Facility Management</button>
+
+
+
+        <div class="page-wrapper">
+
+            <!-- TABS -->
+            <div class="admin-tabs">
+
+                <div class="tabs-wrapper">
+
+                    <button class="tab-btn"
+                            onclick="switchTab('user')">
+                        User Management
+                    </button>
+
+                    <button class="tab-btn active">
+                        Facility Management
+                    </button>
+
                 </div>
+
             </div>
 
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <h2 style="margin:0;">Facility List</h2>
-                <button class="btn-add" onclick="addFacility()">+ Add Facility</button>
+            <!-- TOP -->
+            <div class="page-top">
+
+                <div class="page-title">
+                    <h2>Facility Management</h2>
+                    <p>
+                        Manage learning spaces, room availability and facility status.
+                    </p>
+                </div>
+
+                <button class="btn-primary-custom"
+                        onclick="addFacility()">
+                    + Add Facility
+                </button>
+
             </div>
+
+            <!-- CARD -->
             <div class="admin-list-container">
 
-                <div class="admin-row" onclick="toggleAccordion(this)">
-                    <div style="display:flex; gap:20px; align-items:center;">            
-                        <div>
-                            <div style="display:flex; align-items:center;">
-                                <h3 style="margin:0;">Study Room</h3>
-                                <span class="badge-active">Active</span>
-                            </div>
-                            <p style="margin:5px 0; color:#666; font-size:0.85rem;">Quiet individual study room</p>
-                            <small style="color:#999;">Total: 5 Units</small>
+                <!-- STUDY ROOM -->
+                <div class="admin-row"
+                     onclick="toggleAccordion(this)">
+
+                    <div class="facility-info">
+
+                        <div class="d-flex align-items-center">
+
+                            <h3>Study Room</h3>
+
+                            <span class="badge-active">
+                                Active
+                            </span>
+
                         </div>
+
+                        <p>
+                            Quiet individual study room
+                        </p>
+
+                        <small>
+                            Total: 5 Units
+                        </small>
+
                     </div>
+
                     <div onclick="event.stopPropagation();">
-                        <button class="btn-deactivate" onclick="toggleStatus(this, 'Study Room')">Deactivate All</button>
-                        <button class="btn btn-light border btn-sm rounded-3" onclick="editFacility('Study Room')">
-                            <i class="fa-solid fa-pen text-success"></i>️</button>
+
+                        <button class="btn-secondary-custom"
+                                onclick="toggleStatus(this, 'Study Room')">
+                            Deactivate All
+                        </button>
+
+                        <button class="icon-btn"
+                                onclick="editFacility('Study Room')">
+
+                            <i class="fa-solid fa-pen text-success"></i>
+
+                        </button>
+
                     </div>
+
                 </div>
+
                 <div class="admin-unit-list">
+
                     <% for (int i = 1; i <= 5; i++) {%>
+
                     <div class="unit-management-row">
-                        <span>Study Room <%= (char) ('A' + i - 1)%> <small class="badge-active">Active</small></span>
-                        <div>
-                            <button class="btn-deactivate" style="font-size:0.7rem; padding:4px 8px;" onclick="toggleStatus(this, 'Study Room <%= (char) ('A' + i - 1)%>')">Deactivate</button>
-                            <button style="background:none; border:none; cursor:pointer;" onclick="editRoom('Study Room <%= (char) ('A' + i - 1)%>')"><i class="fa-solid fa-pen text-success"></i>️</button>
-                            <button class="btn btn-light border-danger btn-sm rounded-3" onclick="deleteRoom('Study Room <%= (char) ('A' + i - 1)%>')"><i class="fa-solid fa-trash text-danger"></i>️</button>
+
+                        <span>
+                            Study Room <%= (char) ('A' + i - 1)%>
+                            <small class="badge-active">Active</small>
+                        </span>
+
+                        <div class="d-flex gap-2">
+
+                            <button class="btn-secondary-custom"
+                                    onclick="toggleStatus(this, 'Room')">
+                                Deactivate
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-pen text-success"></i>
+
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-trash text-danger"></i>
+
+                            </button>
+
                         </div>
+
                     </div>
+
                     <% }%>
+
                 </div>
 
-                <div class="admin-row" onclick="toggleAccordion(this)">
-                    <div style="display:flex; gap:20px; align-items:center;">
+                <!-- DISCUSSION ROOM -->
+                <div class="admin-row"
+                     onclick="toggleAccordion(this)">
 
-                        <div>
-                            <div style="display:flex; align-items:center;">
-                                <h3 style="margin:0;">Group Discussion Room</h3>
-                                <span class="badge-active">Active</span>
-                            </div>
-                            <p style="margin:5px 0; color:#666; font-size:0.85rem;">Collaborative space</p>
-                            <small style="color:#999;">Total: 2 Units</small>
+                    <div class="facility-info">
+
+                        <div class="d-flex align-items-center">
+
+                            <h3>Group Discussion Room</h3>
+
+                            <span class="badge-active">
+                                Active
+                            </span>
+
                         </div>
+
+                        <p>
+                            Collaborative discussion space
+                        </p>
+
+                        <small>
+                            Total: 2 Units
+                        </small>
+
                     </div>
+
                     <div onclick="event.stopPropagation();">
-                        <button class="btn-deactivate" onclick="toggleStatus(this, 'Group Discussion')">Deactivate All</button>
-                        <button class="btn btn-light border btn-sm rounded-3" onclick="editFacility('Group Discussion')"><i class="fa-solid fa-pen text-success"></i>️</button>
+
+                        <button class="btn-secondary-custom">
+                            Deactivate All
+                        </button>
+
+                        <button class="icon-btn">
+
+                            <i class="fa-solid fa-pen text-success"></i>
+
+                        </button>
+
                     </div>
-                </div>
-                <div class="admin-unit-list">
-                    <div class="unit-management-row">
-                        <span>Discussion Room 1 <small class="badge-active">Active</small></span>
-                        <div>
-                            <button class="btn-deactivate" style="font-size:0.7rem; padding:4px 8px;" onclick="toggleStatus(this, 'Room 1')">Deactivate</button>
-                            <button style="background:none; border:none; cursor:pointer;" onclick="editRoom('Room 1')"><i class="fa-solid fa-pen text-success"></i>️</button>
-                            <button class="btn btn-light border-danger btn-sm rounded-3" onclick="deleteRoom('Room 1')"><i class="fa-solid fa-trash text-danger"></i>️</button>
-                        </div>
-                    </div>
-                    <div class="unit-management-row">
-                        <span>Discussion Room 2 <small class="badge-active">Active</small></span>
-                        <div>
-                            <button class="btn-deactivate" style="font-size:0.7rem; padding:4px 8px;" onclick="toggleStatus(this, 'Room 2')">Deactivate</button>
-                            <button style="background:none; border:none; cursor:pointer;" onclick="editRoom('Room 2')"><i class="fa-solid fa-pen text-success"></i>️</button>
-                            <button class="btn btn-light border-danger btn-sm rounded-3" onclick="deleteRoom('Room 2')"><i class="fa-solid fa-trash text-danger"></i>️</button>
-                        </div>
-                    </div>
+
                 </div>
 
-                <div class="admin-row" onclick="toggleAccordion(this)">
-                    <div style="display:flex; gap:20px; align-items:center;">           
-                        <div>
-                            <div style="display:flex; align-items:center;">
-                                <h3 style="margin:0;">Computer Lab</h3>
-                                <span class="badge-active">Active</span>
-                            </div>
-                            <p style="margin:5px 0; color:#666; font-size:0.85rem;">High-performance computers</p>
-                            <small style="color:#999;">Total: 2 Units</small>
+                <!-- COMPUTER LAB -->
+                <div class="admin-row"
+                     onclick="toggleAccordion(this)">
+
+                    <div class="facility-info">
+
+                        <div class="d-flex align-items-center">
+
+                            <h3>Computer Lab</h3>
+
+                            <span class="badge-active">
+                                Active
+                            </span>
+
                         </div>
+
+                        <p>
+                            High-performance computers with specialized software
+                        </p>
+
+                        <small>
+                            Total: 2 Units
+                        </small>
+
                     </div>
+
                     <div onclick="event.stopPropagation();">
-                        <button class="btn-deactivate" onclick="toggleStatus(this, 'Computer Lab')">Deactivate All</button>
-                        <button class="btn btn-light border btn-sm rounded-3" onclick="editFacility('Computer Lab')"><i class="fa-solid fa-pen text-success"></i>️</button>
+
+                        <button class="btn-secondary-custom">
+                            Deactivate All
+                        </button>
+
+                        <button class="icon-btn">
+
+                            <i class="fa-solid fa-pen text-success"></i>
+
+                        </button>
+
                     </div>
+
                 </div>
+
                 <div class="admin-unit-list">
+
                     <div class="unit-management-row">
-                        <span>Computer Lab 1 <small class="badge-active">Active</small></span>
-                        <div>
-                            <button class="btn-deactivate" style="font-size:0.7rem; padding:4px 8px;" onclick="toggleStatus(this, 'Lab 1')">Deactivate</button>
-                            <button style="background:none; border:none; cursor:pointer;" onclick="editRoom('Lab 1')"><i class="fa-solid fa-pen text-success"></i>️️</button>
-                            <button class="btn btn-light border-danger btn-sm rounded-3" onclick="deleteRoom('Lab 1')"><i class="fa-solid fa-trash text-danger"></i>️️</button>
+
+                        <span>
+                            Computer Lab A
+                            <small class="badge-active">Active</small>
+                        </span>
+
+                        <div class="d-flex gap-2">
+
+                            <button class="btn-secondary-custom">
+                                Deactivate
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-pen text-success"></i>
+
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-trash text-danger"></i>
+
+                            </button>
+
                         </div>
+
                     </div>
+
                     <div class="unit-management-row">
-                        <span>Computer Lab 2 <small class="badge-active">Active</small></span>
-                        <div>
-                            <button class="btn-deactivate" style="font-size:0.7rem; padding:4px 8px;" onclick="toggleStatus(this, 'Lab 2')">Deactivate</button>
-                            <button style="background:none; border:none; cursor:pointer;" onclick="editRoom('Lab 2')"><i class="fa-solid fa-pen text-success"></i>️</button>
-                            <button class="btn btn-light border-danger btn-sm rounded-3" onclick="deleteRoom('Lab 2')"><i class="fa-solid fa-trash text-danger"></i>️</button>
+
+                        <span>
+                            Computer Lab B
+                            <small class="badge-active">Active</small>
+                        </span>
+
+                        <div class="d-flex gap-2">
+
+                            <button class="btn-secondary-custom">
+                                Deactivate
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-pen text-success"></i>
+
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-trash text-danger"></i>
+
+                            </button>
+
                         </div>
+
                     </div>
+
                 </div>
 
-                <div class="admin-row" onclick="toggleAccordion(this)">
-                    <div style="display:flex; gap:20px; align-items:center;">
+                <!-- SEMINAR HALL -->
+                <div class="admin-row"
+                     onclick="toggleAccordion(this)">
 
-                        <div>
-                            <div style="display:flex; align-items:center;">
-                                <h3 style="margin:0;">Seminar Hall</h3>
-                                <span class="badge-active">Active</span>
-                            </div>
-                            <p style="margin:5px 0; color:#666; font-size:0.85rem;">Large auditorium for events</p>
-                            <small style="color:#999;">Total: 1 Unit</small>
+                    <div class="facility-info">
+
+                        <div class="d-flex align-items-center">
+
+                            <h3>Seminar Hall</h3>
+
+                            <span class="badge-active">
+                                Active
+                            </span>
+
                         </div>
+
+                        <p>
+                            Large auditorium for presentations and events
+                        </p>
+
+                        <small>
+                            Total: 2 Units
+                        </small>
+
                     </div>
+
                     <div onclick="event.stopPropagation();">
-                        <button class="btn-deactivate" onclick="toggleStatus(this, 'Seminar Hall')">Deactivate All</button>
-                        <button class="btn btn-light border btn-sm rounded-3" onclick="editFacility('Seminar Hall')"><i class="fa-solid fa-pen text-success"></i>️</button>
+
+                        <button class="btn-secondary-custom">
+                            Deactivate All
+                        </button>
+
+                        <button class="icon-btn">
+
+                            <i class="fa-solid fa-pen text-success"></i>
+
+                        </button>
+
                     </div>
+
                 </div>
+
                 <div class="admin-unit-list">
+
                     <div class="unit-management-row">
-                        <span>Main Seminar Hall <small class="badge-active">Active</small></span>
-                        <div>
-                            <button class="btn-deactivate" style="font-size:0.7rem; padding:4px 8px;" onclick="toggleStatus(this, 'Main Hall')">Deactivate</button>
-                            <button style="background:none; border:none; cursor:pointer;" onclick="editRoom('Main Hall')"><i class="fa-solid fa-pen text-success"></i>️</button>
-                            <button class="btn btn-light border-danger btn-sm rounded-3" onclick="deleteRoom('Main Hall')"><i class="fa-solid fa-trash text-danger"></i>️</button>
+
+                        <span>
+                            Auditorium A
+                            <small class="badge-active">Active</small>
+                        </span>
+
+                        <div class="d-flex gap-2">
+
+                            <button class="btn-secondary-custom">
+                                Deactivate
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-pen text-success"></i>
+
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-trash text-danger"></i>
+
+                            </button>
+
                         </div>
+
                     </div>
+
+                    <div class="unit-management-row">
+
+                        <span>
+                            Auditorium B
+                            <small class="badge-active">Active</small>
+                        </span>
+
+                        <div class="d-flex gap-2">
+
+                            <button class="btn-secondary-custom">
+                                Deactivate
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-pen text-success"></i>
+
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-trash text-danger"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- MEDIA ROOM -->
+                <div class="admin-row"
+                     onclick="toggleAccordion(this)">
+
+                    <div class="facility-info">
+
+                        <div class="d-flex align-items-center">
+
+                            <h3>Media Production Room</h3>
+
+                            <span class="badge-active">
+                                Active
+                            </span>
+
+                        </div>
+
+                        <p>
+                            Professional recording and editing equipment
+                        </p>
+
+                        <small>
+                            Total: 1 Unit
+                        </small>
+
+                    </div>
+
+                    <div onclick="event.stopPropagation();">
+
+                        <button class="btn-secondary-custom">
+                            Deactivate All
+                        </button>
+
+                        <button class="icon-btn">
+
+                            <i class="fa-solid fa-pen text-success"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <div class="admin-unit-list">
+
+                    <div class="unit-management-row">
+
+                        <span>
+                            Media Space
+                            <small class="badge-active">Active</small>
+                        </span>
+
+                        <div class="d-flex gap-2">
+
+                            <button class="btn-secondary-custom">
+                                Deactivate
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-pen text-success"></i>
+
+                            </button>
+
+                            <button class="icon-btn">
+
+                                <i class="fa-solid fa-trash text-danger"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
 
         </div>
 
+
         <script>
+
             function toggleAccordion(row) {
                 row.classList.toggle('active');
             }
 
             function toggleStatus(btn, name) {
-                const container = btn.closest('.admin-row') || btn.closest('.unit-management-row');
-                const badge = container.querySelector('.badge-active');
+
+                const container =
+                        btn.closest('.admin-row')
+                        || btn.closest('.unit-management-row');
+
+                const badge =
+                        container.querySelector('.badge-active');
 
                 if (btn.innerText.includes("Deactivate")) {
-                    if (confirm("Deactivate " + name + "?")) {
-                        badge.innerText = "Inactive";
-                        badge.style.background = "#f1f3f5";
-                        badge.style.color = "#495057";
-                        btn.innerText = (btn.innerText.includes("All")) ? "Activate All" : "Activate";
-                        btn.style.background = "#20c997";
-                        btn.style.color = "white";
-                    }
+
+                    badge.innerText = "Inactive";
+                    badge.style.background = "#f3f4f6";
+                    badge.style.color = "#6b7280";
+
+                    btn.innerText =
+                            btn.innerText.includes("All")
+                            ? "Activate All"
+                            : "Activate";
+
                 } else {
+
                     badge.innerText = "Active";
-                    badge.style.background = "#e6fcf5";
-                    badge.style.color = "#20c997";
-                    btn.innerText = (btn.innerText.includes("All")) ? "Deactivate All" : "Deactivate";
-                    btn.style.background = "#f1f3f5";
-                    btn.style.color = "#495057";
+                    badge.style.background = "#ecfdf3";
+                    badge.style.color = "#027a48";
+
+                    btn.innerText =
+                            btn.innerText.includes("All")
+                            ? "Deactivate All"
+                            : "Deactivate";
+
                 }
+
             }
 
-            function editRoom(n) {
-                alert("Editing Room: " + n);
-            }
-            function deleteRoom(n) {
-                if (confirm("Confirm DELETE " + n + "?"))
-                    alert("Deleted");
-            }
-            function addRoom(f) {
-                alert("Add room for " + f);
-            }
-            function logout() {
-                if (confirm("Logout?"))
-                    window.location.href = 'login.jsp';
-            }
             function addFacility() {
-                alert("Add Facility Modal");
+                alert("Add Facility");
             }
-            function editFacility(n) {
-                alert("Editing Facility: " + n);
-            }
-            function switchTab(t) {
-                if (t === 'user')
-                    alert("Switch to User Management");
-            }
-        </script>
-        <footer class="text-center">
-            <div class="container">
-                <p>&copy; 2026 EduSpace System. Developed for Application Development Course.</p>
-            </div>
-        </footer>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+            function editFacility(name) {
+                alert("Editing " + name);
+            }
+
+            function switchTab(tab) {
+
+                if (tab === 'user') {
+                    alert("Switch to User Management");
+                }
+
+            }
+
+        </script>
+ <jsp:include page="admin_header.jsp" />
 
     </body>
 </html>
