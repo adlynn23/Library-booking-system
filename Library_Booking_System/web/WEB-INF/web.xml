@@ -32,6 +32,10 @@
         <servlet-name>CheckAvailabilityServlet</servlet-name>
         <servlet-class>controller.CheckAvailabilityServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>UpdateBookingServlet</servlet-name>
+        <servlet-class>controller.UpdateBookingServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>startBookingServlet</servlet-name>
         <url-pattern>/startBookingServlet</url-pattern>
@@ -87,6 +91,10 @@
     <servlet-mapping>
         <servlet-name>CheckAvailabilityServlet</servlet-name>
         <url-pattern>/CheckAvailabilityServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateBookingServlet</servlet-name>
+        <url-pattern>/UpdateBookingServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

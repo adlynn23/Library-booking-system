@@ -35,7 +35,7 @@
                     <a class="nav-link" href="admin_facility.jsp">Facility List</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">Booking List</a>
+                    <a class="nav-link" href="#adminBooking.jsp">Booking List</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="viewMaintenance.jsp">Maintenance</a>
