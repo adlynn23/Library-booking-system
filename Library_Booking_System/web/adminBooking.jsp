@@ -6,13 +6,13 @@
     <title>Booking Management</title>
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
-
         :root{
             --primary:#163832;
             --bg:#f7efe5;
-            --card:#ffffff;
             --border:#e8ddd1;
             --text:#2d3748;
             --muted:#718096;
@@ -36,8 +36,6 @@
             margin-bottom:30px;
         }
 
-        /* TAB BUTTONS */
-
         .top-nav{
             width:fit-content;
             background:white;
@@ -56,7 +54,6 @@
             background:transparent;
             font-weight:700;
             cursor:pointer;
-            transition:0.2s ease;
             color:#666;
         }
 
@@ -65,17 +62,8 @@
             color:white;
         }
 
-        /* CONTENT */
-
-        .content-section{
-            display:none;
-        }
-
-        .content-section.active{
-            display:block;
-        }
-
-        /* CARD */
+        .content-section{ display:none; }
+        .content-section.active{ display:block; }
 
         .card{
             background:white;
@@ -84,476 +72,253 @@
             box-shadow:0 10px 30px rgba(0,0,0,0.05);
         }
 
-        /* SEARCH & FILTER */
-
-        .top-tools{
-            display:flex;
-            gap:15px;
-            margin-bottom:25px;
-            flex-wrap:wrap;
-        }
-
-        .search-box,
-        .filter-select{
-            padding:14px;
-            border-radius:12px;
-            border:1px solid var(--border);
-            outline:none;
-            font-size:0.95rem;
-        }
-
-        .search-box{
-            flex:1;
-            min-width:250px;
-        }
-
-        /* TABLE */
-
         table{
             width:100%;
             border-collapse:collapse;
         }
 
-        thead{
-            background:#f8f8f8;
+        th, td{
+            padding:15px;
+            border-bottom:1px solid #eee;
         }
-
-        th{
-            text-align:left;
-            padding:18px;
-            color:#444;
-            font-weight:700;
-        }
-
-        td{
-            padding:18px;
-            border-bottom:1px solid #f1f1f1;
-            color:#555;
-        }
-
-        tr:hover{
-            background:#fcfaf7;
-        }
-
-        /* STATUS */
 
         .status{
-            padding:7px 14px;
+            padding:6px 12px;
             border-radius:999px;
-            font-size:0.82rem;
-            font-weight:700;
+            font-size:12px;
         }
 
-        .approved{
-            background:#dcfce7;
-            color:#166534;
-        }
+        .approved{ background:#dcfce7; color:#166534; }
+        .rejected{ background:#fee2e2; color:#991b1b; }
 
-        .pending{
-            background:#fef3c7;
-            color:#92400e;
-        }
-
-        .rejected{
-            background:#fee2e2;
-            color:#991b1b;
-        }
-
-        /* APPROVAL CARD */
-
-        .approval-card{
-            border:1px solid #eee;
-            border-radius:20px;
-            padding:25px;
-            margin-bottom:20px;
-        }
-
-        .approval-title{
-            font-size:1.1rem;
-            font-weight:700;
-            margin-bottom:15px;
-            color:var(--text);
-        }
-
-        .approval-detail{
-            margin-bottom:8px;
-            color:var(--muted);
-        }
-
-        textarea{
-            width:100%;
-            border-radius:12px;
-            border:1px solid var(--border);
-            padding:14px;
-            margin-top:15px;
-            resize:none;
-            min-height:90px;
-            font-family:'DM Sans',sans-serif;
-            outline:none;
-        }
-
-        /* BUTTONS */
-
-        .action-buttons{
-            display:flex;
-            gap:10px;
-            margin-top:15px;
-        }
-
-        .approve-btn,
-        .reject-btn{
-            flex:1;
-            border:none;
-            padding:12px;
-            border-radius:12px;
+        .approve-btn{
+            background:#163832;
             color:white;
-            font-weight:700;
+            border:none;
+            padding:10px 14px;
+            border-radius:10px;
             cursor:pointer;
         }
 
-        .approve-btn{
-            background:#16a34a;
-        }
-
-        .reject-btn{
-            background:#dc2626;
-        }
-
-        /* ALERT */
-
-        .success-box{
-            background:#dcfce7;
-            color:#166534;
-            padding:15px;
-            border-radius:14px;
-            margin-bottom:20px;
-            font-weight:700;
+        .approve-btn:hover{
+            opacity:0.9;
         }
 
     </style>
-        <jsp:include page="admin_header.jsp"/>
+        <jsp:include page="header.jsp"/>
 
 </head>
 
 <body>
 
-<%
-    String success = request.getParameter("success");
-%>
-
 <h1>Booking Management</h1>
 
 <div class="top-nav">
 
-    <button class="tab-btn active"
-            onclick="showTab('bookingList', this)">
+    <button class="tab-btn active" onclick="showTab('bookingList', this)">
         Booking List
     </button>
 
-    <button class="tab-btn"
-            onclick="showTab('bookingApproval', this)">
+    <button class="tab-btn" onclick="showTab('bookingApproval', this)">
         Booking Approval
     </button>
 
 </div>
 
-<% if(success != null){ %>
+<!-- ================= BOOKING LIST ================= -->
+<div id="bookingList" class="content-section active">
 
-<div class="success-box">
-    ? Booking status updated successfully!
+<div class="card">
+
+<table>
+<thead>
+<tr>
+    <th>Matric No</th>
+    <th>Facility</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Notes</th>
+</tr>
+</thead>
+
+<tbody>
+
+<%
+try {
+
+    Connection conn =
+        DriverManager.getConnection(
+            "jdbc:mysql://localhost:3307/librarydb",
+            "root",
+            ""
+        );
+
+    String sql =
+        "SELECT * FROM booking WHERE status != 'PENDING' ORDER BY created_at DESC";
+
+    PreparedStatement ps = conn.prepareStatement(sql);
+    ResultSet rs = ps.executeQuery();
+
+    while(rs.next()){
+
+        String status = rs.getString("status");
+        String badge = "";
+
+        if(status.equalsIgnoreCase("APPROVED")){
+            badge = "approved";
+        } else {
+            badge = "rejected";
+        }
+
+%>
+
+<tr>
+    <td><%= rs.getString("matric_no") %></td>
+    <td><%= rs.getString("facility_name") %></td>
+    <td><%= rs.getString("booking_date") %></td>
+
+    <td>
+        <span class="status <%= badge %>">
+            <%= status %>
+        </span>
+    </td>
+
+    <td>
+        <%= rs.getString("admin_notes") == null ? "-" : rs.getString("admin_notes") %>
+    </td>
+</tr>
+
+<%
+    }
+
+    conn.close();
+
+} catch(Exception e){
+    out.println(e);
+}
+%>
+
+</tbody>
+</table>
+
+</div>
 </div>
 
-<% } %>
+<!-- ================= BOOKING APPROVAL ================= -->
+<div id="bookingApproval" class="content-section">
 
-<!-- BOOKING LIST -->
+<div class="card">
 
-<div id="bookingList"
-     class="content-section active">
+<%
+try {
 
-    <div class="card">
+    Connection conn =
+        DriverManager.getConnection(
+            "jdbc:mysql://localhost:3307/librarydb",
+            "root",
+            ""
+        );
 
-        <div class="top-tools">
+    String sql =
+        "SELECT * FROM booking WHERE status='PENDING' ORDER BY created_at DESC";
 
-            <input type="text"
-                   class="search-box"
-                   id="searchInput"
-                   placeholder="Search booking...">
+    PreparedStatement ps = conn.prepareStatement(sql);
+    ResultSet rs = ps.executeQuery();
 
-            <select class="filter-select"
-                    id="statusFilter">
+    while(rs.next()){
 
-                <option value="all">All Status</option>
-                <option value="APPROVED">Approved</option>
+%>
+
+<div style="border:1px solid #eee; padding:20px; margin-bottom:15px; border-radius:15px;">
+
+    <h5><%= rs.getString("matric_no") %></h5>
+
+    <p>Facility: <%= rs.getString("facility_name") %></p>
+    <p>Date: <%= rs.getString("booking_date") %></p>
+    <p>Time: <%= rs.getString("start_time") %> - <%= rs.getString("end_time") %></p>
+    <p>Purpose: <%= rs.getString("purpose") %></p>
+
+    <button class="approve-btn"
+            data-bs-toggle="modal"
+            data-bs-target="#bookingModal"
+            onclick="openModal(<%= rs.getInt("booking_id") %>)">
+        Review
+    </button>
+
+</div>
+
+<%
+    }
+
+    conn.close();
+
+} catch(Exception e){
+    out.println(e);
+}
+%>
+
+</div>
+</div>
+
+<!-- ================= MODAL ================= -->
+<div class="modal fade" id="bookingModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Update Booking</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form action="UpdateBookingServlet" method="post">
+
+        <div class="modal-body">
+
+            <input type="hidden" name="booking_id" id="booking_id">
+
+            <label>Status</label>
+            <select name="status" class="form-control">
+                <option value="APPROVED">Approve</option>
+                <option value="REJECTED">Reject</option>
                 <option value="PENDING">Pending</option>
-                <option value="REJECTED">Rejected</option>
-
             </select>
 
-        </div>
+            <br>
 
-        <table id="bookingTable">
-
-            <thead>
-                <tr>
-                    <th>Student</th>
-                    <th>Facility</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Notes</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-            <%
-
-                try{
-
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-
-                    Connection conn =
-                        DriverManager.getConnection(
-                            "jdbc:mysql://localhost:3307/librarydb",
-                            "root",
-                            ""
-                        );
-
-                    String sql =
-                        "SELECT * FROM booking ORDER BY created_at DESC";
-
-                    PreparedStatement ps =
-                        conn.prepareStatement(sql);
-
-                    ResultSet rs =
-                        ps.executeQuery();
-
-                    while(rs.next()){
-
-                        String status =
-                            rs.getString("status");
-
-                        String badgeClass = "pending";
-
-                        if(status.equalsIgnoreCase("APPROVED")){
-                            badgeClass = "approved";
-                        }
-                        else if(status.equalsIgnoreCase("REJECTED")){
-                            badgeClass = "rejected";
-                        }
-
-            %>
-
-                <tr>
-
-                    <td>
-                        <%= rs.getString("matric_no") %>
-                    </td>
-
-                    <td>
-                        <%= rs.getString("facility_name") %>
-                    </td>
-
-                    <td>
-                        <%= rs.getString("booking_date") %>
-                    </td>
-
-                    <td>
-                        <span class="status <%= badgeClass %>">
-                            <%= status %>
-                        </span>
-                    </td>
-
-                    <td>
-                        <%= rs.getString("admin_notes") == null
-                            ? "-"
-                            : rs.getString("admin_notes") %>
-                    </td>
-
-                </tr>
-
-            <%
-                    }
-            %>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-
-<!-- BOOKING APPROVAL -->
-
-<div id="bookingApproval"
-     class="content-section">
-
-    <div class="card">
-
-    <%
-
-        String pendingSql =
-            "SELECT * FROM booking WHERE status='PENDING' ORDER BY created_at DESC";
-
-        PreparedStatement pendingPs =
-            conn.prepareStatement(pendingSql);
-
-        ResultSet pendingRs =
-            pendingPs.executeQuery();
-
-        while(pendingRs.next()){
-
-    %>
-
-        <div class="approval-card">
-
-            <div class="approval-title">
-                <%= pendingRs.getString("matric_no") %>
-            </div>
-
-            <div class="approval-detail">
-                ? Facility:
-                <%= pendingRs.getString("facility_name") %>
-            </div>
-
-            <div class="approval-detail">
-                ? Date:
-                <%= pendingRs.getString("booking_date") %>
-            </div>
-
-            <div class="approval-detail">
-                ? Time:
-                <%= pendingRs.getString("start_time") %>
-                -
-                <%= pendingRs.getString("end_time") %>
-            </div>
-
-            <div class="approval-detail">
-                ? Purpose:
-                <%= pendingRs.getString("purpose") %>
-            </div>
-
-            <form action="UpdateBookingStatusServlet"
-                  method="post">
-
-                <input type="hidden"
-                       name="booking_id"
-                       value="<%= pendingRs.getInt("booking_id") %>">
-
-                <textarea name="admin_notes"
-                          placeholder="Add notes for student..."></textarea>
-
-                <div class="action-buttons">
-
-                    <button type="submit"
-                            name="status"
-                            value="APPROVED"
-                            class="approve-btn">
-
-                        Approve
-
-                    </button>
-
-                    <button type="submit"
-                            name="status"
-                            value="REJECTED"
-                            class="reject-btn">
-
-                        Reject
-
-                    </button>
-
-                </div>
-
-            </form>
+            <label>Notes</label>
+            <textarea name="admin_notes" class="form-control"></textarea>
 
         </div>
 
-    <%
-        }
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Update</button>
+        </div>
 
-        conn.close();
-
-        }catch(Exception e){
-            out.println(e);
-        }
-
-    %>
+      </form>
 
     </div>
-
+  </div>
 </div>
 
+<!-- ================= SCRIPT ================= -->
 <script>
 
-    /* TAB SWITCH */
+function showTab(tabId, btn){
 
-    function showTab(tabId, button){
+    document.querySelectorAll(".content-section")
+        .forEach(el => el.classList.remove("active"));
 
-        document.querySelectorAll(".content-section")
-            .forEach(section => {
-                section.classList.remove("active");
-            });
+    document.getElementById(tabId).classList.add("active");
 
-        document.getElementById(tabId)
-            .classList.add("active");
+    document.querySelectorAll(".tab-btn")
+        .forEach(b => b.classList.remove("active"));
 
-        document.querySelectorAll(".tab-btn")
-            .forEach(btn => {
-                btn.classList.remove("active");
-            });
+    btn.classList.add("active");
+}
 
-        button.classList.add("active");
-    }
-
-    /* SEARCH + FILTER */
-
-    const searchInput =
-        document.getElementById("searchInput");
-
-    const statusFilter =
-        document.getElementById("statusFilter");
-
-    const table =
-        document.getElementById("bookingTable");
-
-    searchInput.addEventListener("keyup", filterTable);
-    statusFilter.addEventListener("change", filterTable);
-
-    function filterTable(){
-
-        const search =
-            searchInput.value.toLowerCase();
-
-        const status =
-            statusFilter.value.toLowerCase();
-
-        const rows =
-            table.getElementsByTagName("tr");
-
-        for(let i = 1; i < rows.length; i++){
-
-            const row = rows[i];
-
-            const text =
-                row.innerText.toLowerCase();
-
-            const rowStatus =
-                row.cells[3].innerText.toLowerCase();
-
-            const matchSearch =
-                text.includes(search);
-
-            const matchStatus =
-                status === "all" ||
-                rowStatus.includes(status);
-
-            row.style.display =
-                matchSearch && matchStatus
-                ? ""
-                : "none";
-        }
-    }
+function openModal(id){
+    document.getElementById("booking_id").value = id;
+}
 
 </script>
 
