@@ -37,13 +37,14 @@
 
             body{
                 font-family:'DM Sans',sans-serif;
-                background-color:var(--bg);
+                background-color:#f3f4f6;
                 color:var(--text);
             }
 
             /* PAGE */
             .page-wrapper{
                 padding:40px 50px;
+                background-color:#f3f4f6;
             }
 
             /* TOP */
@@ -731,7 +732,7 @@
             }
 
         </script>
- <jsp:include page="admin_header.jsp" />
+ <jsp:include page="footer.jsp" />
 
     </body>
 </html>

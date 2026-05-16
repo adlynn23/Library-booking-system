@@ -10,208 +10,314 @@
 
 <style>
     :root {
-    --mocha-text: #4b3832;
-    --soft-peach: #f3f4f6;
-    --card-bg: #ffffff;
-    --border-color: #e8ddd4;
-    --hover-bg: #faf6f2;
-    --accent: #8b5e3c;
-    --success: #4CAF50;
-    --warning: #f4b400;
-}
+        --primary: #163832;
+        --bg: #fff5eb;       /* Smooth Muji-style soft peach aesthetic background */
+        --card-bg: #ffffff;
+        --border: #e6dcd2;   /* Elegant tan border lines matching your theme */
+        --text: #4a403a;     /* Rich mocha text color instead of harsh solid black */
+        --muted: #8a7a71;
+        --hover: #fdfbf7;
+        --success-bg: #e8f5e9;
+        --success-text: #2e7d32;
+        --warning-bg: #fff3e0;
+        --warning-text: #ef6c00;
+    }
 
-/* CONTAINER */
-.maintenance-container {
-    background: var(--card-bg);
-    padding: 25px;
-    border-radius: 18px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    margin-bottom: 35px;
-}
+    html, body {
+        background-color: var(--bg) !important;
+        font-family: 'DM Sans', sans-serif;
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+    }
 
-/* SECTION TITLE */
-.maintenance-container h5 {
-    color: var(--mocha-text);
-    font-weight: 700;
-    margin-bottom: 20px;
-}
+    /* EXPANDED MASTER HUB CONTAINER */
+    .dashboard-wrapper {
+        max-width: 1440px; /* Gives the application maximum screen utilization space */
+        margin: 0 auto;
+        padding: 40px 24px;
+    }
 
-/* TABLE */
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    overflow: hidden;
-    border-radius: 12px;
-}
+    /* TOP SECTION MANAGEMENT BAR */
+    .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 35px;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 20px;
+    }
 
-/* HEADER */
-.table thead {
-    background: #f3ebe4;
-}
+    .page-header h2 {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
 
-.table thead th {
-    padding: 16px;
-    font-size: 14px;
-    color: var(--mocha-text);
-    font-weight: 700;
-    border-bottom: 2px solid var(--border-color);
-}
+    .page-header p {
+        color: var(--muted);
+        margin-top: 6px;
+        margin-bottom: 0;
+        font-size: 1.05rem;
+    }
 
-/* BODY */
-.table tbody td {
-    padding: 16px;
-    vertical-align: middle;
-    border-bottom: 1px solid #f1ece7;
-    color: #555;
-    font-size: 14px;
-}
+    /* SIDE-BY-SIDE GRID LAYOUT ENGINE */
+    .dashboard-grid {
+        display: flex;
+        flex-direction: row; /* Locks cards layout horizontally side-by-side */
+        gap: 28px;          /* Generous clean gap spacing between columns */
+        align-items: flex-start;
+    }
 
-/* HOVER EFFECT */
-.table tbody tr:hover {
-    background: var(--hover-bg);
-    transition: 0.2s ease;
-}
+    /* 65% Major Column Width Configuration */
+    .main-schedule-panel {
+        flex: 0 0 65%;
+        max-width: 65%;
+    }
 
-/* BADGE */
-.badge {
-    padding: 8px 14px;
-    border-radius: 30px;
-    font-size: 12px;
-    font-weight: 600;
-}
+    /* 35% Sidebar Feedback Column Width Configuration */
+    .side-feedback-panel {
+        flex: 0 0 35%;
+        max-width: 35%;
+    }
 
-/* BUTTON */
-.btn-update {
-    display: inline-block;
-    padding: 10px 18px;
-    border-radius: 10px;
-    background: linear-gradient(to right, #8b5e3c, #b08968);
-    color: white;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    border: none;
-    transition: 0.3s ease;
-}
+    /* WHITE MATTE CONTAINER BLOCK */
+    .maintenance-container {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 28px;
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 20px rgba(74, 64, 58, 0.03);
+        width: 100%;
+    }
 
-.btn-update:hover {
-    transform: translateY(-2px);
-    opacity: 0.9;
-    color: white;
-}
+    .maintenance-container h5 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 22px;
+        color: var(--primary);
+    }
 
-/* SAVE BUTTON */
-.btn-submit {
-    background: linear-gradient(to right, #8b5e3c, #b08968);
-    border: none;
-    color: white;
-    padding: 10px 22px;
-    border-radius: 10px;
-    font-weight: 600;
-}
+    /* RESPONSIVE DATA TABLE STANDARDS */
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+    }
 
-.btn-submit:hover {
-    opacity: 0.9;
-}
+    .table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 0;
+    }
 
-/* EMPTY TEXT */
-.text-muted {
-    padding: 20px;
-}
+    .table thead th {
+        background: #faf6f0;
+        padding: 14px 16px;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        border-bottom: 2px solid var(--border);
+    }
 
-/* MODAL INPUT */
-.form-control {
-    border-radius: 10px;
-    padding: 12px;
-    border: 1px solid #ddd;
-    box-shadow: none;
-}
+    .table tbody td {
+        padding: 16px 16px;
+        font-size: 14px;
+        color: var(--text);
+        border-bottom: 1px solid #f5ede4;
+        vertical-align: middle;
+    }
 
-.form-control:focus {
-    border-color: #b08968;
-    box-shadow: 0 0 0 0.15rem rgba(176, 137, 104, 0.25);
-}
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .table tbody tr {
+        transition: background 0.2s ease;
+    }
+
+    .table tbody tr:hover {
+        background: var(--hover);
+    }
+
+    /* USER SUBMIT/UPDATE ACTION BUTTONS */
+    .btn-update {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 22px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        box-shadow: 0 4px 12px rgba(22, 56, 50, 0.15);
+    }
+
+    .btn-update:hover {
+        opacity: 0.95;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 16px rgba(22, 56, 50, 0.2);
+        color: white;
+    }
+
+    /* CLEAN MODERN SURFACE BADGES */
+    .badge-done {
+        background-color: var(--success-bg);
+        color: var(--success-text);
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .badge-process {
+        background-color: var(--warning-bg);
+        color: var(--warning-text);
+        padding: 5px 12px;
+        border-radius: 6px;
+        font-size: 12.5px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    /* MODAL POPUP FORM STRUCTURING */
+    .modal-content {
+        border: none;
+        border-radius: 16px;
+        box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+        border: 1px solid var(--border);
+        background-color: #fcfcfc;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(22, 56, 50, 0.08);
+        background-color: #fff;
+    }
+
+    .btn-submit {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+    }
+
+    /* MOBILE SCALE DOWN DOWNFALL STRATEGY */
+    @media(max-width: 1100px){
+        .dashboard-grid {
+            flex-direction: column; /* Stacks components downward on narrow tablet screens */
+        }
+        .main-schedule-panel, .side-feedback-panel {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
 </style>
 
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 style="color: var(--mocha-text);">Manage Maintenance</h2>
+<div class="dashboard-wrapper">
+    <div class="page-header">
+
+        <div>
+            <h2>Maintenance Dashboard</h2>
+            <p>
+                Track repair schedules and monitor student reports.
+            </p>
+        </div>
         <button type="button" class="btn-update" data-bs-toggle="modal" data-bs-target="#addModal">
             + Key In New Repair
         </button>
     </div>
 
-    <div class="maintenance-container mb-5">
-        <h5>Active Repair Schedule</h5>
-        <table class="table">
-            <thead>
-                <tr><th>Facility</th><th>Description</th><th>Status</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-                <%
-                    List<Maintenance> mList = dao.MaintenanceDAO.getAllMaintenance();
-                    if (mList == null || mList.isEmpty()) {
-                %>
-                <tr><td colspan="4" class="text-center text-muted">No active maintenance logs found.</td></tr>
-                <%
-                } else {
-                    for (Maintenance m : mList) {
-                %>
-                <tr>
-                    <td><%= m.getFacilityId()%></td>
-                    <td><%= m.getDescription()%></td>
-                    <td><<span class="badge 
-<%= m.getStatus().equalsIgnoreCase("Done") 
-? "bg-success" 
-: "bg-warning text-dark" %>"></span></td>
-                    <td><a href="UpdateStatusServlet?id=<%= m.getMaintenanceId()%>" class="btn-update">Mark Done</a></td>
-                </tr>
-                <%     }
-                    }
-                %>
-            </tbody>
-        </table>
+    <div class="dashboard-grid">
+        <div class="maintenance-container mb-5">
+            <h5>Active Repair Schedule</h5>
+            <table class="table">
+                <thead>
+                    <tr><th>Facility</th><th>Description</th><th>Status</th><th>Action</th></tr>
+                </thead>
+                <tbody>
+                    <%
+                        List<Maintenance> mList = dao.MaintenanceDAO.getAllMaintenance();
+                        if (mList == null || mList.isEmpty()) {
+                    %>
+                    <tr><td colspan="4" class="text-center text-muted">No active maintenance logs found.</td></tr>
+                    <%
+                    } else {
+                        for (Maintenance m : mList) {
+                    %>
+                    <tr>
+                        <td><%= m.getFacilityId()%></td>
+                        <td><%= m.getDescription()%></td>
+                        <td>
+                            <span class="badge 
+                                  <%= m.getStatus().equalsIgnoreCase("Done")
+            ? "bg-success"
+            : "bg-warning text-dark"%>">
+
+                                <%= m.getStatus()%>
+
+                            </span>
+                        </td></tr>
+                        <%     }
+                            }
+                        %>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="maintenance-container">
+            <h5>Student Reports (from Customer Care)</h5>
+            <table class="table">
+                <thead>
+                    <tr><th>Student</th><th>Subject</th><th>Message</th></tr>
+                </thead>
+                <tbody>
+                    <% List<Feedback> fList = FeedbackDAO.getAllFeedback();
+                        for (Feedback f : fList) {%>
+                    <tr>
+                        <td><strong><%= f.getMatric_no()%></strong></td>
+                        <td><%= f.getSubject()%></td>
+                        <td><%= f.getMessage()%></td>
+                    </tr>
+                    <% }%>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="maintenance-container">
-        <h5>Student Reports (from Customer Care)</h5>
-        <table class="table">
-            <thead>
-                <tr><th>Student</th><th>Subject</th><th>Message</th></tr>
-            </thead>
-            <tbody>
-                <% List<Feedback> fList = FeedbackDAO.getAllFeedback();
-                    for (Feedback f : fList) {%>
-                <tr>
-                    <td><strong><%= f.getMatric_no()%></strong></td>
-                    <td><%= f.getSubject()%></td>
-                    <td><%= f.getMessage()%></td>
-                </tr>
-                <% }%>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<div class="modal fade" id="addModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content" style="border-radius: 15px; background: var(--soft-peach);">
-            <div class="modal-header">
-                <h5 class="modal-title">Report New Maintenance</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal fade" id="addModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px; background: var(--soft-peach);">
+                <div class="modal-header">
+                    <h5 class="modal-title">Report New Maintenance</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="Maintenance_Servlet" method="POST">
+                    <div class="modal-body">
+                        <label>Facility ID</label>
+                        <input type="text" name="facilityId" class="form-control mb-3" required>
+                        <label>Issue Description</label>
+                        <textarea name="description" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="modal-footer border-0">
+                        <button type="submit" class="btn-submit">Save Report</button>
+                    </div>
+                </form>
             </div>
-            <form action="Maintenance_Servlet" method="POST">
-                <div class="modal-body">
-                    <label>Facility ID</label>
-                    <input type="text" name="facilityId" class="form-control mb-3" required>
-                    <label>Issue Description</label>
-                    <textarea name="description" class="form-control" rows="3" required></textarea>
-                </div>
-                <div class="modal-footer border-0">
-                    <button type="submit" class="btn-submit">Save Report</button>
-                </div>
-            </form>
         </div>
     </div>
 </div>
