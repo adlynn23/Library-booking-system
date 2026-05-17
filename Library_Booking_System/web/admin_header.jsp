@@ -215,7 +215,7 @@
 
     </div>
 </nav>
-<<<<<<< HEAD
+
 <!--         NOTIFICATION BELL 
 <div style="position:relative; display:inline-block; margin-left:20px;">
 
@@ -236,10 +236,7 @@
         <%= unreadCount %>
     </span>
 
-</div>
-=======
->>>>>>> e16e441c41b9b10eaaade853abca899fe96d978b
-
+    <!-- comment </div>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
