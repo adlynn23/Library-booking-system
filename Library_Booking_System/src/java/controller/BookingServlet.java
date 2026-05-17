@@ -12,13 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 import javax.servlet.http.HttpSession;
-import java.sql.Connection;
 import java.time.LocalDate;
 
-/**
- *
- * @author ASUS
- */
 public class BookingServlet extends HttpServlet {
 
     // DATABASE CONFIG
@@ -26,20 +21,13 @@ public class BookingServlet extends HttpServlet {
     private final String dbUser = "root";
     private final String dbPass = "";
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         response.setContentType("text/html;charset=UTF-8");
+
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
+
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -49,32 +37,18 @@ public class BookingServlet extends HttpServlet {
             out.println("<h1>Servlet BookingServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
+
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
         processRequest(request, response);
+
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -180,9 +154,9 @@ public class BookingServlet extends HttpServlet {
                 return;
             }
 
-// ==========================
-// CURRENT DATE & TIME
-// ==========================
+            // ==========================
+            // CURRENT DATE & TIME
+            // ==========================
             java.time.LocalDate currentDate
                     = java.time.LocalDate.now();
 
@@ -201,12 +175,11 @@ public class BookingServlet extends HttpServlet {
                             startTime
                     );
 
-// ==========================
-// PAST TIME CHECK
-// ==========================
+            // ==========================
+            // PAST TIME CHECK
+            // ==========================
             if (bookingDate.isEqual(currentDate)) {
 
-                // booking already passed
                 if (startTime.isBefore(currentTime)) {
 
                     response.sendRedirect(
@@ -219,9 +192,9 @@ public class BookingServlet extends HttpServlet {
                 }
             }
 
-// ==========================
-// 1 HOUR EARLIER RULE
-// ==========================
+            // ==========================
+            // 1 HOUR EARLIER RULE
+            // ==========================
             long minutes
                     = java.time.Duration
                             .between(now, bookingDateTime)
@@ -237,9 +210,10 @@ public class BookingServlet extends HttpServlet {
 
                 return;
             }
-// ==========================
-// PAST TIME CHECK
-// ==========================
+
+            // ==========================
+            // FINAL PAST CHECK
+            // ==========================
             if (bookingDateTime.isBefore(now)) {
 
                 response.sendRedirect(
@@ -253,8 +227,6 @@ public class BookingServlet extends HttpServlet {
 
             // ==========================
             // OPERATING HOURS
-            // WEEKDAY = 8AM-10PM
-            // WEEKEND = 9AM-6PM
             // ==========================
             java.time.DayOfWeek day
                     = bookingDate.getDayOfWeek();
@@ -354,6 +326,27 @@ public class BookingServlet extends HttpServlet {
 
             ps.executeUpdate();
 
+            // ==========================
+// INSERT ADMIN NOTIFICATION
+// ==========================
+            String notificationSql
+                    = "INSERT INTO notification (user_id, message, status) VALUES (?, ?, ?)";
+
+            PreparedStatement notificationPs
+                    = conn.prepareStatement(notificationSql);
+
+            notificationPs.setString(1, "ADMIN");
+            notificationPs.setString(
+                    2,
+                    "You have booking request from " + matricNo
+            );
+            notificationPs.setString(3, "UNREAD");
+
+            notificationPs.executeUpdate();
+
+            // ==========================
+            // REDIRECT
+            // ==========================
             response.sendRedirect(
                     "myBooking.jsp?success=1"
             );
@@ -389,6 +382,8 @@ public class BookingServlet extends HttpServlet {
 
     @Override
     public String getServletInfo() {
+
         return "Booking Servlet - handles facility reservation";
+
     }
 }

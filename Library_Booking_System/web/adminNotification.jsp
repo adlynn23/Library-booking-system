@@ -1,41 +1,101 @@
-<%-- 
-    Document   : adminNotification
-    Created on : 16 May 2026, 8:53:41?pm
-    Author     : ASUS
---%>
-
 <%@page import="java.sql.*"%>
 
-<h2>Notifications</h2>
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Admin Notifications</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body{
+            font-family:Arial;
+            background:#f5f5f5;
+            padding:20px;
+        }
+
+        .notification{
+            background:white;
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:15px;
+            border-left:5px solid red;
+            cursor:pointer;
+        }
+
+        .time{
+            color:gray;
+            font-size:13px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<h2>Admin Notifications</h2>
 
 <%
-Connection conn = DriverManager.getConnection(
-    "jdbc:mysql://localhost:3307/librarydb",
-    "root",
-    ""
-);
 
-String sql =
-    "SELECT * FROM notification ORDER BY created_at DESC";
+Connection conn = null;
 
-PreparedStatement ps = conn.prepareStatement(sql);
-ResultSet rs = ps.executeQuery();
+try {
 
-while(rs.next()){
+    Class.forName("com.mysql.cj.jdbc.Driver");
+
+    conn = DriverManager.getConnection(
+        "jdbc:mysql://localhost:3307/librarydb",
+        "root",
+        ""
+    );
+
+    String sql =
+        "SELECT * FROM notification " +
+        "WHERE user_id='ADMIN' AND status='UNREAD' " +
+        "ORDER BY created_at DESC";
+
+    PreparedStatement ps = conn.prepareStatement(sql);
+    ResultSet rs = ps.executeQuery();
+
+    while(rs.next()) {
 %>
 
-<div style="padding:12px; border:1px solid #ddd; margin-bottom:10px; border-radius:10px;">
-    <p><%= rs.getString("message") %></p>
-    <small><%= rs.getTimestamp("created_at") %></small>
+<div class="notification"
+     onclick="openNotification(<%= rs.getInt("id") %>, `<%= rs.getString("message") %>`)">
 
-    <% if(rs.getString("status").equals("UNREAD")) { %>
-        <a href="MarkNotificationReadServlet?id=<%= rs.getInt("id") %>">
-            Mark as read
-        </a>
-    <% } %>
+    <h4><%= rs.getString("message") %></h4>
+
+    <div class="time">
+        <%= rs.getTimestamp("created_at") %>
+    </div>
+
 </div>
 
 <%
+    }
+
+} catch(Exception e) {
+    out.println(e);
 }
-conn.close();
 %>
+
+<script>
+function openNotification(id, message) {
+
+    Swal.fire({
+        title: "Booking Request",
+        text: message,
+        icon: "info",
+        confirmButtonText: "OK"
+    }).then(() => {
+
+        fetch("OpenNotificationServlet?id=" + id)
+            .then(() => location.reload());
+
+    });
+}
+</script>
+
+</body>
+</html>

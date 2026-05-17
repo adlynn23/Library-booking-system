@@ -1,4 +1,4 @@
-<%-- 
+ <%--
     Document   : admin_header
     Created on : 13 May 2026, 2:46:33 pm
     Author     : DELL
@@ -192,12 +192,12 @@
                     Admin: <strong><%= userName %></strong>
                 </span>
 
-                <a href="adminNotification.jsp" class="me-3 admin-icon-link" title="Notifications">
+                <!--               <a href="adminNotification.jsp" class="me-3 admin-icon-link" title="Notifications">
                     <i class="fa-solid fa-bell fa-lg"></i>
                     <% if (unreadCount > 0) { %>
                         <span class="notif-badge"><%= unreadCount %></span>
                     <% } %>
-                </a>
+                </a>  --> 
 
                 <a href="myProfile.jsp" class="me-3 admin-icon-link" title="Admin Settings">
                     <i class="fa-solid fa-user-shield fa-lg"></i>

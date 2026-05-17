@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
+
 /**
  *
  * @author ASUS
@@ -66,10 +67,6 @@ public class UpdateBookingServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-
-
-   
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -78,19 +75,24 @@ public class UpdateBookingServlet extends HttpServlet {
         String status = request.getParameter("status");
         String notes = request.getParameter("admin_notes");
 
+        Connection conn = null;
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3307/librarydb",
-                "root",
-                ""
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3307/librarydb",
+                    "root",
+                    ""
             );
 
-            // 1. GET BOOKING INFO
+            // ==========================
+            // GET BOOKING INFO (ONLY ONCE)
+            // ==========================
             String getSql = "SELECT matric_no, facility_name FROM booking WHERE booking_id=?";
             PreparedStatement getPs = conn.prepareStatement(getSql);
             getPs.setInt(1, bookingId);
+
             ResultSet rs = getPs.executeQuery();
 
             String matric = "";
@@ -101,9 +103,11 @@ public class UpdateBookingServlet extends HttpServlet {
                 facility = rs.getString("facility_name");
             }
 
-            // 2. UPDATE BOOKING
-            String updateSql =
-                "UPDATE booking SET status=?, admin_notes=? WHERE booking_id=?";
+            // ==========================
+            // UPDATE BOOKING
+            // ==========================
+            String updateSql
+                    = "UPDATE booking SET status=?, admin_notes=? WHERE booking_id=?";
 
             PreparedStatement ps = conn.prepareStatement(updateSql);
             ps.setString(1, status);
@@ -111,35 +115,52 @@ public class UpdateBookingServlet extends HttpServlet {
             ps.setInt(3, bookingId);
             ps.executeUpdate();
 
-            // 3. CREATE NOTIFICATION
+            // ==========================
+            // CREATE USER NOTIFICATION
+            // ==========================
             String message;
 
-            if (status.equals("APPROVED")) {
+            if ("APPROVED".equals(status)) {
                 message = "Your booking for " + facility + " has been APPROVED.";
-            } else if (status.equals("REJECTED")) {
+            } else if ("REJECTED".equals(status)) {
                 message = "Your booking for " + facility + " has been REJECTED.";
             } else {
                 message = "Your booking is under review.";
             }
 
-            String notifSql =
-                "INSERT INTO notification (user_id, message, status) VALUES (?, ?, 'UNREAD')";
+            String notifSql
+                    = "INSERT INTO notification (user_id, message, status) VALUES (?, ?, 'UNREAD')";
 
             PreparedStatement notifPs = conn.prepareStatement(notifSql);
-            notifPs.setString(1, matric);
+            notifPs.setString(1, matric); // ✅ FIXED (was matricNo)
             notifPs.setString(2, message);
             notifPs.executeUpdate();
 
-            conn.close();
+            // ==========================
+            // CLEAN ADMIN NOTIFICATION (OPTIONAL)
+            // ==========================
+            String cleanSql
+                    = "UPDATE notification SET status='READ' WHERE user_id='ADMIN' AND message LIKE ?";
 
-            response.sendRedirect("adminBooking.jsp?success=true");
+            PreparedStatement cleanPs = conn.prepareStatement(cleanSql);
+            cleanPs.setString(1, "%booking request from " + matric + "%");
+            cleanPs.executeUpdate();
+
+            response.sendRedirect("adminBooking.jsp?success=1");
 
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().println("Error: " + e.getMessage());
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
-
 
     /**
      * Returns a short description of the servlet.
