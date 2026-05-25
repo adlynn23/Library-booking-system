@@ -3,9 +3,11 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.*"%>
 
+<%@page import="model.Facility"%>
+
 <%
-    List<Map<String, String>> facilities
-            = (List<Map<String, String>>) request.getAttribute("facilities");
+    List<Facility> facilities =
+        (List<Facility>) request.getAttribute("facilities");
 
     if (facilities == null) {
         facilities = new ArrayList<>();
@@ -13,6 +15,7 @@
 %>
 
 <!DOCTYPE html>
+
 <html>
     <head>
 
@@ -242,6 +245,123 @@
 
             }
 
+            /* =========================
+     SEARCH SECTION
+  ========================= */
+
+            .search-container{
+                max-width:1300px;
+                margin:40px auto 30px;
+                padding:0 70px;
+            }
+
+            .search-box{
+                background:white;
+                border-radius:24px;
+                padding:25px;
+                display:flex;
+                align-items:flex-end;
+                gap:18px;
+                box-shadow:0 10px 30px rgba(0,0,0,0.05);
+                border:1px solid #ece6de;
+                flex-wrap:nowrap;
+            }
+
+            /* EACH INPUT GROUP */
+            .search-group{
+                flex:1 1 200px;
+            }
+
+            .search-group label{
+                display:block;
+                font-size:0.9rem;
+                font-weight:700;
+                color:#18352f;
+                margin-bottom:10px;
+            }
+
+            /* INPUT + SELECT */
+            .search-box select,
+            .search-box input{
+                width:100%;
+                height:55px;
+                border:1px solid #ddd;
+                border-radius:14px;
+                padding:0 16px;
+                font-size:0.95rem;
+                outline:none;
+                transition:0.25s;
+                background:white;
+            }
+
+            .search-box select:focus,
+            .search-box input:focus{
+                border-color:#18352f;
+                box-shadow:0 0 0 4px rgba(24,53,47,0.08);
+            }
+
+            /* BUTTON CONTAINER */
+            .search-btn-group{
+                flex:0 0 auto;
+            }
+
+            /* SEARCH BUTTON */
+            .btn-search{
+                height:55px;
+                border:none;
+                background:#18352f;
+                color:white;
+                padding:0 32px;
+                border-radius:14px;
+                font-weight:700;
+                font-size:0.95rem;
+                transition:0.25s;
+                min-width:150px;
+                white-space:nowrap;
+            }
+
+            .btn-search:hover{
+                background:#0f2722;
+                transform:translateY(-2px);
+            }
+
+            /* MOBILE */
+            @media(max-width:992px){
+
+                .search-box{
+                    flex-wrap:wrap;
+                }
+
+                .search-group{
+                    flex:1 1 45%;
+                }
+
+            }
+
+            @media(max-width:768px){
+
+                .search-container{
+                    padding:0 20px;
+                }
+
+                .search-box{
+                    flex-direction:column;
+                    align-items:stretch;
+                }
+
+                .search-group{
+                    width:100%;
+                }
+
+                .search-btn-group{
+                    width:100%;
+                }
+
+                .btn-search{
+                    width:100%;
+                }
+
+            }
         </style>
 
     </head>
@@ -250,6 +370,141 @@
 
         <jsp:include page="header.jsp" />
 
+
+        <div class="search-container">
+
+            <form action="SearchFacilityServlet" method="GET">
+
+                <div class="search-box">
+
+                    <!-- FACILITY -->
+                    <div class="search-group">
+
+                        <label>
+                            Facility
+                        </label>
+
+                        <select name="facilityType">
+
+                            <option value="">
+                                All Facilities
+                            </option>
+
+                            <option value="Study Room">
+                                Study Room
+                            </option>
+
+                            <option value="Group Discussion Room">
+                                Group Discussion Room
+                            </option>
+
+                            <option value="Computer Lab">
+                                Computer Lab
+                            </option>
+
+                            <option value="Seminar Hall">
+                                Seminar Hall
+                            </option>
+
+                            <option value="Media Production Room">
+                                Media Production Room
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- DATE -->
+                    <div class="search-group">
+
+                        <label>
+                            Booking Date
+                        </label>
+
+                        <input type="date" name="date">
+
+                    </div>
+
+                    <!-- START TIME -->
+                    <div class="search-group">
+
+                        <label>
+                            Start Time
+                        </label>
+
+                        <select name="startTime">
+
+                            <option value="">
+                                Select Start Time
+                            </option>
+
+                            <option value="08:00">08:00 AM</option>
+                            <option value="09:00">09:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">01:00 PM</option>
+                            <option value="14:00">02:00 PM</option>
+                            <option value="15:00">03:00 PM</option>
+                            <option value="16:00">04:00 PM</option>
+                            <option value="17:00">05:00 PM</option>
+                            <option value="18:00">06:00 PM</option>
+                            <option value="19:00">07:00 PM</option>
+                            <option value="20:00">08:00 PM</option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- END TIME -->
+                    <div class="search-group">
+
+                        <label>
+                            End Time
+                        </label>
+
+                        <select name="endTime">
+
+                            <option value="">
+                                Select End Time
+                            </option>
+
+                            <option value="09:00">09:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="13:00">01:00 PM</option>
+                            <option value="14:00">02:00 PM</option>
+                            <option value="15:00">03:00 PM</option>
+                            <option value="16:00">04:00 PM</option>
+                            <option value="17:00">05:00 PM</option>
+                            <option value="18:00">06:00 PM</option>
+                            <option value="19:00">07:00 PM</option>
+                            <option value="20:00">08:00 PM</option>
+                            <option value="21:00">09:00 PM</option>
+
+                        </select>
+
+                    </div>
+
+                    <!-- BUTTON -->
+                    <div class="search-btn-group">
+
+                        <button type="submit"
+                                class="btn-search">
+
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Search
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
         <div class="content-wrapper">
 
             <div class="page-header">
@@ -269,345 +524,77 @@
 
             </div>
 
-            <div class="facility-grid">
+         
 
-                <!-- ================= DB FACILITIES ================= -->
-                <%
-                    if (!facilities.isEmpty()) {
-                        for (Map<String, String> f : facilities) {
-                %>
+<%
 
-                <div class="facility-card">
+    if (facilities == null) {
+        facilities = new ArrayList<>();
+    }
 
-                    <div style="padding:20px;">
+    String date = request.getParameter("date");
+    String startTime = request.getParameter("startTime");
+    String endTime = request.getParameter("endTime");
+%>
 
-                        <h3><%= f.get("unit")%></h3>
+<div class="facility-grid">
 
-                        <p class="facility-desc">
-                            <%= f.get("desc")%>
-                        </p>
+<% if (facilities.isEmpty()) { %>
 
-                        <p style="font-size:0.85rem;color:#666;">
-                            Capacity: <%= f.get("capacity")%>
-                        </p>
+    <p style="color:#777;font-size:1rem;">
+        No available facilities found for selected time.
+    </p>
 
-                        <span style="color:#28a745;font-weight:bold;font-size:0.85rem;">
-                            ● Available
-                        </span>
+<% } else { %>
 
-                        <br><br>
+    <% for (Facility f : facilities) { %>
 
-                        <button class="btn-book"
-                                onclick="location.href = 'booking.jsp?unit=<%= f.get("unit")%>'">
-                            Book
-                        </button>
+        <div class="facility-card">
 
-                    </div>
+            <div style="padding:20px;">
 
-                </div>
+                <!-- IMAGE -->
+                <img src="<%= f.getImageUrl() %>" class="card-img">
 
-                <%
-                        }
-                    }
-                %>
+                <!-- NAME -->
+                <h3><%= f.getUnitName() %></h3>
 
-                <!-- STUDY ROOM -->
-                <div class="facility-card" onclick="this.classList.toggle('active')">
+                <!-- DESCRIPTION -->
+                <p class="facility-desc">
+                    <%= f.getDescription() %>
+                </p>
 
-                    <img src="https://tse4.mm.bing.net/th/id/OIP.JTEo6YgELkZDiQTjcfo4mQHaGm?rs=1&pid=ImgDetMain&o=7&rm=3"
-                         class="card-img">
+                <!-- CAPACITY -->
+                <p style="font-size:0.85rem;color:#666;">
+                    Capacity: <%= f.getCapacity() %>
+                </p>
 
-                    <div class="facility-content">
+                <!-- STATUS -->
+                <span style="color:#28a745;font-weight:bold;font-size:0.85rem;">
+                    ● Available
+                </span>
 
-                        <h3>Study Room</h3>
+                <br><br>
 
-                        <p class="facility-desc">
-                            Quiet individual study room with desk and comfortable seating
-                        </p>
-
-                        <div class="facility-meta">
-
-                            <span class="capacity">
-                                Capacity: 1 person
-                            </span>
-
-                            <span class="status">
-                                ● Available
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="unit-list">
-
-                        <div class="unit-row">
-                            <span>Study Room A</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Study Room A'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Study Room B</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Study Room B'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Study Room C</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Study Room C'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Study Room D</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Study Room D'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Study Room E</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Study Room E'">
-                                Book
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- DISCUSSION ROOM -->
-                <div class="facility-card" onclick="this.classList.toggle('active')">
-
-                    <img src="https://images.unsplash.com/photo-1517502884422-41eaead166d4?q=80&w=500"
-                         class="card-img">
-
-                    <div class="facility-content">
-
-                        <h3>Group Discussion Room</h3>
-
-                        <p class="facility-desc">
-                            Collaborative discussion space with whiteboard and projector
-                        </p>
-
-                        <div class="facility-meta">
-
-                            <span class="capacity">
-                                Capacity: 8 person
-                            </span>
-
-                            <span class="status">
-                                ● Available
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="unit-list">
-
-                        <div class="unit-row">
-                            <span>Room 1</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Room 1'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Room 2</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Room 2'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Room 3</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Room 3'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Room 4</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Room 4'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Room 5</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Room 5'">
-                                Book
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- COMPUTER LAB -->
-                <div class="facility-card" onclick="this.classList.toggle('active')">
-
-                    <img src="https://tse1.mm.bing.net/th/id/OIP.a-4Za8X48nmRYDFbCRoTZwHaFK?rs=1&pid=ImgDetMain&o=7&rm=3"
-                         class="card-img">
-
-                    <div class="facility-content">
-
-                        <h3>Computer Lab</h3>
-
-                        <p class="facility-desc">
-                            High-performance computers with specialized software
-                        </p>
-
-                        <div class="facility-meta">
-
-                            <span class="capacity">
-                                Capacity: 20-30 person
-                            </span>
-
-                            <span class="status">
-                                ● Available
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="unit-list">
-
-                        <div class="unit-row">
-                            <span>Computer Lab A</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Computer Lab A'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Computer Lab B</span>
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Computer Lab B'">
-                                Book
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- SEMINAR HALL -->
-                <div class="facility-card" onclick="this.classList.toggle('active')">
-
-                    <img src="https://d3211p0nhvzn27.cloudfront.net/wp-content/uploads/2018/09/22071109/how-to-make-a-university-seminar-hall-world-class.jpg"
-                         class="card-img">
-
-                    <div class="facility-content">
-
-                        <h3>Seminar Hall</h3>
-
-                        <p class="facility-desc">
-                            Large auditorium for presentations and events
-                        </p>
-
-                        <div class="facility-meta">
-
-                            <span class="capacity">
-                                Capacity: 100 person
-                            </span>
-
-                            <span class="status">
-                                ● Available
-                            </span>
-
-                        </div>
-                    </div>
-
-                    <div class="unit-list">
-
-                        <div class="unit-row">
-                            <span>Auditorium A</span>
-
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Auditorium A'">
-                                Book
-                            </button>
-                        </div>
-
-                        <div class="unit-row">
-                            <span>Auditorium B</span>
-
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Auditorium B'">
-                                Book
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
-
-                <!-- MEDIA PRODUCTION ROOM -->
-                <div class="facility-card" onclick="this.classList.toggle('active')">
-
-                    <img src="https://th.bing.com/th/id/OIP.ynhQU5b4y_hPy0O5Fq9fHAHaE_?o=7rm=3&rs=1&pid=ImgDetMain&o=7&rm=3"
-                         class="card-img">
-
-                    <div class="facility-content">
-
-                        <h3>Media Production Room</h3>
-
-                        <p class="facility-desc">
-                            Professional recording and editing equipment
-                        </p>
-
-                        <div class="facility-meta">
-
-                            <span class="capacity">
-                                Capacity: 8 person
-                            </span>
-
-                            <span class="status">
-                                ● Available
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                    <div class="unit-list">
-
-                        <div class="unit-row">
-                            <span>Media Space</span>
-
-                            <button class="btn-book"
-                                    onclick="event.stopPropagation(); location.href = 'booking.jsp?unit=Media Space'">
-                                Book
-                            </button>
-                        </div>
-
-                    </div>
-
-                </div>
+                <!-- BOOK BUTTON -->
+                <button class="btn-book"
+                    onclick="location.href='booking.jsp?
+                    unit=<%= f.getUnitName() %>
+                    &date=<%= date %>
+                    &startTime=<%= startTime %>
+                    &endTime=<%= endTime %>'">
+                    Book
+                </button>
 
             </div>
 
         </div>
 
+    <% } %>
 
+<% } %>
+
+</div>
     </body>
 
     <jsp:include page="footer.jsp" />

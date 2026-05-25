@@ -4,22 +4,21 @@
  */
 package controller;
 
-import java.sql.Connection;
+import dao.BookingDAO;
+import model.Facility;
+import java.util.List;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.sql.*;
-import java.util.*;
-import model.Facility;
 
 /**
  *
  * @author ASUS
  */
-public class FacilityServlet extends HttpServlet {
+public class SearchFacilityServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,10 +37,10 @@ public class FacilityServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet FacilityServlet</title>");
+            out.println("<title>Servlet SearchFacilityServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet FacilityServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet SearchFacilityServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,42 +56,54 @@ public class FacilityServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-    List<Facility> list = new ArrayList<>();
-
-    try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-
-        Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3307/librarydb", "root", "");
-
-        String sql = "SELECT * FROM facility";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
-
-        while (rs.next()) {
-
-            Facility f = new Facility();
-
-            f.setFacilityId(rs.getInt("facility_id"));
-            f.setFacilityName(rs.getString("facility_name"));
-            f.setUnitName(rs.getString("unit_name"));
-            f.setDescription(rs.getString("description"));
-            f.setCapacity(rs.getInt("capacity"));
-            f.setImageUrl(rs.getString("image_url"));
-
-            list.add(f);
+        String type = request.getParameter("facilityType");
+        if (type == null) {
+            type = "";
         }
 
-        request.setAttribute("facilities", list);
+        String date = request.getParameter("date");
+        String startTime = request.getParameter("startTime");
+        String endTime = request.getParameter("endTime");
+
+        BookingDAO dao = new BookingDAO();
+
+        List<Facility> facilities;
+
+        // 🟡 IF USER DID NOT SEARCH → show ALL (like flight page)
+        if ((date == null || date.isEmpty())
+                && (startTime == null || startTime.isEmpty())
+                && (endTime == null || endTime.isEmpty())) {
+
+            FacilityServlet fs = new FacilityServlet();
+            fs.doGet(request, response);
+            return;
+        }
+
+        // 🔥 SEARCH MODE → ONLY AVAILABLE FACILITIES
+        facilities = dao.searchAvailableFacilities(type, date, startTime, endTime);
+
+        request.setAttribute("facilities", facilities);
         request.getRequestDispatcher("facility.jsp").forward(request, response);
 
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-}
+
+    /**
+     * Handles the HTTP <code>POST</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+
     /**
      * Returns a short description of the servlet.
      *
