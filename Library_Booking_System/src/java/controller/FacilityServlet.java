@@ -14,12 +14,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 import java.util.*;
 import model.Facility;
+import dao.FacilityDAO;
 
 /**
  *
  * @author ASUS
  */
 public class FacilityServlet extends HttpServlet {
+
+    FacilityDAO dao = new FacilityDAO();
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -57,42 +60,112 @@ public class FacilityServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-    List<Facility> list = new ArrayList<>();
+        List<Facility> list = new ArrayList<>();
 
-    try {
-        Class.forName("com.mysql.cj.jdbc.Driver");
+        String type = request.getParameter("facilityType");
+        String date = request.getParameter("date");
+        String startTime = request.getParameter("startTime");
+        String endTime = request.getParameter("endTime");
 
-        Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3307/librarydb", "root", "");
+        System.out.println("Type = " + type);
+        System.out.println("Date = " + date);
+        System.out.println("Start = " + startTime);
+        System.out.println("End = " + endTime);
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
 
-        String sql = "SELECT * FROM facility";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
+            Connection conn = DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3307/librarydb", "root", "");
 
-        while (rs.next()) {
+            PreparedStatement ps;
 
-            Facility f = new Facility();
+            // 🟢 CASE 1: FIRST LOAD (SHOW ALL)
+            if (type == null || type.isEmpty()) {
 
-            f.setFacilityId(rs.getInt("facility_id"));
-            f.setFacilityName(rs.getString("facility_name"));
-            f.setUnitName(rs.getString("unit_name"));
-            f.setDescription(rs.getString("description"));
-            f.setCapacity(rs.getInt("capacity"));
-            f.setImageUrl(rs.getString("image_url"));
+                String sql = "SELECT * FROM facility";
+                ps = conn.prepareStatement(sql);
 
-            list.add(f);
+            } // 🔵 CASE 2: SEARCH (AVAILABLE ONLY)
+            else {
+
+                String sql
+                        = "SELECT * FROM facility f "
+                        + "WHERE f.facility_name = ? "
+                        + "AND f.facility_name NOT IN ("
+                        + "SELECT b.facility_name FROM booking b "
+                        + "WHERE b.booking_date = ? "
+                        + "AND (b.start_time < ? AND b.end_time > ?))";
+                ps = conn.prepareStatement(sql);
+
+                ps.setString(1, type);
+                ps.setString(2, date);
+                ps.setString(3, endTime);
+                ps.setString(4, startTime);
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Facility f = new Facility();
+
+                f.setFacilityId(rs.getInt("facility_id"));
+                f.setFacilityName(rs.getString("facility_name"));
+                f.setUnitName(rs.getString("unit_name"));
+                f.setDescription(rs.getString("description"));
+                f.setCapacity(rs.getInt("capacity"));
+                f.setImageUrl(rs.getString("image_url"));
+                f.setStatus(rs.getString("status"));
+
+                list.add(f);
+            }
+
+            request.setAttribute("facilities", list);
+
+// FIRST LOAD
+            boolean isSearch
+                    = (date != null && !date.isEmpty())
+                    && (startTime != null && !startTime.isEmpty())
+                    && (endTime != null && !endTime.isEmpty());
+            
+            if (isSearch) {
+                request.setAttribute("mode", "search");
+            } else {
+                request.setAttribute("mode", "all");
+            }
+
+            request.getRequestDispatcher("facility.jsp")
+                    .forward(request, response);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            request.setAttribute("error", e.getMessage());
+            request.setAttribute("facilities", new ArrayList<>());
+            request.setAttribute("mode", "all");
+
+            request.setAttribute("facilities", list);
+
+            boolean isSearch
+                    = (type != null && !type.isEmpty())
+                    || (date != null && !date.isEmpty())
+                    || (startTime != null && !startTime.isEmpty())
+                    || (endTime != null && !endTime.isEmpty());
+
+            if (isSearch) {
+                request.setAttribute("mode", "search");
+            } else {
+                request.setAttribute("mode", "all");
+            }
+
+            request.getRequestDispatcher("facility.jsp")
+                    .forward(request, response);
         }
-
-        request.setAttribute("facilities", list);
-        request.getRequestDispatcher("facility.jsp").forward(request, response);
-
-    } catch (Exception e) {
-        e.printStackTrace();
     }
-}
+
     /**
      * Returns a short description of the servlet.
      *

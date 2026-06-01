@@ -2,21 +2,26 @@
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.*"%>
-
 <%@page import="model.Facility"%>
 
 <%
-    List<Facility> facilities =
-        (List<Facility>) request.getAttribute("facilities");
+    List<Facility> facilities
+            = (List<Facility>) request.getAttribute("facilities");
 
     if (facilities == null) {
         facilities = new ArrayList<>();
     }
+
+    String mode = (String) request.getAttribute("mode");
+
+    if (mode == null) {
+        mode = "all";
+    }
 %>
 
 <!DOCTYPE html>
-
 <html>
+
     <head>
 
         <meta charset="UTF-8">
@@ -41,7 +46,6 @@
                 --border:#ece6de;
                 --text:#222;
                 --muted:#777;
-                --success:#2e9d62;
             }
 
             *{
@@ -51,25 +55,15 @@
             body{
                 margin:0;
                 font-family:'DM Sans',sans-serif;
-                background: #f3f4f6;
-                color:var(--text);
+                background:#f3f4f6;
             }
 
             .content-wrapper{
                 padding:50px 70px;
-                background-color:#f3f4f6 !important;
-
             }
 
-            h1{
-                font-size:2.2rem;
-                font-weight:700;
-                color:var(--primary);
-                margin-bottom:35px;
-                letter-spacing:-1px;
-            }
             .page-header{
-                margin-bottom:45px;
+                margin-bottom:40px;
             }
 
             .section-tag{
@@ -84,22 +78,72 @@
             }
 
             .page-header h1{
-                font-size:2.7rem;
+                font-size:2.5rem;
                 font-weight:700;
                 color:var(--primary);
-                letter-spacing:-1.5px;
-                margin-bottom:12px;
-                line-height:1.1;
+                margin-bottom:10px;
             }
 
             .page-header p{
-                max-width:650px;
                 color:#666;
-                font-size:1rem;
+                max-width:650px;
                 line-height:1.7;
-                margin:0;
             }
+
+            /* SEARCH */
+
+            .search-container{
+                max-width:1400px;
+                margin:40px auto 10px;
+                padding:0 70px;
+            }
+
+            .search-box{
+                background:white;
+                border-radius:25px;
+                padding:25px;
+                display:flex;
+                gap:20px;
+                align-items:flex-end;
+                flex-wrap:wrap;
+                box-shadow:0 10px 30px rgba(0,0,0,0.05);
+            }
+
+            .search-group{
+                flex:1;
+                min-width:200px;
+            }
+
+            .search-group label{
+                display:block;
+                margin-bottom:10px;
+                font-size:0.9rem;
+                font-weight:700;
+                color:#18352f;
+            }
+
+            .search-group select,
+            .search-group input{
+                width:100%;
+                height:55px;
+                border:1px solid #ddd;
+                border-radius:14px;
+                padding:0 16px;
+                font-size:0.95rem;
+            }
+
+            .btn-search{
+                height:55px;
+                border:none;
+                background:#18352f;
+                color:white;
+                padding:0 35px;
+                border-radius:14px;
+                font-weight:700;
+            }
+
             /* GRID */
+
             .facility-grid{
                 display:grid;
                 grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
@@ -107,30 +151,27 @@
             }
 
             /* CARD */
+
             .facility-card{
-                background:var(--card-bg);
-                border-radius:26px;
+                background:white;
+                border-radius:24px;
                 overflow:hidden;
-                border:1px solid var(--border);
-                transition:all 0.3s ease;
+                border:1px solid #ece6de;
+                transition:0.3s;
                 cursor:pointer;
-                position:relative;
             }
 
             .facility-card:hover{
-                transform:translateY(-6px);
-                box-shadow:0 18px 40px rgba(0,0,0,0.06);
+                transform:translateY(-5px);
+                box-shadow:0 15px 35px rgba(0,0,0,0.08);
             }
 
-            /* IMAGE */
             .card-img{
                 width:100%;
-                height:230px;
+                height:220px;
                 object-fit:cover;
-                display:block;
             }
 
-            /* CONTENT */
             .facility-content{
                 padding:24px;
             }
@@ -139,206 +180,43 @@
                 margin:0 0 10px;
                 font-size:1.25rem;
                 font-weight:700;
-                color:var(--primary);
+                color:#18352f;
             }
 
             .facility-desc{
-                font-size:0.92rem;
-                color:var(--muted);
+                color:#666;
                 line-height:1.6;
-                margin-bottom:18px;
+                margin-bottom:15px;
             }
 
             .facility-meta{
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                margin-bottom:20px;
+                margin-top:15px;
             }
 
             .capacity{
-                font-size:0.85rem;
-                color:#666;
                 background:#f5f5f5;
-                padding:7px 12px;
+                padding:8px 14px;
                 border-radius:30px;
-            }
-
-            .status{
                 font-size:0.85rem;
-                font-weight:600;
-                color:var(--success);
             }
 
-            /* BUTTON */
-            .btn-book{
-                width:100%;
-                border:none;
-                background:var(--primary);
-                color:white;
-                padding:13px;
-                border-radius:14px;
-                font-weight:600;
-                font-size:0.95rem;
-                transition:0.25s;
-            }
-
-            .btn-book:hover{
-                background:#0f2722;
-            }
-
-            /* EXPANDABLE UNIT LIST */
-            .unit-list{
-                max-height:0;
-                overflow:hidden;
-                transition:max-height 0.35s ease;
-                background:#fcfaf8;
-            }
-
-            .facility-card.active .unit-list{
-                max-height:500px;
-            }
-
-            .unit-row{
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                padding:18px 24px;
-                border-top:1px solid #eee;
-            }
-
-            .unit-row span{
+            .booking-info{
+                margin-bottom:12px;
+                color:#444;
                 font-size:0.92rem;
-                font-weight:500;
             }
 
-            .unit-row .btn-book{
-                width:auto;
-                padding:10px 18px;
-                border-radius:10px;
-                font-size:0.85rem;
+            .no-result{
+                font-size:1.2rem;
+                font-weight:600;
+                color:#666;
             }
 
-            /* FOOTER */
-            footer{
-                margin-top:60px;
-                text-align:center;
-                padding:30px;
-                color:#777;
-                font-size:0.9rem;
-            }
-
-            /* RESPONSIVE */
             @media(max-width:768px){
 
                 .content-wrapper{
                     padding:30px 20px;
                 }
-
-                h1{
-                    font-size:1.8rem;
-                }
-
-                .card-img{
-                    height:210px;
-                }
-
-            }
-
-            /* =========================
-     SEARCH SECTION
-  ========================= */
-
-            .search-container{
-                max-width:1300px;
-                margin:40px auto 30px;
-                padding:0 70px;
-            }
-
-            .search-box{
-                background:white;
-                border-radius:24px;
-                padding:25px;
-                display:flex;
-                align-items:flex-end;
-                gap:18px;
-                box-shadow:0 10px 30px rgba(0,0,0,0.05);
-                border:1px solid #ece6de;
-                flex-wrap:nowrap;
-            }
-
-            /* EACH INPUT GROUP */
-            .search-group{
-                flex:1 1 200px;
-            }
-
-            .search-group label{
-                display:block;
-                font-size:0.9rem;
-                font-weight:700;
-                color:#18352f;
-                margin-bottom:10px;
-            }
-
-            /* INPUT + SELECT */
-            .search-box select,
-            .search-box input{
-                width:100%;
-                height:55px;
-                border:1px solid #ddd;
-                border-radius:14px;
-                padding:0 16px;
-                font-size:0.95rem;
-                outline:none;
-                transition:0.25s;
-                background:white;
-            }
-
-            .search-box select:focus,
-            .search-box input:focus{
-                border-color:#18352f;
-                box-shadow:0 0 0 4px rgba(24,53,47,0.08);
-            }
-
-            /* BUTTON CONTAINER */
-            .search-btn-group{
-                flex:0 0 auto;
-            }
-
-            /* SEARCH BUTTON */
-            .btn-search{
-                height:55px;
-                border:none;
-                background:#18352f;
-                color:white;
-                padding:0 32px;
-                border-radius:14px;
-                font-weight:700;
-                font-size:0.95rem;
-                transition:0.25s;
-                min-width:150px;
-                white-space:nowrap;
-            }
-
-            .btn-search:hover{
-                background:#0f2722;
-                transform:translateY(-2px);
-            }
-
-            /* MOBILE */
-            @media(max-width:992px){
-
-                .search-box{
-                    flex-wrap:wrap;
-                }
-
-                .search-group{
-                    flex:1 1 45%;
-                }
-
-            }
-
-            @media(max-width:768px){
 
                 .search-container{
                     padding:0 20px;
@@ -349,19 +227,12 @@
                     align-items:stretch;
                 }
 
-                .search-group{
-                    width:100%;
-                }
-
-                .search-btn-group{
-                    width:100%;
-                }
-
                 .btn-search{
                     width:100%;
                 }
 
             }
+
         </style>
 
     </head>
@@ -370,19 +241,17 @@
 
         <jsp:include page="header.jsp" />
 
-
+        <!-- SEARCH -->
         <div class="search-container">
 
-            <form action="SearchFacilityServlet" method="GET">
+            <form action="FacilityServlet" method="GET">
 
                 <div class="search-box">
 
                     <!-- FACILITY -->
                     <div class="search-group">
 
-                        <label>
-                            Facility
-                        </label>
+                        <label>Facility</label>
 
                         <select name="facilityType">
 
@@ -417,94 +286,53 @@
                     <!-- DATE -->
                     <div class="search-group">
 
-                        <label>
-                            Booking Date
-                        </label>
+                        <label>Booking Date</label>
 
-                        <input type="date" name="date">
+                        <input type="date"
+                               name="date"
+                               id="bookingDate"
+                               required>
 
                     </div>
 
                     <!-- START TIME -->
                     <div class="search-group">
 
-                        <label>
-                            Start Time
-                        </label>
+                        <label>Start Time</label>
 
-                        <select name="startTime">
-
-                            <option value="">
-                                Select Start Time
-                            </option>
-
-                            <option value="08:00">08:00 AM</option>
-                            <option value="09:00">09:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">01:00 PM</option>
-                            <option value="14:00">02:00 PM</option>
-                            <option value="15:00">03:00 PM</option>
-                            <option value="16:00">04:00 PM</option>
-                            <option value="17:00">05:00 PM</option>
-                            <option value="18:00">06:00 PM</option>
-                            <option value="19:00">07:00 PM</option>
-                            <option value="20:00">08:00 PM</option>
-
-                        </select>
+                        <input type="time"
+                               name="startTime"
+                               required>
 
                     </div>
 
                     <!-- END TIME -->
                     <div class="search-group">
 
-                        <label>
-                            End Time
-                        </label>
+                        <label>End Time</label>
 
-                        <select name="endTime">
-
-                            <option value="">
-                                Select End Time
-                            </option>
-
-                            <option value="09:00">09:00 AM</option>
-                            <option value="10:00">10:00 AM</option>
-                            <option value="11:00">11:00 AM</option>
-                            <option value="12:00">12:00 PM</option>
-                            <option value="13:00">01:00 PM</option>
-                            <option value="14:00">02:00 PM</option>
-                            <option value="15:00">03:00 PM</option>
-                            <option value="16:00">04:00 PM</option>
-                            <option value="17:00">05:00 PM</option>
-                            <option value="18:00">06:00 PM</option>
-                            <option value="19:00">07:00 PM</option>
-                            <option value="20:00">08:00 PM</option>
-                            <option value="21:00">09:00 PM</option>
-
-                        </select>
+                        <input type="time"
+                               name="endTime"
+                               required>
 
                     </div>
 
                     <!-- BUTTON -->
-                    <div class="search-btn-group">
+                    <button type="submit"
+                            class="btn-search">
 
-                        <button type="submit"
-                                class="btn-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Search
 
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                            Search
-
-                        </button>
-
-                    </div>
+                    </button>
 
                 </div>
 
             </form>
 
         </div>
+
+        <!-- CONTENT -->
         <div class="content-wrapper">
 
             <div class="page-header">
@@ -524,78 +352,82 @@
 
             </div>
 
-         
+            <!-- FACILITY GRID -->
+            <div class="facility-grid">
 
-<%
+                <%
+                    if (facilities != null && !facilities.isEmpty()) {
 
-    if (facilities == null) {
-        facilities = new ArrayList<>();
-    }
+                        for (Facility f : facilities) {
+                %>
 
-    String date = request.getParameter("date");
-    String startTime = request.getParameter("startTime");
-    String endTime = request.getParameter("endTime");
-%>
+                <div class="facility-card"
+                     <%= mode.equals("search")
+                             ? "onclick=\"location.href='booking.jsp?facilityId="
+                             + f.getFacilityId()
+                             + "&unit=" + java.net.URLEncoder.encode(f.getFacilityName(), "UTF-8")
+                             + "&date=" + request.getParameter("date")
+                             + "&startTime=" + request.getParameter("startTime")
+                             + "&endTime=" + request.getParameter("endTime") + "'\""
+                             : ""%>>
 
-<div class="facility-grid">
+                    <img src="<%= f.getImageUrl()%>" class="card-img">
 
-<% if (facilities.isEmpty()) { %>
+                    <div class="facility-content">
 
-    <p style="color:#777;font-size:1rem;">
-        No available facilities found for selected time.
-    </p>
+                        <h3><%= f.getFacilityName()%></h3>
 
-<% } else { %>
+                        <p class="facility-desc"><%= f.getDescription()%></p>
 
-    <% for (Facility f : facilities) { %>
+                        <div class="facility-meta">
+                            <span class="capacity">
+                                Capacity: <%= f.getCapacity()%> person
+                            </span>
+                        </div>
 
-        <div class="facility-card">
+                        <% if (mode.equals("search")) {%>
+                        <div class="booking-info">
+                            <p><strong>Date:</strong> <%= request.getParameter("date")%></p>
+                            <p>
+                                <strong>Time:</strong>
+                                <%= request.getParameter("startTime")%> - <%= request.getParameter("endTime")%>
+                            </p>
+                        </div>
+                        <% } %>
 
-            <div style="padding:20px;">
+                    </div>
+                </div>
 
-                <!-- IMAGE -->
-                <img src="<%= f.getImageUrl() %>" class="card-img">
+                <%
+                    }
+                } else {
+                %>
 
-                <!-- NAME -->
-                <h3><%= f.getUnitName() %></h3>
+                <div class="no-result">
+                    No available facilities found.
+                </div>
 
-                <!-- DESCRIPTION -->
-                <p class="facility-desc">
-                    <%= f.getDescription() %>
-                </p>
-
-                <!-- CAPACITY -->
-                <p style="font-size:0.85rem;color:#666;">
-                    Capacity: <%= f.getCapacity() %>
-                </p>
-
-                <!-- STATUS -->
-                <span style="color:#28a745;font-weight:bold;font-size:0.85rem;">
-                    ● Available
-                </span>
-
-                <br><br>
-
-                <!-- BOOK BUTTON -->
-                <button class="btn-book"
-                    onclick="location.href='booking.jsp?
-                    unit=<%= f.getUnitName() %>
-                    &date=<%= date %>
-                    &startTime=<%= startTime %>
-                    &endTime=<%= endTime %>'">
-                    Book
-                </button>
+                <%
+                    }
+                %>
 
             </div>
 
         </div>
 
-    <% } %>
+        <jsp:include page="footer.jsp" />
 
-<% } %>
+        <script>
 
-</div>
+            // DISABLE PAST DATE
+
+            const today =
+                    new Date().toISOString().split("T")[0];
+
+            document.getElementById("bookingDate").min = today;
+
+        </script>
+
     </body>
 
-    <jsp:include page="footer.jsp" />
 </html>

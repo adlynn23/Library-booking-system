@@ -136,7 +136,7 @@
             <ul class="navbar-nav">
 
                 <li class="nav-item">
-                    <a class="nav-link" href="facility.jsp">Facility</a>
+                    <a class="nav-link" href="FacilityServlet">Facility</a>
                 </li>
 
                 <li class="nav-item">

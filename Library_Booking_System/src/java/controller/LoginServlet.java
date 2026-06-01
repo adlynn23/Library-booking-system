@@ -126,7 +126,7 @@ public class LoginServlet extends HttpServlet {
                     } else {
 
                         // STUDENT + LECTURER
-                        response.sendRedirect("facility.jsp");
+                        response.sendRedirect("FacilityServlet");
                     }
                 }
             }

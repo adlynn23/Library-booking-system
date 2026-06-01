@@ -1,11 +1,24 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
+
+
 <%
     String facilityName = request.getParameter("unit");
+    String bookingDate = request.getParameter("date");
+    String startTimeParam = request.getParameter("startTime");
+    String endTimeParam = request.getParameter("endTime");
 
     if (facilityName == null) {
         facilityName = "";
     }
+    if (bookingDate == null) {
+        bookingDate = "";
+    }
+    if (startTimeParam == null) {
+        startTimeParam = "";
+    }
+    if (endTimeParam == null)
+        endTimeParam = "";
 %>
 
 <!DOCTYPE html>
@@ -155,6 +168,8 @@
                                id="bookingDate"
                                name="bookingDate"
                                class="form-control"
+                               value="<%= bookingDate%>"
+                               readonly
                                required>
 
                     </div>
@@ -187,6 +202,8 @@
                                    id="startTime"
                                    name="startTime"
                                    class="form-control"
+                                   value="<%= startTimeParam%>"
+                                   readonly
                                    required>
 
                         </div>
@@ -196,11 +213,12 @@
                             <label class="form-label">
                                 End Time
                             </label>
-
                             <input type="time"
                                    id="endTime"
                                    name="endTime"
                                    class="form-control"
+                                   value="<%= endTimeParam%>"
+                                   readonly
                                    required>
 
                         </div>
@@ -259,17 +277,17 @@
 
             let isSlotAvailable = true;
 
-        // ==========================
-        // DISABLE PAST DATE
-        // ==========================
+            // ==========================
+            // DISABLE PAST DATE
+            // ==========================
             const today =
                     new Date().toISOString().split("T")[0];
 
             bookingDate.min = today;
 
-        // ==========================
-        // DAY + OPERATING HOURS
-        // ==========================
+            // ==========================
+            // DAY + OPERATING HOURS
+            // ==========================
             function updateOperatingHours() {
 
                 const value = bookingDate.value;
@@ -307,9 +325,9 @@
 
             }
 
-        // ==========================
-        // MAIN VALIDATION
-        // ==========================
+            // ==========================
+            // MAIN VALIDATION
+            // ==========================
             async function validateTimeRules() {
 
                 statusBox.innerHTML = "";
@@ -467,9 +485,9 @@
 
             }
 
-        // ==========================
-        // SUBMIT VALIDATION
-        // ==========================
+            // ==========================
+            // SUBMIT VALIDATION
+            // ==========================
             function validateBooking() {
 
                 if (statusBox.innerText.includes("⚠")) {
@@ -498,9 +516,9 @@
 
             }
 
-        // ==========================
-        // EVENT LISTENERS
-        // ==========================
+            // ==========================
+            // EVENT LISTENERS
+            // ==========================
             bookingDate.addEventListener("change", () => {
 
                 updateOperatingHours();
@@ -512,6 +530,8 @@
 
             endTime.addEventListener("change", validateTimeRules);
 
+            const params = new URLSearchParams(window.location.search);
+
             if (params.get("error") === "pasttime") {
                 Swal.fire({
                     icon: "error",
@@ -519,6 +539,13 @@
                     text: "Selected booking time has already passed."
                 });
             }
+
+            window.onload = function () {
+
+                updateOperatingHours();
+                validateTimeRules();
+
+            };
         </script>
 
     </body>

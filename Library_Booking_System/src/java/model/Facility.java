@@ -14,6 +14,7 @@ public class Facility {
     private String unitName;
     private String description;
     private int capacity;
+    private String status;
     private String imageUrl;
 
 
@@ -55,6 +56,14 @@ public class Facility {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+    
+    public String getStatus() {
+        return status;
+    }
+    
+     public void setStatus (String status) {
+        this.status = status;
     }
 
     public String getImageUrl() {

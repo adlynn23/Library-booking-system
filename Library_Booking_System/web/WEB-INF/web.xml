@@ -52,6 +52,10 @@
         <servlet-name>SearchFacilityServlet</servlet-name>
         <servlet-class>controller.SearchFacilityServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>FacilityListServlet</servlet-name>
+        <servlet-class>controller.FacilityListServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>startBookingServlet</servlet-name>
         <url-pattern>/startBookingServlet</url-pattern>
@@ -127,6 +131,10 @@
     <servlet-mapping>
         <servlet-name>SearchFacilityServlet</servlet-name>
         <url-pattern>/SearchFacilityServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FacilityListServlet</servlet-name>
+        <url-pattern>/FacilityListServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>

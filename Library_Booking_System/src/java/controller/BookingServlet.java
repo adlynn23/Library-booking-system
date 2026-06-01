@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.net.URLEncoder;
+import java.time.LocalTime;
 
 public class BookingServlet extends HttpServlet {
 
@@ -49,7 +51,7 @@ public class BookingServlet extends HttpServlet {
 
     }
 
-    @Override
+      @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -58,327 +60,119 @@ public class BookingServlet extends HttpServlet {
         HttpSession session = request.getSession(false);
 
         if (session == null || session.getAttribute("matricNo") == null) {
-
             response.sendRedirect("login.jsp?error=session");
             return;
-
         }
 
-        String matricNo
-                = (String) session.getAttribute("matricNo");
+        String matricNo = (String) session.getAttribute("matricNo");
 
-        String facility
-                = request.getParameter("facilityName");
+        String facility = request.getParameter("unit");
+        String date = request.getParameter("bookingDate");
+        String start = request.getParameter("startTime");
+        String end = request.getParameter("endTime");
+        String purpose = request.getParameter("purpose");
 
-        String date
-                = request.getParameter("bookingDate");
+        if (facility == null) facility = "";
 
-        String start
-                = request.getParameter("startTime");
-
-        String end
-                = request.getParameter("endTime");
-
-        String purpose
-                = request.getParameter("purpose");
+        String safeFacility = URLEncoder.encode(facility, "UTF-8");
 
         Connection conn = null;
 
         try {
-
             Class.forName("com.mysql.cj.jdbc.Driver");
 
-            conn = DriverManager.getConnection(
-                    dbURL,
-                    dbUser,
-                    dbPass
-            );
+            conn = DriverManager.getConnection(dbURL, dbUser, dbPass);
 
-            // ==========================
-            // DATE VALIDATION
-            // ==========================
-            LocalDate bookingDate
-                    = LocalDate.parse(date);
-
-            LocalDate today
-                    = LocalDate.now();
+            // ===================== DATE =====================
+            LocalDate bookingDate = LocalDate.parse(date);
+            LocalDate today = LocalDate.now();
 
             if (bookingDate.isBefore(today)) {
-
-                response.sendRedirect(
-                        "booking.jsp?unit="
-                        + facility
-                        + "&error=pastdate"
-                );
-
+                response.sendRedirect("booking.jsp?unit=" + safeFacility + "&error=pastdate");
                 return;
             }
 
-            // ==========================
-            // TIME VALIDATION
-            // ==========================
-            java.time.LocalTime startTime
-                    = java.time.LocalTime.parse(start);
+            // ===================== TIME =====================
+            LocalTime startTime = LocalTime.parse(start);
+            LocalTime endTime = LocalTime.parse(end);
 
-            java.time.LocalTime endTime
-                    = java.time.LocalTime.parse(end);
-
-            // END BEFORE START
             if (!endTime.isAfter(startTime)) {
-
-                response.sendRedirect(
-                        "booking.jsp?unit="
-                        + facility
-                        + "&error=invalidtime"
-                );
-
+                response.sendRedirect("booking.jsp?unit=" + safeFacility + "&error=invalidtime");
                 return;
             }
 
-            // ==========================
-            // MAX 2 HOURS
-            // ==========================
-            long duration
-                    = java.time.Duration
-                            .between(startTime, endTime)
-                            .toHours();
-
-            if (duration > 2) {
-
-                response.sendRedirect(
-                        "booking.jsp?unit="
-                        + facility
-                        + "&error=maxduration"
-                );
-
+            // max 2 hours
+            long duration = java.time.Duration.between(startTime, endTime).toMinutes();
+            if (duration > 120) {
+                response.sendRedirect("booking.jsp?unit=" + safeFacility + "&error=maxduration");
                 return;
             }
 
-            // ==========================
-            // CURRENT DATE & TIME
-            // ==========================
-            java.time.LocalDate currentDate
-                    = java.time.LocalDate.now();
+            // ===================== SLOT CONFLICT FIXED =====================
+            String checkSql =
+                    "SELECT * FROM booking " +
+                    "WHERE facility_name = ? " +
+                    "AND booking_date = ? " +
+                    "AND status != 'REJECTED' " +
+                    "AND NOT (end_time <= ? OR start_time >= ?)";
 
-            java.time.LocalTime currentTime
-                    = java.time.LocalTime.now();
-
-            java.time.LocalDateTime now
-                    = java.time.LocalDateTime.of(
-                            currentDate,
-                            currentTime
-                    );
-
-            java.time.LocalDateTime bookingDateTime
-                    = java.time.LocalDateTime.of(
-                            bookingDate,
-                            startTime
-                    );
-
-            // ==========================
-            // PAST TIME CHECK
-            // ==========================
-            if (bookingDate.isEqual(currentDate)) {
-
-                if (startTime.isBefore(currentTime)) {
-
-                    response.sendRedirect(
-                            "booking.jsp?unit="
-                            + facility
-                            + "&error=pasttime"
-                    );
-
-                    return;
-                }
-            }
-
-            // ==========================
-            // 1 HOUR EARLIER RULE
-            // ==========================
-            long minutes
-                    = java.time.Duration
-                            .between(now, bookingDateTime)
-                            .toMinutes();
-
-            if (minutes < 60) {
-
-                response.sendRedirect(
-                        "booking.jsp?unit="
-                        + facility
-                        + "&error=onehour"
-                );
-
-                return;
-            }
-
-            // ==========================
-            // FINAL PAST CHECK
-            // ==========================
-            if (bookingDateTime.isBefore(now)) {
-
-                response.sendRedirect(
-                        "booking.jsp?unit="
-                        + facility
-                        + "&error=pasttime"
-                );
-
-                return;
-            }
-
-            // ==========================
-            // OPERATING HOURS
-            // ==========================
-            java.time.DayOfWeek day
-                    = bookingDate.getDayOfWeek();
-
-            int startHour = startTime.getHour();
-
-            int endHour = endTime.getHour();
-
-            boolean weekend
-                    = day == java.time.DayOfWeek.SATURDAY
-                    || day == java.time.DayOfWeek.SUNDAY;
-
-            if (!weekend) {
-
-                if (startHour < 8 || endHour > 22) {
-
-                    response.sendRedirect(
-                            "booking.jsp?unit="
-                            + facility
-                            + "&error=operatinghours"
-                    );
-
-                    return;
-                }
-
-            } else {
-
-                if (startHour < 9 || endHour > 18) {
-
-                    response.sendRedirect(
-                            "booking.jsp?unit="
-                            + facility
-                            + "&error=operatinghours"
-                    );
-
-                    return;
-                }
-
-            }
-
-            // ==========================
-            // CHECK SLOT CONFLICT
-            // ==========================
-            String checkSql
-                    = "SELECT * FROM booking "
-                    + "WHERE facility_name = ? "
-                    + "AND booking_date = ? "
-                    + "AND status != 'REJECTED' "
-                    + "AND NOT "
-                    + "(end_time <= ? "
-                    + "OR start_time >= ?)";
-
-            PreparedStatement checkPs
-                    = conn.prepareStatement(checkSql);
-
+            PreparedStatement checkPs = conn.prepareStatement(checkSql);
             checkPs.setString(1, facility);
             checkPs.setString(2, date);
             checkPs.setString(3, start);
             checkPs.setString(4, end);
 
-            ResultSet rs
-                    = checkPs.executeQuery();
+            ResultSet rs = checkPs.executeQuery();
 
             if (rs.next()) {
-
-                response.sendRedirect(
-                        "booking.jsp?unit="
-                        + facility
-                        + "&error=conflict"
-                );
-
+                response.sendRedirect("booking.jsp?unit=" + safeFacility + "&error=conflict");
                 return;
             }
 
-            // ==========================
-            // INSERT BOOKING
-            // ==========================
-            String insertSql
-                    = "INSERT INTO booking "
-                    + "(matric_no, facility_name, "
-                    + "booking_date, start_time, "
-                    + "end_time, purpose, status) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            // ===================== INSERT BOOKING =====================
+            String insertSql =
+                    "INSERT INTO booking " +
+                    "(matric_no, facility_name, booking_date, start_time, end_time, purpose, status) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            PreparedStatement ps
-                    = conn.prepareStatement(insertSql);
-
+            PreparedStatement ps = conn.prepareStatement(insertSql);
             ps.setString(1, matricNo);
             ps.setString(2, facility);
             ps.setString(3, date);
             ps.setString(4, start);
             ps.setString(5, end);
             ps.setString(6, purpose);
-
-            // DEFAULT STATUS
             ps.setString(7, "PENDING");
 
             ps.executeUpdate();
 
-            // ==========================
-// INSERT ADMIN NOTIFICATION
-// ==========================
-            String notificationSql
-                    = "INSERT INTO notification (user_id, message, status) VALUES (?, ?, ?)";
+            // ===================== NOTIFICATION =====================
+            String notifySql =
+                    "INSERT INTO notification (user_id, message, status) VALUES (?, ?, ?)";
 
-            PreparedStatement notificationPs
-                    = conn.prepareStatement(notificationSql);
+            PreparedStatement nps = conn.prepareStatement(notifySql);
+            nps.setString(1, "ADMIN");
+            nps.setString(2, "New booking from " + matricNo + " for " + facility);
+            nps.setString(3, "UNREAD");
 
-            notificationPs.setString(1, "ADMIN");
-            notificationPs.setString(
-                    2,
-                    "You have booking request from " + matricNo
-            );
-            notificationPs.setString(3, "UNREAD");
+            nps.executeUpdate();
 
-            notificationPs.executeUpdate();
-
-            // ==========================
-            // REDIRECT
-            // ==========================
-            response.sendRedirect(
-                    "myBooking.jsp?success=1"
-            );
+            // ===================== SUCCESS =====================
+            response.sendRedirect("myBooking.jsp?success=1");
 
         } catch (Exception e) {
-
             e.printStackTrace();
-
-            response.sendRedirect(
-                    "booking.jsp?unit="
-                    + facility
-                    + "&error=db"
-            );
+            response.sendRedirect("booking.jsp?unit=" + safeFacility + "&error=db");
 
         } finally {
-
             try {
-
-                if (conn != null) {
-
-                    conn.close();
-
-                }
-
+                if (conn != null) conn.close();
             } catch (Exception e) {
-
                 e.printStackTrace();
-
             }
-
         }
     }
+
 
     @Override
     public String getServletInfo() {
