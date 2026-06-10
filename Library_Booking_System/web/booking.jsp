@@ -89,6 +89,31 @@
                 margin-bottom:25px;
             }
 
+            .booking-summary{
+                display:grid;
+                grid-template-columns:repeat(3,1fr);
+                gap:12px;
+                margin:24px 0;
+            }
+
+            .summary-item{
+                background:#f8fafc;
+                border:1px solid #e5e7eb;
+                border-radius:14px;
+                padding:14px;
+            }
+
+            .summary-item span{
+                display:block;
+                color:#6b7280;
+                font-size:0.82rem;
+                margin-bottom:5px;
+            }
+
+            .summary-item strong{
+                color:#163832;
+            }
+
             .btn-submit{
                 width:100%;
                 background:#9a4f0f;
@@ -104,6 +129,11 @@
                 opacity:0.9;
             }
 
+            .btn-submit:disabled{
+                background:#9ca3af;
+                cursor:not-allowed;
+            }
+
             #statusBox{
                 font-weight:600;
                 margin-top:5px;
@@ -115,6 +145,12 @@
 
             .error{
                 color:red;
+            }
+
+            @media(max-width:768px){
+                .booking-summary{
+                    grid-template-columns:1fr;
+                }
             }
 
         </style>
@@ -132,7 +168,7 @@
                 <h1>Facility Reservation</h1>
 
                 <p class="text-muted mb-4">
-                    Fill in your booking details
+                    Review your selected slot, add your purpose, then confirm the booking.
                 </p>
 
                 <form action="BookingServlet"
@@ -152,7 +188,7 @@
                                readonly>
 
                         <input type="hidden"
-                               name="facilityName"
+                               name="unit"
                                value="<%= facilityName%>">
 
                     </div>
@@ -172,6 +208,21 @@
                                readonly
                                required>
 
+                    </div>
+
+                    <div class="booking-summary">
+                        <div class="summary-item">
+                            <span>Date</span>
+                            <strong><%= bookingDate%></strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>Start</span>
+                            <strong><%= startTimeParam%></strong>
+                        </div>
+                        <div class="summary-item">
+                            <span>End</span>
+                            <strong><%= endTimeParam%></strong>
+                        </div>
                     </div>
 
                     <!-- INFO BOX -->
@@ -243,6 +294,7 @@
                     </div>
 
                     <button type="submit"
+                            id="bookingButton"
                             class="btn-submit">
 
                         CONFIRM BOOKING
@@ -275,7 +327,11 @@
             const operatingHoursText =
                     document.getElementById("operatingHours");
 
+            const bookingButton =
+                    document.getElementById("bookingButton");
+
             let isSlotAvailable = true;
+            let hasInvalidTime = false;
 
             // ==========================
             // DISABLE PAST DATE
@@ -331,6 +387,8 @@
             async function validateTimeRules() {
 
                 statusBox.innerHTML = "";
+                hasInvalidTime = false;
+                bookingButton.disabled = false;
 
                 const date =
                         bookingDate.value;
@@ -366,8 +424,10 @@
                 if (end <= start) {
 
                     statusBox.innerHTML =
-                            "<span class='error'>⚠ End time must be after start time</span>";
+                            "<span class='error'>Warning: End time must be after start time</span>";
 
+                    hasInvalidTime = true;
+                    bookingButton.disabled = true;
                     return;
                 }
 
@@ -387,8 +447,10 @@
                 if (diffHours > 2) {
 
                     statusBox.innerHTML =
-                            "<span class='error'>⚠ Maximum booking is 2 hours only</span>";
+                            "<span class='error'>Warning: Maximum booking is 2 hours only. Please search another time slot.</span>";
 
+                    hasInvalidTime = true;
+                    bookingButton.disabled = true;
                     return;
                 }
 
@@ -402,8 +464,10 @@
                     if (startHour < 8 || endHour > 22) {
 
                         statusBox.innerHTML =
-                                "<span class='error'>⚠ Booking allowed only between 8AM - 10PM</span>";
+                                "<span class='error'>Warning: Booking allowed only between 8AM - 10PM</span>";
 
+                        hasInvalidTime = true;
+                        bookingButton.disabled = true;
                         return;
                     }
 
@@ -415,8 +479,10 @@
                     if (startHour < 9 || endHour > 18) {
 
                         statusBox.innerHTML =
-                                "<span class='error'>⚠ Booking allowed only between 9AM - 6PM</span>";
+                                "<span class='error'>Warning: Booking allowed only between 9AM - 6PM</span>";
 
+                        hasInvalidTime = true;
+                        bookingButton.disabled = true;
                         return;
                     }
 
@@ -435,8 +501,10 @@
                 if (oneHourDiff < 60) {
 
                     statusBox.innerHTML =
-                            "<span class='error'>⚠ Booking must be made at least 1 hour earlier</span>";
+                            "<span class='error'>Warning: Booking must be made at least 1 hour earlier</span>";
 
+                    hasInvalidTime = true;
+                    bookingButton.disabled = true;
                     return;
                 }
 
@@ -444,7 +512,7 @@
                 // CHECK SLOT AVAILABILITY
                 // ==========================
                 const facility =
-                        document.querySelector("input[name='facilityName']").value;
+                        document.querySelector("input[name='unit']").value;
 
                 try {
 
@@ -465,21 +533,22 @@
                         isSlotAvailable = true;
 
                         statusBox.innerHTML =
-                                "<span class='success'>✔ Slot available</span>";
+                                "<span class='success'>Slot available</span>";
 
                     } else {
 
                         isSlotAvailable = false;
+                        bookingButton.disabled = true;
 
                         statusBox.innerHTML =
-                                "<span class='error'>⚠ Slot already booked</span>";
+                                "<span class='error'>Warning: Slot already booked</span>";
 
                     }
 
                 } catch (e) {
 
                     statusBox.innerHTML =
-                            "<span class='error'>⚠ Error checking slot</span>";
+                            "<span class='error'>Warning: Error checking slot</span>";
 
                 }
 
@@ -490,7 +559,7 @@
             // ==========================
             function validateBooking() {
 
-                if (statusBox.innerText.includes("⚠")) {
+                if (hasInvalidTime || statusBox.innerText.includes("Warning:")) {
 
                     Swal.fire({
                         icon: "error",
@@ -537,6 +606,14 @@
                     icon: "error",
                     title: "Past Time",
                     text: "Selected booking time has already passed."
+                });
+            }
+
+            if (params.get("error") === "maxduration") {
+                Swal.fire({
+                    icon: "error",
+                    title: "Maximum 2 Hours",
+                    text: "Please search for a booking slot that is 2 hours or less."
                 });
             }
 

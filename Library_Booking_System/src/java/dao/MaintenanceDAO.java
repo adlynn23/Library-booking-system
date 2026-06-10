@@ -15,8 +15,12 @@ public class MaintenanceDAO {
     public static List<Maintenance> getAllMaintenance() {
         List<Maintenance> list = new ArrayList<>();
         try (Connection con = DBConnection.getConnection()) {
-            String sql = "SELECT * FROM maintenance ORDER BY maintenance_id DESC";
-          PreparedStatement ps = con.prepareStatement(sql);
+            String sql = "SELECT m.*, COALESCE(CONCAT(f.unit_name, ' - ', f.facility_name), m.facility_id) AS facility_display_name "
+                    + "FROM maintenance m "
+                    + "LEFT JOIN facility f ON f.facility_id = CAST(m.facility_id AS UNSIGNED) "
+                    + "OR f.unit_name = m.facility_id "
+                    + "ORDER BY m.maintenance_id DESC";
+            PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -24,6 +28,7 @@ public class MaintenanceDAO {
                 m.setMaintenanceId(rs.getInt("maintenance_id"));
                 m.setDescription(rs.getString("description"));
                 m.setFacilityId(rs.getString("facility_id"));
+                m.setFacilityName(rs.getString("facility_display_name"));
                 m.setStartDate(rs.getString("start_date"));
                 m.setEndDate(rs.getString("end_date"));
                 m.setStatus(rs.getString("maintenance_status"));
@@ -51,7 +56,7 @@ public class MaintenanceDAO {
 
             // 2. If status is "Done", set facility back to "Available" [cite: 651, 658, 739]
             if ("Done".equalsIgnoreCase(status)) {
-                String sqlFacility = "UPDATE facility SET status = 'Available' WHERE facility_id = ?";
+                String sqlFacility = "UPDATE facility SET status = 'AVAILABLE' WHERE facility_id = ?";
                 PreparedStatement psF = conn.prepareStatement(sqlFacility);
                 psF.setInt(1, facilityId);
                 psF.executeUpdate();

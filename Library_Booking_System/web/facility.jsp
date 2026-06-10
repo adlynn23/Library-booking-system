@@ -3,6 +3,22 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.util.*"%>
 <%@page import="model.Facility"%>
+<%@page import="dao.FacilityDAO"%>
+
+<%!
+    private String h(Object value) {
+        if (value == null) {
+            return "";
+        }
+
+        return String.valueOf(value)
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
 
 <%
     List<Facility> facilities
@@ -17,6 +33,9 @@
     if (mode == null) {
         mode = "all";
     }
+
+    List<String> facilityTypes = new FacilityDAO().getFacilityTypes();
+    String selectedType = request.getParameter("facilityType");
 %>
 
 <!DOCTYPE html>
@@ -166,6 +185,38 @@
                 box-shadow:0 15px 35px rgba(0,0,0,0.08);
             }
 
+            .facility-card.inactive{
+                cursor:not-allowed;
+                opacity:0.74;
+            }
+
+            .facility-card.inactive:hover{
+                transform:none;
+                box-shadow:none;
+            }
+
+            .facility-card.inactive .card-img{
+                filter:grayscale(100%);
+            }
+
+            .status-tag{
+                display:inline-block;
+                margin-bottom:12px;
+                padding:6px 12px;
+                border-radius:30px;
+                background:#f3f4f6;
+                color:#6b7280;
+                font-size:0.78rem;
+                font-weight:700;
+            }
+
+            .inactive-reason{
+                margin-top:12px;
+                color:#6b7280;
+                font-size:0.9rem;
+                line-height:1.5;
+            }
+
             .card-img{
                 width:100%;
                 height:220px;
@@ -244,7 +295,7 @@
         <!-- SEARCH -->
         <div class="search-container">
 
-            <form action="FacilityServlet" method="GET">
+            <form action="FacilityServlet" method="GET" onsubmit="return validateSearchDuration()">
 
                 <div class="search-box">
 
@@ -255,29 +306,19 @@
 
                         <select name="facilityType">
 
-                            <option value="">
+                            <option value="" <%= selectedType == null || selectedType.isEmpty() ? "selected" : ""%>>
                                 All Facilities
                             </option>
 
-                            <option value="Study Room">
-                                Study Room
+                            <%
+                                for (String type : facilityTypes) {
+                            %>
+                            <option value="<%= h(type)%>" <%= type.equals(selectedType) ? "selected" : ""%>>
+                                <%= h(type)%>
                             </option>
-
-                            <option value="Group Discussion Room">
-                                Group Discussion Room
-                            </option>
-
-                            <option value="Computer Lab">
-                                Computer Lab
-                            </option>
-
-                            <option value="Seminar Hall">
-                                Seminar Hall
-                            </option>
-
-                            <option value="Media Production Room">
-                                Media Production Room
-                            </option>
+                            <%
+                                }
+                            %>
 
                         </select>
 
@@ -361,23 +402,40 @@
                         for (Facility f : facilities) {
                 %>
 
-                <div class="facility-card"
-                     <%= mode.equals("search")
+                <%
+                    boolean active = "AVAILABLE".equalsIgnoreCase(f.getStatus());
+                %>
+
+                <div class="facility-card <%= active ? "" : "inactive"%>"
+                     <%= mode.equals("search") && active
                              ? "onclick=\"location.href='booking.jsp?facilityId="
                              + f.getFacilityId()
-                             + "&unit=" + java.net.URLEncoder.encode(f.getFacilityName(), "UTF-8")
+                             + "&unit=" + java.net.URLEncoder.encode(f.getUnitName(), "UTF-8")
                              + "&date=" + request.getParameter("date")
                              + "&startTime=" + request.getParameter("startTime")
                              + "&endTime=" + request.getParameter("endTime") + "'\""
                              : ""%>>
 
-                    <img src="<%= f.getImageUrl()%>" class="card-img">
+                    <img src="<%= h(f.getImageUrl())%>" class="card-img">
 
                     <div class="facility-content">
 
-                        <h3><%= f.getFacilityName()%></h3>
+                        <% if (!active) { %>
+                        <span class="status-tag">Not Available</span>
+                        <% } %>
 
-                        <p class="facility-desc"><%= f.getDescription()%></p>
+                        <h3><%= h(f.getUnitName())%></h3>
+
+                        <p class="facility-desc"><%= h(f.getFacilityName())%> - <%= h(f.getDescription())%></p>
+
+                        <% if (!active) { %>
+                        <div class="inactive-reason">
+                            Reason:
+                            <%= h(f.getUnavailableReason() == null || f.getUnavailableReason().isEmpty()
+                                    ? "Deactivated by admin"
+                                    : "Under maintenance - " + f.getUnavailableReason())%>
+                        </div>
+                        <% } %>
 
                         <div class="facility-meta">
                             <span class="capacity">
@@ -425,6 +483,31 @@
                     new Date().toISOString().split("T")[0];
 
             document.getElementById("bookingDate").min = today;
+
+            function validateSearchDuration() {
+                const start = document.querySelector("input[name='startTime']").value;
+                const end = document.querySelector("input[name='endTime']").value;
+
+                if (!start || !end) {
+                    return true;
+                }
+
+                const startDate = new Date("2000-01-01T" + start);
+                const endDate = new Date("2000-01-01T" + end);
+                const diffMinutes = (endDate - startDate) / (1000 * 60);
+
+                if (diffMinutes <= 0) {
+                    alert("End time must be after start time.");
+                    return false;
+                }
+
+                if (diffMinutes > 120) {
+                    alert("Maximum booking duration is 2 hours only.");
+                    return false;
+                }
+
+                return true;
+            }
 
         </script>
 

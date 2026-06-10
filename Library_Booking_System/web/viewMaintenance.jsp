@@ -1,8 +1,10 @@
 <%@page import="java.util.List"%>
 <%@page import="model.Maintenance"%>
 <%@page import="dao.MaintenanceDAO"%>
+<%@page import="dao.FacilityDAO"%>
 <%@page import="dao.FeedbackDAO"%>
 <%@page import="model.Feedback"%>
+<%@page import="model.Facility"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 
 <head>
@@ -267,7 +269,7 @@
                         <tr>
 
                             <td>
-                                <%= m.getFacilityId()%>
+                                <%= m.getFacilityName()%>
                             </td>
 
                             <td>
@@ -405,13 +407,32 @@
                     <div class="modal-body">
 
                         <label class="mb-2">
-                            Facility ID
+                            Facility
                         </label>
 
-                        <input type="text"
-                               name="facilityId"
-                               class="form-control mb-3"
-                               required>
+                        <select name="facilityId"
+                                class="form-control mb-3"
+                                required>
+
+                            <option value="">
+                                Select facility
+                            </option>
+
+                            <%
+                                List<Facility> facilities = new FacilityDAO().getAllFacilities();
+
+                                for (Facility facility : facilities) {
+                            %>
+
+                            <option value="<%= facility.getFacilityId()%>">
+                                <%= facility.getUnitName()%> - <%= facility.getFacilityName()%>
+                            </option>
+
+                            <%
+                                }
+                            %>
+
+                        </select>
 
                         <label class="mb-2">
                             Issue Description

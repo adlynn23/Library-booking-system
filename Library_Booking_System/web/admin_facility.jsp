@@ -1,28 +1,44 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="java.sql.*"%>
+<%@page import="java.util.*"%>
+<%@page import="dao.FacilityDAO"%>
+<%@page import="model.Facility"%>
+
+<%!
+    private String h(Object value) {
+        if (value == null) {
+            return "";
+        }
+
+        return String.valueOf(value)
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+    }
+%>
+
+<%
+    FacilityDAO facilityDAO = new FacilityDAO();
+    List<Facility> facilities = facilityDAO.getAllFacilities();
+%>
 
 <!DOCTYPE html>
 <html>
 
     <head>
-
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
         <title>Admin Portal | Facility Management</title>
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
-              rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
         <jsp:include page="admin_header.jsp" />
 
         <style>
-
             :root{
                 --primary:#163832;
                 --bg:#f3f4f6;
@@ -32,6 +48,8 @@
                 --muted:#6b7280;
                 --success-bg:#ecfdf3;
                 --success-text:#027a48;
+                --warning-bg:#fff7ed;
+                --warning-text:#c2410c;
                 --danger:#dc2626;
             }
 
@@ -43,19 +61,20 @@
 
             body{
                 font-family:'DM Sans',sans-serif;
-                background-color:#f3f4f6;
+                background-color:var(--bg);
                 color:var(--text);
             }
 
             .page-wrapper{
                 padding:40px 50px;
-                background-color:#f3f4f6;
+                background-color:var(--bg);
             }
 
             .page-top{
                 display:flex;
                 justify-content:space-between;
                 align-items:center;
+                gap:20px;
                 margin-bottom:25px;
             }
 
@@ -103,72 +122,56 @@
 
             .admin-list-container{
                 background:var(--card);
-                border-radius:24px;
-                padding:10px 30px;
+                border-radius:20px;
+                padding:24px;
                 border:1px solid var(--border);
                 box-shadow:0 10px 30px rgba(15,23,42,0.05);
             }
 
-            .admin-row{
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                padding:28px 0;
-                border-bottom:1px solid #f1f1f1;
-                cursor:pointer;
-                transition:0.2s;
+            .facility-table{
+                margin-bottom:0;
             }
 
-            .admin-row:hover{
-                background:#fafafa;
-            }
-
-            .admin-row:last-child{
-                border-bottom:none;
-            }
-
-            .facility-info h3{
-                font-size:1.2rem;
-                margin-bottom:6px;
-            }
-
-            .facility-info p{
-                font-size:0.9rem;
+            .facility-table th{
                 color:var(--muted);
-                margin-bottom:4px;
+                font-size:0.78rem;
+                text-transform:uppercase;
+                letter-spacing:0.06em;
+                border-bottom:1px solid var(--border);
             }
 
-            .facility-info small{
-                color:#9ca3af;
+            .facility-table td{
+                vertical-align:middle;
+                padding:16px 12px;
+            }
+
+            .facility-thumb{
+                width:88px;
+                height:60px;
+                object-fit:cover;
+                border-radius:8px;
+                border:1px solid var(--border);
+                background:#f9fafb;
+            }
+
+            .badge-active,
+            .badge-inactive{
+                padding:7px 12px;
+                border-radius:30px;
+                font-size:0.75rem;
+                font-weight:700;
+                display:inline-block;
+                white-space:nowrap;
             }
 
             .badge-active{
                 background:var(--success-bg);
                 color:var(--success-text);
-                padding:6px 12px;
-                border-radius:30px;
-                font-size:0.75rem;
-                font-weight:700;
-                margin-left:10px;
             }
 
-            .admin-unit-list{
-                max-height:0;
-                overflow:hidden;
-                transition:max-height 0.4s ease;
-            }
-
-            .admin-row.active + .admin-unit-list{
-                max-height:600px;
-                padding-bottom:20px;
-            }
-
-            .unit-management-row{
-                display:flex;
-                justify-content:space-between;
-                align-items:center;
-                padding:16px 10px;
-                border-top:1px solid #f3f4f6;
+            .badge-inactive{
+                background:var(--warning-bg);
+                color:var(--warning-text);
             }
 
             .btn-primary-custom{
@@ -191,53 +194,53 @@
                 font-size:0.85rem;
             }
 
+            .btn-danger-soft{
+                background:#fef2f2;
+                color:#b91c1c;
+            }
+
             .icon-btn{
-                width:36px;
-                height:36px;
+                width:38px;
+                height:38px;
                 border:none;
                 border-radius:10px;
                 background:#f9fafb;
                 cursor:pointer;
             }
 
-        </style>
+            .form-control{
+                border-radius:10px;
+                padding:10px 12px;
+            }
 
+            @media(max-width:768px){
+                .page-wrapper{
+                    padding:30px 18px;
+                }
+
+                .page-top{
+                    align-items:flex-start;
+                    flex-direction:column;
+                }
+            }
+        </style>
     </head>
 
     <body>
 
         <div class="page-wrapper">
 
-            <!-- TABS -->
             <div class="admin-tabs">
-
                 <div class="tabs-wrapper">
-
-                    <button class="tab-btn"
-                            onclick="switchTab('user')">
-                        User Management
-                    </button>
-
-                    <button class="tab-btn active"
-                            onclick="switchTab('facility')">
-                        Facility Management
-                    </button>
-
+                    <button class="tab-btn" onclick="switchTab('user')">User Management</button>
+                    <button class="tab-btn active" onclick="switchTab('facility')">Facility Management</button>
                 </div>
-
             </div>
 
-            <!-- USER MANAGEMENT -->
-            <div id="userSection"
-                 class="admin-list-container mb-4"
-                 style="display:none;">
-
-                <h4 class="mb-3 mt-3">
-                    User Management
-                </h4>
+            <div id="userSection" class="admin-list-container mb-4" style="display:none;">
+                <h4 class="mb-3">User Management</h4>
 
                 <table class="table table-hover">
-
                     <thead>
                         <tr>
                             <th>Matric No</th>
@@ -246,17 +249,13 @@
                             <th>Role</th>
                         </tr>
                     </thead>
-
                     <tbody>
-
                         <%
-
                             Connection conn = null;
                             PreparedStatement ps = null;
                             ResultSet rs = null;
 
                             try {
-
                                 Class.forName("com.mysql.cj.jdbc.Driver");
 
                                 conn = DriverManager.getConnection(
@@ -265,70 +264,37 @@
                                         ""
                                 );
 
-                                String sql
-                                        = "SELECT matric_no, name, phone, role FROM users";
-
-                                ps = conn.prepareStatement(sql);
-
+                                ps = conn.prepareStatement("SELECT matric_no, name, phone, role FROM users");
                                 rs = ps.executeQuery();
 
                                 boolean hasData = false;
 
                                 while (rs.next()) {
-
                                     hasData = true;
                         %>
-
                         <tr>
-
-                            <td>
-                                <%= rs.getString("matric_no")%>
-                            </td>
-
-                            <td>
-                                <%= rs.getString("name")%>
-                            </td>
-
-                            <td>
-                                <%= rs.getString("phone")%>
-                            </td>
-
-                            <td>
-                                <%= rs.getString("role")%>
-                            </td>
-
+                            <td><%= h(rs.getString("matric_no"))%></td>
+                            <td><%= h(rs.getString("name"))%></td>
+                            <td><%= h(rs.getString("phone"))%></td>
+                            <td><%= h(rs.getString("role"))%></td>
                         </tr>
-
                         <%
+                                }
 
-                            }
-
-                            if (!hasData) {
+                                if (!hasData) {
                         %>
-
                         <tr>
-                            <td colspan="4" class="text-center">
-                                No users found
-                            </td>
+                            <td colspan="4" class="text-center">No users found</td>
                         </tr>
-
                         <%
-                            }
-
-                        } catch (Exception e) {
+                                }
+                            } catch (Exception e) {
                         %>
-
                         <tr>
-                            <td colspan="4" class="text-danger">
-                                Error:
-                                <%= e.getMessage()%>
-                            </td>
+                            <td colspan="4" class="text-danger">Error: <%= h(e.getMessage())%></td>
                         </tr>
-
                         <%
-
                             } finally {
-
                                 if (rs != null) {
                                     rs.close();
                                 }
@@ -341,496 +307,228 @@
                                     conn.close();
                                 }
                             }
-
                         %>
-
                     </tbody>
-
                 </table>
-
             </div>
 
-            <!-- FACILITY SECTION -->
             <div id="facilitySection">
-
                 <div class="page-top">
-
                     <div class="page-title">
-
-                        <h2>
-                            Facility Management
-                        </h2>
-
-                        <p>
-                            Manage learning spaces, room availability and facility status.
-                        </p>
-
+                        <h2>Facility Management</h2>
+                        <p>Manage learning spaces, room availability and facility status.</p>
                     </div>
 
-                    <button class="btn-primary-custom"
-                            onclick="addFacility()">
-                        + Add Facility
+                    <button class="btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addFacilityModal">
+                        <i class="fa-solid fa-plus me-2"></i>Add Facility
                     </button>
-
                 </div>
 
                 <div class="admin-list-container">
+                    <div class="table-responsive">
+                        <table class="table facility-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Facility</th>
+                                    <th>Unit</th>
+                                    <th>Description</th>
+                                    <th>Capacity</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%
+                                    if (facilities == null || facilities.isEmpty()) {
+                                %>
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">No facilities found.</td>
+                                </tr>
+                                <%
+                                } else {
+                                    for (Facility f : facilities) {
+                                        boolean active = "AVAILABLE".equalsIgnoreCase(f.getStatus());
+                                %>
+                                <tr>
+                                    <td>
+                                        <img src="<%= h(f.getImageUrl())%>" class="facility-thumb" alt="<%= h(f.getFacilityName())%>">
+                                    </td>
+                                    <td><strong><%= h(f.getFacilityName())%></strong></td>
+                                    <td><%= h(f.getUnitName())%></td>
+                                    <td>
+                                        <%= h(f.getDescription())%>
+                                        <% if (!active) { %>
+                                        <div class="text-muted small mt-1">
+                                            Reason:
+                                            <%= h(f.getUnavailableReason() == null || f.getUnavailableReason().isEmpty()
+                                                    ? "Deactivated by admin"
+                                                    : "Under maintenance - " + f.getUnavailableReason())%>
+                                        </div>
+                                        <% } %>
+                                    </td>
+                                    <td><%= f.getCapacity()%></td>
+                                    <td>
+                                        <span class="<%= active ? "badge-active" : "badge-inactive"%>">
+                                            <%= active ? "Active" : "Inactive"%>
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-inline-flex gap-2">
+                                            <form action="AdminFacilityServlet" method="POST" class="m-0">
+                                                <input type="hidden" name="action" value="status">
+                                                <input type="hidden" name="facilityId" value="<%= f.getFacilityId()%>">
+                                                <input type="hidden" name="currentStatus" value="<%= h(f.getStatus())%>">
+                                                <button type="submit" class="btn-secondary-custom <%= active ? "btn-danger-soft" : ""%>">
+                                                    <%= active ? "Deactivate" : "Activate"%>
+                                                </button>
+                                            </form>
 
-                    <!-- STUDY ROOM -->
-                    <div class="admin-row" onclick="toggleAccordion(this)">
+                                            <button type="button"
+                                                    class="icon-btn"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#editFacilityModal"
+                                                    data-id="<%= f.getFacilityId()%>"
+                                                    data-name="<%= h(f.getFacilityName())%>"
+                                                    data-unit="<%= h(f.getUnitName())%>"
+                                                    data-description="<%= h(f.getDescription())%>"
+                                                    data-capacity="<%= f.getCapacity()%>">
+                                                <i class="fa-solid fa-pen text-success"></i>
+                                            </button>
 
-                        <div class="facility-info">
-
-                            <div class="d-flex align-items-center">
-                                <h3>Study Room</h3>
-
-                                <span class="badge-active">
-                                    Active
-                                </span>
-                            </div>
-
-                            <p>Quiet individual study room</p>
-
-                            <small>Total: 5 Units</small>
-
-                        </div>
-
-                        <div onclick="event.stopPropagation();">
-
-                            <button class="btn-secondary-custom"
-                                    onclick="toggleStatus(this)">
-                                Deactivate All
-                            </button>
-
-                            <button class="icon-btn">
-                                <i class="fa-solid fa-pen text-success"></i>
-                            </button>
-
-                        </div>
-
+                                            <form action="AdminFacilityServlet"
+                                                  method="POST"
+                                                  class="m-0"
+                                                  onsubmit="return confirm('Delete this facility? Existing booking history will remain, but this facility will be removed from the facility list.');">
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="facilityId" value="<%= f.getFacilityId()%>">
+                                                <button type="submit" class="icon-btn">
+                                                    <i class="fa-solid fa-trash text-danger"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <%
+                                        }
+                                    }
+                                %>
+                            </tbody>
+                        </table>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <div class="admin-unit-list">
+        <div class="modal fade" id="addFacilityModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="AdminFacilityServlet" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="add">
 
-                        <% for (int i = 1; i <= 5; i++) {%>
-
-                        <div class="unit-management-row">
-
-                            <span>
-                                Study Room <%= (char) ('A' + i - 1)%>
-                                <small class="badge-active">Active</small>
-                            </span>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn-secondary-custom"
-                                        onclick="toggleStatus(this)">
-                                    Deactivate
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-pen text-success"></i>
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-trash text-danger"></i>
-                                </button>
-
-                            </div>
-
+                        <div class="modal-header">
+                            <h5 class="modal-title">Add Facility</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
-                        <% }%>
+                        <div class="modal-body">
+                            <label class="form-label">Facility Name</label>
+                            <input type="text" name="facilityName" class="form-control mb-3" required>
 
-                    </div>
+                            <label class="form-label">Unit Name</label>
+                            <input type="text" name="unitName" class="form-control mb-3" placeholder="Example: Study Room A" required>
 
-                    <!-- GROUP DISCUSSION ROOM -->
-                    <div class="admin-row" onclick="toggleAccordion(this)">
+                            <label class="form-label">Capacity</label>
+                            <input type="number" name="capacity" class="form-control mb-3" min="1" required>
 
-                        <div class="facility-info">
+                            <label class="form-label">Description</label>
+                            <textarea name="description" class="form-control mb-3" rows="3" required></textarea>
 
-                            <div class="d-flex align-items-center">
-
-                                <h3>Group Discussion Room</h3>
-
-                                <span class="badge-active">
-                                    Active
-                                </span>
-
-                            </div>
-
-                            <p>Collaborative discussion space</p>
-
-                            <small>Total: 2 Units</small>
-
+                            <label class="form-label">Facility Image</label>
+                            <input type="file" name="imageFile" class="form-control" accept="image/*" required>
                         </div>
 
-                        <div onclick="event.stopPropagation();">
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn-primary-custom">Save Facility</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
-                            <button class="btn-secondary-custom"
-                                    onclick="toggleStatus(this)">
-                                Deactivate All
-                            </button>
+        <div class="modal fade" id="editFacilityModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <form action="AdminFacilityServlet" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="edit">
+                        <input type="hidden" name="facilityId" id="editFacilityId">
 
-                            <button class="icon-btn">
-                                <i class="fa-solid fa-pen text-success"></i>
-                            </button>
-
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Facility</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
 
-                    </div>
+                        <div class="modal-body">
+                            <label class="form-label">Facility Name</label>
+                            <input type="text" name="facilityName" id="editFacilityName" class="form-control mb-3" required>
 
-                    <div class="admin-unit-list">
+                            <label class="form-label">Unit Name</label>
+                            <input type="text" name="unitName" id="editUnitName" class="form-control mb-3" required>
 
-                        <div class="unit-management-row">
+                            <label class="form-label">Capacity</label>
+                            <input type="number" name="capacity" id="editCapacity" class="form-control mb-3" min="1" required>
 
-                            <span>
-                                Discussion Room A
-                                <small class="badge-active">Active</small>
-                            </span>
+                            <label class="form-label">Description</label>
+                            <textarea name="description" id="editDescription" class="form-control mb-3" rows="3" required></textarea>
 
-                            <div class="d-flex gap-2">
-
-                                <button class="btn-secondary-custom"
-                                        onclick="toggleStatus(this)">
-                                    Deactivate
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-pen text-success"></i>
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-trash text-danger"></i>
-                                </button>
-
-                            </div>
-
+                            <label class="form-label">Replace Image</label>
+                            <input type="file" name="imageFile" class="form-control" accept="image/*">
                         </div>
 
-                        <div class="unit-management-row">
-
-                            <span>
-                                Discussion Room B
-                                <small class="badge-active">Active</small>
-                            </span>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn-secondary-custom"
-                                        onclick="toggleStatus(this)">
-                                    Deactivate
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-pen text-success"></i>
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-trash text-danger"></i>
-                                </button>
-
-                            </div>
-
+                        <div class="modal-footer border-0">
+                            <button type="button" class="btn-secondary-custom" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn-primary-custom">Update Facility</button>
                         </div>
-
-                    </div>
-
-                    <!-- COMPUTER LAB -->
-                    <div class="admin-row" onclick="toggleAccordion(this)">
-
-                        <div class="facility-info">
-
-                            <div class="d-flex align-items-center">
-
-                                <h3>Computer Lab</h3>
-
-                                <span class="badge-active">
-                                    Active
-                                </span>
-
-                            </div>
-
-                            <p>High-performance computers with specialized software</p>
-
-                            <small>Total: 2 Units</small>
-
-                        </div>
-
-                        <div onclick="event.stopPropagation();">
-
-                            <button class="btn-secondary-custom"
-                                    onclick="toggleStatus(this)">
-                                Deactivate All
-                            </button>
-
-                            <button class="icon-btn">
-                                <i class="fa-solid fa-pen text-success"></i>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div class="admin-unit-list">
-
-                        <div class="unit-management-row">
-
-                            <span>
-                                Computer Lab A
-                                <small class="badge-active">Active</small>
-                            </span>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn-secondary-custom"
-                                        onclick="toggleStatus(this)">
-                                    Deactivate
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-pen text-success"></i>
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-trash text-danger"></i>
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                        <div class="unit-management-row">
-
-                            <span>
-                                Computer Lab B
-                                <small class="badge-active">Active</small>
-                            </span>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn-secondary-custom"
-                                        onclick="toggleStatus(this)">
-                                    Deactivate
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-pen text-success"></i>
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-trash text-danger"></i>
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- SEMINAR HALL -->
-                    <div class="admin-row" onclick="toggleAccordion(this)">
-
-                        <div class="facility-info">
-
-                            <div class="d-flex align-items-center">
-
-                                <h3>Seminar Hall</h3>
-
-                                <span class="badge-active">
-                                    Active
-                                </span>
-
-                            </div>
-
-                            <p>Large auditorium for presentations and events</p>
-
-                            <small>Total: 2 Units</small>
-
-                        </div>
-
-                        <div onclick="event.stopPropagation();">
-
-                            <button class="btn-secondary-custom"
-                                    onclick="toggleStatus(this)">
-                                Deactivate All
-                            </button>
-
-                            <button class="icon-btn">
-                                <i class="fa-solid fa-pen text-success"></i>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div class="admin-unit-list">
-
-                        <div class="unit-management-row">
-
-                            <span>
-                                Auditorium A
-                                <small class="badge-active">Active</small>
-                            </span>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn-secondary-custom"
-                                        onclick="toggleStatus(this)">
-                                    Deactivate
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-pen text-success"></i>
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-trash text-danger"></i>
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                        <div class="unit-management-row">
-
-                            <span>
-                                Auditorium B
-                                <small class="badge-active">Active</small>
-                            </span>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn-secondary-custom"
-                                        onclick="toggleStatus(this)">
-                                    Deactivate
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-pen text-success"></i>
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-trash text-danger"></i>
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!-- MEDIA ROOM -->
-                    <div class="admin-row" onclick="toggleAccordion(this)">
-
-                        <div class="facility-info">
-
-                            <div class="d-flex align-items-center">
-
-                                <h3>Media Production Room</h3>
-
-                                <span class="badge-active">
-                                    Active
-                                </span>
-
-                            </div>
-
-                            <p>Professional recording and editing equipment</p>
-
-                            <small>Total: 1 Unit</small>
-
-                        </div>
-
-                        <div onclick="event.stopPropagation();">
-
-                            <button class="btn-secondary-custom"
-                                    onclick="toggleStatus(this)">
-                                Deactivate All
-                            </button>
-
-                            <button class="icon-btn">
-                                <i class="fa-solid fa-pen text-success"></i>
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div class="admin-unit-list">
-
-                        <div class="unit-management-row">
-
-                            <span>
-                                Media Space
-                                <small class="badge-active">Active</small>
-                            </span>
-
-                            <div class="d-flex gap-2">
-
-                                <button class="btn-secondary-custom"
-                                        onclick="toggleStatus(this)">
-                                    Deactivate
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-pen text-success"></i>
-                                </button>
-
-                                <button class="icon-btn">
-                                    <i class="fa-solid fa-trash text-danger"></i>
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <script>
-
-                        function toggleStatus(id, status) {
-
-                            let newStatus = (status === "AVAILABLE")
-                                    ? "NOT AVAILABLE"
-                                    : "AVAILABLE";
-
-                            window.location.href =
-                                    "updateFacilityStatus.jsp?id=" + id +
-                                    "&status=" + encodeURIComponent(newStatus);
-                        }
-
-                        function toggleAccordion(row) {
-                            row.classList.toggle('active');
-                        }
-
-                        function addFacility() {
-                            alert("Add Facility");
-                        }
-
-                        function switchTab(tab) {
-
-                            const userSection = document.getElementById("userSection");
-                            const facilitySection = document.getElementById("facilitySection");
-                            const buttons = document.querySelectorAll(".tab-btn");
-
-                            buttons.forEach(btn => btn.classList.remove("active"));
-
-                            if (tab === 'user') {
-                                userSection.style.display = "block";
-                                facilitySection.style.display = "none";
-                                buttons[0].classList.add("active");
-                            } else {
-                                userSection.style.display = "none";
-                                facilitySection.style.display = "block";
-                                buttons[1].classList.add("active");
-                            }
-                        }
-
-                    </script>
-
-
-                    <jsp:include page="footer.jsp" />
-
-                    </body>
-
-                    </html>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <jsp:include page="footer.jsp" />
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+            function switchTab(tab) {
+                const userSection = document.getElementById("userSection");
+                const facilitySection = document.getElementById("facilitySection");
+                const buttons = document.querySelectorAll(".tab-btn");
+
+                buttons.forEach(btn => btn.classList.remove("active"));
+
+                if (tab === "user") {
+                    userSection.style.display = "block";
+                    facilitySection.style.display = "none";
+                    buttons[0].classList.add("active");
+                } else {
+                    userSection.style.display = "none";
+                    facilitySection.style.display = "block";
+                    buttons[1].classList.add("active");
+                }
+            }
+
+            const editModal = document.getElementById("editFacilityModal");
+
+            editModal.addEventListener("show.bs.modal", function (event) {
+                const button = event.relatedTarget;
+
+                document.getElementById("editFacilityId").value = button.getAttribute("data-id");
+                document.getElementById("editFacilityName").value = button.getAttribute("data-name");
+                document.getElementById("editUnitName").value = button.getAttribute("data-unit");
+                document.getElementById("editDescription").value = button.getAttribute("data-description");
+                document.getElementById("editCapacity").value = button.getAttribute("data-capacity");
+            });
+        </script>
+    </body>
+
+</html>

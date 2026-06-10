@@ -3,7 +3,7 @@ package controller;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Date;
+import java.sql.ResultSet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -24,13 +24,25 @@ public class Maintenance_Servlet extends HttpServlet {
 
         try {
             Connection con = DBConnection.getConnection();
-            String sql = "INSERT INTO maintenance (facility_id, description, maintenance_status, start_date) VALUES (?, ?, 'In Process', CURRENT_DATE)";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, facilityId);
-            ps.setString(2, description);
-            
-            ps.executeUpdate();
-            con.close();
+            con.setAutoCommit(false);
+
+            try {
+                String sql = "INSERT INTO maintenance (facility_id, description, maintenance_status, start_date) VALUES (?, ?, 'In Process', CURRENT_DATE)";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1, facilityId);
+                ps.setString(2, description);
+                ps.executeUpdate();
+                ps.close();
+
+                updateFacilityStatus(con, facilityId, "NOT AVAILABLE");
+
+                con.commit();
+            } catch (Exception e) {
+                con.rollback();
+                throw e;
+            } finally {
+                con.close();
+            }
             
             // Redirect back to refresh the dashboard view instantly
             response.sendRedirect("viewMaintenance.jsp");
@@ -49,19 +61,73 @@ public class Maintenance_Servlet extends HttpServlet {
 
         try {
             Connection con = DBConnection.getConnection();
-            // Updates status to Done and logs the current date as the end_date
-            String sql = "UPDATE maintenance SET maintenance_status = 'Done', end_date = CURRENT_DATE WHERE maintenance_id = ?";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, maintenanceId);
-            
-            ps.executeUpdate();
-            con.close();
+            con.setAutoCommit(false);
+
+            try {
+                String facilityId = null;
+                String findSql = "SELECT facility_id FROM maintenance WHERE maintenance_id = ?";
+                PreparedStatement findPs = con.prepareStatement(findSql);
+                findPs.setString(1, maintenanceId);
+                ResultSet rs = findPs.executeQuery();
+
+                if (rs.next()) {
+                    facilityId = rs.getString("facility_id");
+                }
+
+                rs.close();
+                findPs.close();
+
+                // Updates status to Done and logs the current date as the end_date
+                String sql = "UPDATE maintenance SET maintenance_status = 'Done', end_date = CURRENT_DATE WHERE maintenance_id = ?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1, maintenanceId);
+                ps.executeUpdate();
+                ps.close();
+
+                if (facilityId != null) {
+                    updateFacilityStatus(con, facilityId, "AVAILABLE");
+                }
+
+                con.commit();
+            } catch (Exception e) {
+                con.rollback();
+                throw e;
+            } finally {
+                con.close();
+            }
             
             // Redirect back to dashboard to see updated status
             response.sendRedirect("viewMaintenance.jsp");
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().print("Database Error: " + e.getMessage());
+        }
+    }
+
+    private void updateFacilityStatus(Connection con, String facilityId, String status)
+            throws Exception {
+
+        String sql = isInteger(facilityId)
+                ? "UPDATE facility SET status = ? WHERE facility_id = ?"
+                : "UPDATE facility SET status = ? WHERE unit_name = ?";
+
+        PreparedStatement ps = con.prepareStatement(sql);
+        ps.setString(1, status);
+        ps.setString(2, facilityId);
+        ps.executeUpdate();
+        ps.close();
+    }
+
+    private boolean isInteger(String value) {
+        if (value == null || value.trim().isEmpty()) {
+            return false;
+        }
+
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 }

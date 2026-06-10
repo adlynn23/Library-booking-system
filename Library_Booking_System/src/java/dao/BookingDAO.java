@@ -19,9 +19,11 @@ public class BookingDAO {
                    
                     = "SELECT * FROM facility f "
                     + "WHERE (? = '' OR f.facility_name = ?) "
-                    + "AND f.facility_id NOT IN ("
-                    + "SELECT b.facility_id FROM booking b "
+                    + "AND UPPER(f.status) = 'AVAILABLE' "
+                    + "AND f.unit_name NOT IN ("
+                    + "SELECT b.facility_name FROM booking b "
                     + "WHERE b.booking_date = ? "
+                    + "AND b.status != 'REJECTED' "
                     + "AND NOT (b.end_time <= ? OR b.start_time >= ?))";
 
             PreparedStatement ps = conn.prepareStatement(sql);
@@ -44,6 +46,7 @@ public class BookingDAO {
                 f.setDescription(rs.getString("description"));
                 f.setCapacity(rs.getInt("capacity"));
                 f.setImageUrl(rs.getString("image_url"));
+                f.setStatus(rs.getString("status"));
 
                 list.add(f);
             }

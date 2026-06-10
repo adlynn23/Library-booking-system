@@ -16,6 +16,7 @@ public class Facility {
     private int capacity;
     private String status;
     private String imageUrl;
+    private String unavailableReason;
 
 
     public int getFacilityId() {
@@ -72,6 +73,14 @@ public class Facility {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public String getUnavailableReason() {
+        return unavailableReason;
+    }
+
+    public void setUnavailableReason(String unavailableReason) {
+        this.unavailableReason = unavailableReason;
     }
     
     // getters + setters

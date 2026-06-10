@@ -122,6 +122,13 @@ public class CheckAvailabilityServlet extends HttpServlet {
                             startTime
                     );
 
+            if (!endTime.isAfter(startTime)
+                    || java.time.Duration.between(startTime, endTime).toMinutes() > 120) {
+
+                out.print("{\"available\":false}");
+                return;
+            }
+
             // ==========================
             // PAST TIME
             // ==========================

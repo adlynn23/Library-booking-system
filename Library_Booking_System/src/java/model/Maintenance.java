@@ -3,6 +3,7 @@ package model;
 public class Maintenance {
     private int maintenanceId;
     private String facilityId;
+    private String facilityName;
     private String description;
     private String startDate;
     private String endDate;
@@ -14,6 +15,9 @@ public class Maintenance {
 
     public String getFacilityId() { return facilityId; }
     public void setFacilityId(String facilityId) { this.facilityId = facilityId; }
+
+    public String getFacilityName() { return facilityName; }
+    public void setFacilityName(String facilityName) { this.facilityName = facilityName; }
     
      public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }

@@ -108,6 +108,22 @@ public class BookingServlet extends HttpServlet {
                 return;
             }
 
+            String statusSql
+                    = "SELECT status FROM facility WHERE unit_name = ?";
+
+            PreparedStatement statusPs = conn.prepareStatement(statusSql);
+            statusPs.setString(1, facility);
+            ResultSet statusRs = statusPs.executeQuery();
+
+            if (!statusRs.next()
+                    || !"AVAILABLE".equalsIgnoreCase(statusRs.getString("status"))) {
+                response.sendRedirect("FacilityServlet?error=inactive");
+                return;
+            }
+
+            statusRs.close();
+            statusPs.close();
+
             // ===================== SLOT CONFLICT FIXED =====================
             String checkSql =
                     "SELECT * FROM booking " +
