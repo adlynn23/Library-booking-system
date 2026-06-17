@@ -4,6 +4,7 @@
 
 <%
     String facilityName = request.getParameter("unit");
+
     String bookingDate = request.getParameter("date");
     String startTimeParam = request.getParameter("startTime");
     String endTimeParam = request.getParameter("endTime");
@@ -19,6 +20,12 @@
     }
     if (endTimeParam == null)
         endTimeParam = "";
+%>
+<%
+    System.out.println("facility = " + facilityName);
+    System.out.println("date = " + bookingDate);
+    System.out.println("start = " + startTimeParam);
+    System.out.println("end = " + endTimeParam);
 %>
 
 <!DOCTYPE html>
@@ -220,8 +227,8 @@
                             <strong><%= startTimeParam%></strong>
                         </div>
                         <div class="summary-item">
-                            <span>End</span>
-                            <strong><%= endTimeParam%></strong>
+                            <span>End Time</span>
+                            <strong id="displayEnd"></strong>
                         </div>
                     </div>
 
@@ -262,19 +269,29 @@
                         <div class="col-md-6 mb-4">
 
                             <label class="form-label">
-                                End Time
+                                Duration
                             </label>
-                            <input type="time"
-                                   id="endTime"
-                                   name="endTime"
-                                   class="form-control"
-                                   value="<%= endTimeParam%>"
-                                   readonly
-                                   required>
+
+                            <select id="duration"
+                                    class="form-control">
+
+                                <option value="1">
+                                    1 Hour
+                                </option>
+
+                                <option value="2">
+                                    2 Hours
+                                </option>
+
+                            </select>
 
                         </div>
 
                     </div>
+                    <input type="hidden"
+                           id="endTime"
+                           name="endTime">
+
 
                     <!-- STATUS -->
                     <div id="statusBox"></div>
@@ -617,9 +634,47 @@
                 });
             }
 
+
+            function updateEndTime() {
+
+                let start =
+                        document.getElementById("startTime").value;
+
+                let duration =
+                        parseInt(
+                                document.getElementById("duration").value
+                                );
+
+                if (!start)
+                    return;
+
+                let hour =
+                        parseInt(start.split(":")[0]);
+
+                hour += duration;
+
+                let end =
+                        (hour < 10 ? "0" + hour : hour)
+                        + ":00";
+
+                document.getElementById("endTime").value = end;
+
+                document.getElementById("displayEnd").innerText = end;
+            }
+
+            document.getElementById("duration")
+                    .addEventListener("change", function () {
+
+                        updateEndTime();
+                        validateTimeRules();
+
+                    });
             window.onload = function () {
 
                 updateOperatingHours();
+
+                updateEndTime();
+
                 validateTimeRules();
 
             };

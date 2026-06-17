@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.net.URLEncoder;
 import java.time.LocalTime;
 
+
 public class BookingServlet extends HttpServlet {
 
     // DATABASE CONFIG
@@ -51,7 +52,7 @@ public class BookingServlet extends HttpServlet {
 
     }
 
-      @Override
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -72,7 +73,9 @@ public class BookingServlet extends HttpServlet {
         String end = request.getParameter("endTime");
         String purpose = request.getParameter("purpose");
 
-        if (facility == null) facility = "";
+        if (facility == null) {
+            facility = "";
+        }
 
         String safeFacility = URLEncoder.encode(facility, "UTF-8");
 
@@ -125,12 +128,12 @@ public class BookingServlet extends HttpServlet {
             statusPs.close();
 
             // ===================== SLOT CONFLICT FIXED =====================
-            String checkSql =
-                    "SELECT * FROM booking " +
-                    "WHERE facility_name = ? " +
-                    "AND booking_date = ? " +
-                    "AND status != 'REJECTED' " +
-                    "AND NOT (end_time <= ? OR start_time >= ?)";
+            String checkSql
+                    = "SELECT * FROM booking "
+                    + "WHERE facility_name = ? "
+                    + "AND booking_date = ? "
+                    + "AND status != 'REJECTED' "
+                    + "AND NOT (end_time <= ? OR start_time >= ?)";
 
             PreparedStatement checkPs = conn.prepareStatement(checkSql);
             checkPs.setString(1, facility);
@@ -145,11 +148,19 @@ public class BookingServlet extends HttpServlet {
                 return;
             }
 
+            System.out.println("===== BOOKING DEBUG =====");
+            System.out.println("matricNo = " + matricNo);
+            System.out.println("facility = " + facility);
+            System.out.println("date = " + date);
+            System.out.println("start = " + start);
+            System.out.println("end = " + end);
+            System.out.println("purpose = " + purpose);
+            System.out.println("=========================");
             // ===================== INSERT BOOKING =====================
-            String insertSql =
-                    "INSERT INTO booking " +
-                    "(matric_no, facility_name, booking_date, start_time, end_time, purpose, status) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            String insertSql
+                    = "INSERT INTO booking "
+                    + "(matric_no, facility_name, booking_date, start_time, end_time, purpose, status) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement ps = conn.prepareStatement(insertSql);
             ps.setString(1, matricNo);
@@ -163,8 +174,8 @@ public class BookingServlet extends HttpServlet {
             ps.executeUpdate();
 
             // ===================== NOTIFICATION =====================
-            String notifySql =
-                    "INSERT INTO notification (user_id, message, status) VALUES (?, ?, ?)";
+            String notifySql
+                    = "INSERT INTO notification (user_id, message, status) VALUES (?, ?, ?)";
 
             PreparedStatement nps = conn.prepareStatement(notifySql);
             nps.setString(1, "ADMIN");
@@ -177,18 +188,27 @@ public class BookingServlet extends HttpServlet {
             response.sendRedirect("myBooking.jsp?success=1");
 
         } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect("booking.jsp?unit=" + safeFacility + "&error=db");
 
-        } finally {
+    System.out.println("===== ERROR OCCURRED =====");
+    e.printStackTrace();
+
+    response.sendRedirect(
+            "booking.jsp?unit=" + safeFacility
+            + "&date=" + date
+            + "&startTime=" + start
+            + "&endTime=" + end
+            + "&error=db");
+}
+         finally {
             try {
-                if (conn != null) conn.close();
+                if (conn != null) {
+                    conn.close();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
-
 
     @Override
     public String getServletInfo() {

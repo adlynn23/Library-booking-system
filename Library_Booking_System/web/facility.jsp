@@ -196,7 +196,8 @@
             }
 
             .facility-card.inactive .card-img{
-                filter:grayscale(100%);
+                filter:grayscale(100%) blur(2px);
+                opacity:0.6;
             }
 
             .status-tag{
@@ -245,10 +246,14 @@
             }
 
             .capacity{
-                background:#f5f5f5;
-                padding:8px 14px;
+                display:inline-block;
+                background:#dcfce7;
+                color:#166534;
+                border:2px solid #22c55e;
+                padding:10px 18px;
                 border-radius:30px;
-                font-size:0.85rem;
+                font-size:0.95rem;
+                font-weight:700;
             }
 
             .booking-info{
@@ -281,6 +286,21 @@
                 .btn-search{
                     width:100%;
                 }
+                .capacity{
+                    background:#f5f5f5;
+                    padding:8px 14px;
+                    border-radius:30px;
+                    font-size:0.85rem;
+                }
+                .active-tag{
+                    background:#dcfce7;
+                    color:#166534;
+                }
+
+                .inactive-tag{
+                    background:#fee2e2;
+                    color:#991b1b;
+                }
 
             }
 
@@ -295,8 +315,7 @@
         <!-- SEARCH -->
         <div class="search-container">
 
-            <form action="FacilityServlet" method="GET" onsubmit="return validateSearchDuration()">
-
+            <form action="AvailabilityServlet" method="GET">
                 <div class="search-box">
 
                     <!-- FACILITY -->
@@ -336,27 +355,7 @@
 
                     </div>
 
-                    <!-- START TIME -->
-                    <div class="search-group">
 
-                        <label>Start Time</label>
-
-                        <input type="time"
-                               name="startTime"
-                               required>
-
-                    </div>
-
-                    <!-- END TIME -->
-                    <div class="search-group">
-
-                        <label>End Time</label>
-
-                        <input type="time"
-                               name="endTime"
-                               required>
-
-                    </div>
 
                     <!-- BUTTON -->
                     <button type="submit"
@@ -406,40 +405,37 @@
                     boolean active = "AVAILABLE".equalsIgnoreCase(f.getStatus());
                 %>
 
-                <div class="facility-card <%= active ? "" : "inactive"%>"
-                     <%= mode.equals("search") && active
-                             ? "onclick=\"location.href='booking.jsp?facilityId="
-                             + f.getFacilityId()
-                             + "&unit=" + java.net.URLEncoder.encode(f.getUnitName(), "UTF-8")
-                             + "&date=" + request.getParameter("date")
-                             + "&startTime=" + request.getParameter("startTime")
-                             + "&endTime=" + request.getParameter("endTime") + "'\""
-                             : ""%>>
+                <div class="facility-card <%= active ? "" : "inactive"%>">
 
                     <img src="<%= h(f.getImageUrl())%>" class="card-img">
 
                     <div class="facility-content">
 
                         <% if (!active) { %>
-                        <span class="status-tag">Not Available</span>
-                        <% } %>
-
+                        <span class="status-tag inactive-tag">
+                            Not Available
+                        </span>
+                        <% } else { %>
+                        <span class="status-tag active-tag">
+                            Available
+                        </span>
+                        <% }%>
                         <h3><%= h(f.getUnitName())%></h3>
 
                         <p class="facility-desc"><%= h(f.getFacilityName())%> - <%= h(f.getDescription())%></p>
 
-                        <% if (!active) { %>
+                        <% if (!active) {%>
                         <div class="inactive-reason">
                             Reason:
                             <%= h(f.getUnavailableReason() == null || f.getUnavailableReason().isEmpty()
                                     ? "Deactivated by admin"
                                     : "Under maintenance - " + f.getUnavailableReason())%>
                         </div>
-                        <% } %>
+                        <% }%>
 
                         <div class="facility-meta">
                             <span class="capacity">
-                                Capacity: <%= f.getCapacity()%> person
+                                👥 Capacity: <%= f.getCapacity()%> Persons
                             </span>
                         </div>
 
@@ -484,30 +480,6 @@
 
             document.getElementById("bookingDate").min = today;
 
-            function validateSearchDuration() {
-                const start = document.querySelector("input[name='startTime']").value;
-                const end = document.querySelector("input[name='endTime']").value;
-
-                if (!start || !end) {
-                    return true;
-                }
-
-                const startDate = new Date("2000-01-01T" + start);
-                const endDate = new Date("2000-01-01T" + end);
-                const diffMinutes = (endDate - startDate) / (1000 * 60);
-
-                if (diffMinutes <= 0) {
-                    alert("End time must be after start time.");
-                    return false;
-                }
-
-                if (diffMinutes > 120) {
-                    alert("Maximum booking duration is 2 hours only.");
-                    return false;
-                }
-
-                return true;
-            }
 
         </script>
 

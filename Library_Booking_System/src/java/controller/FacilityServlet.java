@@ -1,98 +1,90 @@
 package controller;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.sql.*;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
 import model.Facility;
 import util.DBConnection;
+import java.sql.ResultSet;
 
 public class FacilityServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request,
+            HttpServletResponse response)
             throws ServletException, IOException {
 
-        List<Facility> list = new ArrayList<>();
-
         String type = request.getParameter("facilityType");
-        String date = request.getParameter("date");
-        String startTime = request.getParameter("startTime");
-        String endTime = request.getParameter("endTime");
 
-        boolean isSearch
-                = (date != null && !date.isEmpty())
-                && (startTime != null && !startTime.isEmpty())
-                && (endTime != null && !endTime.isEmpty());
+        List<Facility> list = new ArrayList<>();
+        Map<String, List<String>> bookedMap = new HashMap<>();
 
         try (Connection conn = DBConnection.getConnection()) {
-            PreparedStatement ps;
 
-            if (!isSearch) {
-                String sql = "SELECT f.*, "
-                        + "(SELECT m.description FROM maintenance m "
-                        + "WHERE m.maintenance_status <> 'Done' "
-                        + "AND (m.facility_id = CAST(f.facility_id AS CHAR) OR m.facility_id = f.unit_name) "
-                        + "ORDER BY m.maintenance_id DESC LIMIT 1) AS unavailable_reason "
-                        + "FROM facility f "
-                        + "ORDER BY f.facility_name, f.unit_name";
+            // =========================
+            // FACILITY DATA
+            // =========================
+            String sql = "SELECT * FROM facility";
 
-                ps = conn.prepareStatement(sql);
-            } else {
-                String sql = "SELECT f.*, NULL AS unavailable_reason FROM facility f "
-                        + "WHERE (? = '' OR f.facility_name = ?) "
-                        + "AND UPPER(f.status) = 'AVAILABLE' "
-                        + "AND f.unit_name NOT IN ("
-                        + "SELECT b.facility_name FROM booking b "
-                        + "WHERE b.booking_date = ? "
-                        + "AND b.status != 'REJECTED' "
-                        + "AND (b.start_time < ? AND b.end_time > ?)) "
-                        + "ORDER BY f.facility_name, f.unit_name";
-
-                ps = conn.prepareStatement(sql);
-                ps.setString(1, type == null ? "" : type);
-                ps.setString(2, type == null ? "" : type);
-                ps.setString(3, date);
-                ps.setString(4, endTime);
-                ps.setString(5, startTime);
+            if (type != null && !type.trim().isEmpty()) {
+                sql += " WHERE facility_name = ?";
             }
 
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Facility facility = new Facility();
+            PreparedStatement ps = conn.prepareStatement(sql);
 
-                    facility.setFacilityId(rs.getInt("facility_id"));
-                    facility.setFacilityName(rs.getString("facility_name"));
-                    facility.setUnitName(rs.getString("unit_name"));
-                    facility.setDescription(rs.getString("description"));
-                    facility.setCapacity(rs.getInt("capacity"));
-                    facility.setImageUrl(rs.getString("image_url"));
-                    facility.setStatus(rs.getString("status"));
-                    facility.setUnavailableReason(rs.getString("unavailable_reason"));
-
-                    list.add(facility);
-                }
+            if (type != null && !type.trim().isEmpty()) {
+                ps.setString(1, type);
             }
 
-            ps.close();
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                Facility f = new Facility();
+
+                f.setFacilityId(rs.getInt("facility_id"));
+                f.setFacilityName(rs.getString("facility_name"));
+                f.setUnitName(rs.getString("unit_name"));
+                f.setDescription(rs.getString("description"));
+                f.setCapacity(rs.getInt("capacity"));
+                f.setImageUrl(rs.getString("image_url"));
+                f.setStatus(rs.getString("status"));
+
+                list.add(f);
+            }
+
+            // =========================
+            // BOOKING DATA
+            // =========================
+            String sql2
+                    = "SELECT unit_name, start_time "
+                    + "FROM booking "
+                    + "WHERE booking_date = CURRENT_DATE";
+
+            PreparedStatement ps2 = conn.prepareStatement(sql2);
+            ResultSet rs2 = ps2.executeQuery();
+
+            while (rs2.next()) {
+
+                String unitName = rs2.getString("unit_name");
+                String time = rs2.getString("start_time").substring(0, 5);
+
+                bookedMap
+                        .computeIfAbsent(unitName,
+                                k -> new ArrayList<>())
+                        .add(time);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", e.getMessage());
         }
 
         request.setAttribute("facilities", list);
-        request.setAttribute("mode", isSearch ? "search" : "all");
-        request.getRequestDispatcher("facility.jsp").forward(request, response);
-    }
+        request.setAttribute("bookedMap", bookedMap);
 
-    @Override
-    public String getServletInfo() {
-        return "Facility list and search";
+        request.getRequestDispatcher("facility.jsp")
+                .forward(request, response);
     }
 }

@@ -56,6 +56,18 @@
         <servlet-name>FacilityListServlet</servlet-name>
         <servlet-class>controller.FacilityListServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>Availability</servlet-name>
+        <servlet-class>model.Availability</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AvailableServlet</servlet-name>
+        <servlet-class>controller.AvailableServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AvailabilityServlet</servlet-name>
+        <servlet-class>controller.AvailabilityServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>startBookingServlet</servlet-name>
         <url-pattern>/startBookingServlet</url-pattern>
@@ -135,6 +147,18 @@
     <servlet-mapping>
         <servlet-name>FacilityListServlet</servlet-name>
         <url-pattern>/FacilityListServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Availability</servlet-name>
+        <url-pattern>/Availability</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AvailableServlet</servlet-name>
+        <url-pattern>/AvailableServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AvailabilityServlet</servlet-name>
+        <url-pattern>/AvailabilityServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>30</session-timeout>
