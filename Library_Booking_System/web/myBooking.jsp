@@ -20,7 +20,7 @@
         <title>My Booking | EduSpace</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        
+
         <style>
             :root {
                 --edu-green: #1a3a32;
@@ -185,6 +185,7 @@
                     <option value="Approved">Approved</option>
                     <option value="Pending">Pending</option>
                     <option value="Rejected">Rejected</option>
+                    <option value="Cancelled">Cancelled</option>
                 </select>
             </div>
 
@@ -198,6 +199,7 @@
                             <th>Purpose</th>
                             <th>Admin Notes</th>
                             <th class="text-center">Status</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -242,10 +244,37 @@
                                     <%= status%>
                                 </span>
                             </td>
+                            <td class="text-center">
+
+                                <%
+                                    if ("Pending".equalsIgnoreCase(status)
+                                            || "Approved".equalsIgnoreCase(status)) {
+                                %>
+
+                                <a href="CancelBookingServlet?bookingId=<%= rs.getInt("booking_id")%>"
+                                   class="btn btn-sm btn-outline-danger"
+                                   onclick="return confirm('Are you sure you want to cancel this booking?');">
+
+                                    <i class="fa-solid fa-ban"></i>
+                                    Cancel
+
+                                </a>
+
+                                <%
+                                } else {
+                                %>
+
+                                <span class="text-muted">-</span>
+
+                                <%
+                                    }
+                                %>
+
+                            </td>
                         </tr>
                         <%
-                                }
-                                if (!hasData) {
+                            }
+                            if (!hasData) {
                         %>
                         <tr>
                             <td colspan="6" class="text-center py-5 text-muted">
@@ -277,16 +306,17 @@
 
                     tableRows.forEach(row => {
                         // Skip the fallback empty row message if it appears
-                        if(row.cells.length < 6) return;
+                        if (row.cells.length < 7)
+                            return;
 
                         const facility = row.cells[0].innerText.toLowerCase();
                         const date = row.cells[1].innerText.toLowerCase();
                         const purpose = row.cells[3].innerText.toLowerCase();
                         const status = row.cells[5].innerText.toLowerCase().trim(); // Fixed Cell Index to 5
 
-                        const matchSearch = facility.includes(searchValue) || 
-                                            date.includes(searchValue) || 
-                                            purpose.includes(searchValue);
+                        const matchSearch = facility.includes(searchValue) ||
+                                date.includes(searchValue) ||
+                                purpose.includes(searchValue);
 
                         const matchStatus = (statusValue === "all") || (status === statusValue);
 
@@ -302,7 +332,7 @@
                 statusFilter.addEventListener("change", filterTable);
             });
         </script>
-            <jsp:include page="footer.jsp" />
+        <jsp:include page="footer.jsp" />
 
     </body>
 </html>
