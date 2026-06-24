@@ -62,179 +62,124 @@ public class AvailabilityServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
 
-        List<Facility> facilities = new ArrayList<>();
+    List<Facility> facilities = new ArrayList<>();
+    Map<String, List<String>> bookedMap = new HashMap<>();
 
-        Map<String, List<String>> bookedMap = new HashMap<>();
+    String type = request.getParameter("facilityType");
+    String date = request.getParameter("date");
 
-        String type = request.getParameter("facilityType");
-        String date = request.getParameter("date");
+    if (date == null || date.isEmpty()) {
+        response.sendRedirect("facility.jsp");
+        return;
+    }
 
-        if (date == null || date.isEmpty()) {
-            response.sendRedirect("facility.jsp");
-            return;
-        }
+    int startHour = 8;
+    int endHour = 18;
 
-        // ================= OPERATING HOURS =================
-        int startHour = 8;
-        int endHour = 18;
+    java.sql.Date sqlDate = java.sql.Date.valueOf(date);
+    java.util.Calendar cal = java.util.Calendar.getInstance();
+    cal.setTime(sqlDate);
 
-        java.sql.Date sqlDate = java.sql.Date.valueOf(date);
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        cal.setTime(sqlDate);
+    int day = cal.get(java.util.Calendar.DAY_OF_WEEK);
 
-        int day = cal.get(java.util.Calendar.DAY_OF_WEEK);
+    if (day >= java.util.Calendar.SUNDAY && day <= java.util.Calendar.WEDNESDAY) {
+        endHour = 22;
+    }
 
-        if (day >= java.util.Calendar.SUNDAY && day <= java.util.Calendar.WEDNESDAY) {
-            endHour = 22;
-        }
+    try (Connection conn = DBConnection.getConnection()) {
 
-        request.setAttribute("startHour", startHour);
-        request.setAttribute("endHour", endHour);
+        PreparedStatement facilityPs;
 
-        try (Connection conn = DBConnection.getConnection()) {
+        if (type == null || type.isEmpty() || type.equals("All Facilities")) {
 
-            String facilitySql
-                    = "SELECT * FROM facility\n"
-                    + "WHERE facility_name = ? AND status = 'AVAILABLE'";
+            String facilitySql =
+                    "SELECT * FROM facility " +
+                    "WHERE status = 'AVAILABLE' " +
+                    "ORDER BY facility_name, unit_name";
 
-            PreparedStatement facilityPs
-                    = conn.prepareStatement(facilitySql);
+            facilityPs = conn.prepareStatement(facilitySql);
 
+        } else {
+
+            String facilitySql =
+                    "SELECT * FROM facility " +
+                    "WHERE facility_name = ? AND status = 'AVAILABLE' " +
+                    "ORDER BY unit_name";
+
+            facilityPs = conn.prepareStatement(facilitySql);
             facilityPs.setString(1, type);
+        }
 
-            ResultSet facilityRs = facilityPs.executeQuery();
+        ResultSet facilityRs = facilityPs.executeQuery();
 
-            while (facilityRs.next()) {
+        while (facilityRs.next()) {
 
-                Facility f = new Facility();
+            Facility f = new Facility();
 
-                f.setFacilityId(facilityRs.getInt("facility_id"));
-                f.setFacilityName(facilityRs.getString("facility_name"));
-                f.setUnitName(facilityRs.getString("unit_name"));
-                f.setDescription(facilityRs.getString("description"));
-                f.setCapacity(facilityRs.getInt("capacity"));
-                f.setStatus(facilityRs.getString("status"));
+            f.setFacilityId(facilityRs.getInt("facility_id"));
+            f.setFacilityName(facilityRs.getString("facility_name"));
+            f.setUnitName(facilityRs.getString("unit_name"));
+            f.setDescription(facilityRs.getString("description"));
+            f.setCapacity(facilityRs.getInt("capacity"));
+            f.setStatus(facilityRs.getString("status"));
 
-                facilities.add(f);
+            facilities.add(f);
+        }
+
+        for (Facility f : facilities) {
+
+            String bookingSql =
+                    "SELECT facility_name, start_time, end_time " +
+                    "FROM booking " +
+                    "WHERE booking_date = ? " +
+                    "AND facility_name = ? " +
+                    "AND status <> 'REJECTED'";
+
+            PreparedStatement bookingPs = conn.prepareStatement(bookingSql);
+
+            bookingPs.setString(1, date);
+            bookingPs.setString(2, f.getUnitName());
+
+            ResultSet bookingRs = bookingPs.executeQuery();
+
+            while (bookingRs.next()) {
+
+                String facilityName = bookingRs.getString("facility_name");
+
+                String start = bookingRs.getString("start_time").substring(0, 5);
+                String end = bookingRs.getString("end_time").substring(0, 5);
+
+                int bookingStartHour = Integer.parseInt(start.split(":")[0]);
+                int bookingEndHour = Integer.parseInt(end.split(":")[0]);
+
+                for (int h = bookingStartHour; h < bookingEndHour; h++) {
+
+                    String bookedTime =
+                            (h < 10 ? "0" + h : String.valueOf(h)) + ":00";
+
+                    bookedMap
+                            .computeIfAbsent(facilityName, k -> new ArrayList<>())
+                            .add(bookedTime);
+                }
             }
-
-//            String bookingSql
-//                    = "SELECT facility_name, start_time, end_time "
-//                    + "FROM booking "
-//                    + "WHERE booking_date = ? "
-//                    + "AND facility_name = ? "
-//                    + "AND status <> 'REJECTED'";
-
-//            PreparedStatement bookingPs
-//                    = conn.prepareStatement(bookingSql);
-//
-//            bookingPs.setString(1, date);
-//            bookingPs.setString(2, type);
-for (Facility f : facilities) {
-
-    String bookingSql
-            = "SELECT facility_name, start_time, end_time "
-            + "FROM booking "
-            + "WHERE booking_date = ? "
-            + "AND facility_name = ? "
-            + "AND status <> 'REJECTED'";
-
-    PreparedStatement bookingPs =
-            conn.prepareStatement(bookingSql);
-
-    bookingPs.setString(1, date);
-
-    bookingPs.setString(2, f.getUnitName());
-
-    ResultSet bookingRs =
-            bookingPs.executeQuery();
-
-    while (bookingRs.next()) {
-
-        String facilityName =
-                bookingRs.getString("facility_name");
-
-        String start =
-                bookingRs.getString("start_time")
-                        .substring(0, 5);
-
-        String end =
-                bookingRs.getString("end_time")
-                        .substring(0, 5);
-
-        int bookingStartHour =
-                Integer.parseInt(start.split(":")[0]);
-
-        int bookingEndHour =
-                Integer.parseInt(end.split(":")[0]);
-
-        for (int h = bookingStartHour;
-                h < bookingEndHour;
-                h++) {
-
-            String bookedTime =
-                    (h < 10
-                    ? "0" + h
-                    : String.valueOf(h))
-                    + ":00";
-
-            bookedMap
-                    .computeIfAbsent(
-                            facilityName,
-                            k -> new ArrayList<>())
-                    .add(bookedTime);
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    request.setAttribute("facilities", facilities);
+    request.setAttribute("bookedMap", bookedMap);
+    request.setAttribute("facilityType", type);
+    request.setAttribute("date", date);
+    request.setAttribute("startHour", startHour);
+    request.setAttribute("endHour", endHour);
+
+    request.getRequestDispatcher("availability.jsp").forward(request, response);
 }
-
-//            ResultSet bookingRs = bookingPs.executeQuery();
-
-//            while (bookingRs.next()) {
-//
-//                String facilityName
-//                        = bookingRs.getString("facility_name");
-//
-//                String start
-//                        = bookingRs.getString("start_time").substring(0, 5);
-//
-//                String end
-//                        = bookingRs.getString("end_time").substring(0, 5);
-//
-//                int bookingStartHour
-//                        = Integer.parseInt(start.split(":")[0]);
-//
-//                int bookingEndHour
-//                        = Integer.parseInt(end.split(":")[0]);
-//
-//                for (int h = bookingStartHour; h < bookingEndHour; h++) {
-//
-//                    String bookedTime
-//                            = (h < 10 ? "0" + h : String.valueOf(h))
-//                            + ":00";
-//
-//                    bookedMap
-//                            .computeIfAbsent(facilityName,
-//                                    k -> new ArrayList<>())
-//                            .add(bookedTime);
-//                }
-//            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        request.setAttribute("facilities", facilities);
-        request.setAttribute("bookedMap", bookedMap);
-        request.setAttribute("facilityType", type);
-        request.setAttribute("date", date);
-        request.setAttribute("startHour", startHour);
-        request.setAttribute("endHour", endHour);
-
-        request.setAttribute("facilities", facilities);
-        request.getRequestDispatcher("availability.jsp").forward(request, response);
-    }
 
     /**
      * Handles the HTTP <code>POST</code> method.
