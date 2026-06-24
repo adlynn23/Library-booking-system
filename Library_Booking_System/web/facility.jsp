@@ -407,8 +407,8 @@
 
                 <div class="facility-card <%= active ? "" : "inactive"%>">
 
-                    <img src="<%= h(f.getImageUrl())%>" class="card-img">
-
+                    <img src="<%= request.getContextPath() + "/" + h(f.getImageUrl())%>"
+                         class="card-img">
                     <div class="facility-content">
 
                         <% if (!active) { %>
