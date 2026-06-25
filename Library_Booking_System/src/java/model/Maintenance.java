@@ -8,8 +8,10 @@ public class Maintenance {
     private String startDate;
     private String endDate;
     private String status;
+    private String priority;
+    private String category;
+    private String expectedCompletion;
 
-    // Standard Getters and Setters [cite: 1284, 1285]
     public int getMaintenanceId() { return maintenanceId; }
     public void setMaintenanceId(int maintenanceId) { this.maintenanceId = maintenanceId; }
 
@@ -18,8 +20,8 @@ public class Maintenance {
 
     public String getFacilityName() { return facilityName; }
     public void setFacilityName(String facilityName) { this.facilityName = facilityName; }
-    
-     public String getDescription() { return description; }
+
+    public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
     public String getStartDate() { return startDate; }
@@ -31,4 +33,12 @@ public class Maintenance {
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
+    public String getPriority() { return priority; }
+    public void setPriority(String priority) { this.priority = priority; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public String getExpectedCompletion() { return expectedCompletion; }
+    public void setExpectedCompletion(String expectedCompletion) { this.expectedCompletion = expectedCompletion; }
 }

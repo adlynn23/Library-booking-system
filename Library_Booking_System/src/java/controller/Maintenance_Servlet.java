@@ -14,23 +14,35 @@ import util.DBConnection;
 @WebServlet(name = "Maintenance_Servlet", urlPatterns = {"/Maintenance_Servlet", "/UpdateStatusServlet"})
 public class Maintenance_Servlet extends HttpServlet {
 
-    // 1. Handles KEY IN NEW REPAIR (Form Submission)
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String facilityId = request.getParameter("facilityId");
         String description = request.getParameter("description");
+        String priority = request.getParameter("priority");
+        String category = request.getParameter("category");
+        String expectedCompletion = request.getParameter("expectedCompletion");
 
         try {
             Connection con = DBConnection.getConnection();
             con.setAutoCommit(false);
 
             try {
-                String sql = "INSERT INTO maintenance (facility_id, description, maintenance_status, start_date) VALUES (?, ?, 'In Process', CURRENT_DATE)";
+                String sql = "INSERT INTO maintenance (facility_id, description, maintenance_status, start_date, priority, category, expected_completion) "
+                           + "VALUES (?, ?, 'In Process', CURRENT_DATE, ?, ?, ?)";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setString(1, facilityId);
                 ps.setString(2, description);
+                ps.setString(3, priority);
+                ps.setString(4, category);
+
+                if (expectedCompletion == null || expectedCompletion.trim().isEmpty()) {
+                    ps.setNull(5, java.sql.Types.DATE);
+                } else {
+                    ps.setString(5, expectedCompletion);
+                }
+
                 ps.executeUpdate();
                 ps.close();
 
@@ -43,20 +55,18 @@ public class Maintenance_Servlet extends HttpServlet {
             } finally {
                 con.close();
             }
-            
-            // Redirect back to refresh the dashboard view instantly
-            response.sendRedirect("viewMaintenance.jsp");
+
+            response.sendRedirect("viewMaintenance.jsp?maintenanceSuccess=true");
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().print("Database Error: " + e.getMessage());
         }
     }
 
-    // 2. Handles MARK DONE (Action Link Click)
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
         String maintenanceId = request.getParameter("id");
 
         try {
@@ -77,7 +87,6 @@ public class Maintenance_Servlet extends HttpServlet {
                 rs.close();
                 findPs.close();
 
-                // Updates status to Done and logs the current date as the end_date
                 String sql = "UPDATE maintenance SET maintenance_status = 'Done', end_date = CURRENT_DATE WHERE maintenance_id = ?";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setString(1, maintenanceId);
@@ -95,18 +104,15 @@ public class Maintenance_Servlet extends HttpServlet {
             } finally {
                 con.close();
             }
-            
-            // Redirect back to dashboard to see updated status
-            response.sendRedirect("viewMaintenance.jsp");
+
+            response.sendRedirect("viewMaintenance.jsp?doneSuccess=true");
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().print("Database Error: " + e.getMessage());
         }
     }
 
-    private void updateFacilityStatus(Connection con, String facilityId, String status)
-            throws Exception {
-
+    private void updateFacilityStatus(Connection con, String facilityId, String status) throws Exception {
         String sql = isInteger(facilityId)
                 ? "UPDATE facility SET status = ? WHERE facility_id = ?"
                 : "UPDATE facility SET status = ? WHERE unit_name = ?";
@@ -122,7 +128,6 @@ public class Maintenance_Servlet extends HttpServlet {
         if (value == null || value.trim().isEmpty()) {
             return false;
         }
-
         try {
             Integer.parseInt(value);
             return true;
