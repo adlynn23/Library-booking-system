@@ -263,16 +263,14 @@
     String error = request.getParameter("error");
 %>
 
-<% if("true".equals(success)) { %>
+<% if ("true".equals(request.getParameter("success"))) { %>
 <script>
 Swal.fire({
     icon: "success",
     title: "Feedback Submitted!",
     text: "Your message has been successfully sent to our team.",
-    confirmButtonText: "Great!",
-    confirmButtonColor: "#1a3a32",
-    showClass: { popup: "animate__animated animate__fadeInDown" },
-    hideClass: { popup: "animate__animated animate__fadeOutUp" }
+    confirmButtonText: "OK",
+    confirmButtonColor: "#1a3a32"
 });
 </script>
 <% } %>
