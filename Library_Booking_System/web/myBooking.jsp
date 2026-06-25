@@ -1,5 +1,6 @@
 <%@page import="java.sql.*"%>
 <%@page import="java.util.*"%>
+<%@page import="java.time.*"%>
 <%@page import="java.time.format.DateTimeFormatter"%>
 
 <%
@@ -20,7 +21,8 @@
     int approvedCount = 0;
     int cancelledCount = 0;
 
-    List<Map<String, String>> bookings = new ArrayList<>();
+    List<Map<String, String>> upcomingBookings = new ArrayList<>();
+    List<Map<String, String>> historyBookings = new ArrayList<>();
 
     try {
         Class.forName("com.mysql.cj.jdbc.Driver");
@@ -33,28 +35,23 @@
 
         ResultSet rs = ps.executeQuery();
 
+        LocalDate today = LocalDate.now();
+
         while (rs.next()) {
             Map<String, String> b = new HashMap<>();
 
             String status = rs.getString("status");
+            LocalDate rawDate = rs.getDate("booking_date").toLocalDate();
 
             b.put("booking_id", String.valueOf(rs.getInt("booking_id")));
             b.put("facility_name", rs.getString("facility_name"));
-
-            b.put("booking_date",
-                    rs.getDate("booking_date").toLocalDate().format(dateFormatter));
-
-            b.put("start_time",
-                    rs.getTime("start_time").toLocalTime().format(timeFormatter));
-
-            b.put("end_time",
-                    rs.getTime("end_time").toLocalTime().format(timeFormatter));
-
+            b.put("booking_date", rawDate.format(dateFormatter));
+            b.put("start_time", rs.getTime("start_time").toLocalTime().format(timeFormatter));
+            b.put("end_time", rs.getTime("end_time").toLocalTime().format(timeFormatter));
             b.put("purpose", rs.getString("purpose"));
             b.put("admin_notes", rs.getString("admin_notes"));
             b.put("status", status);
 
-            bookings.add(b);
             totalCount++;
 
             if ("Pending".equalsIgnoreCase(status)) {
@@ -63,6 +60,17 @@
                 approvedCount++;
             } else if ("Cancelled".equalsIgnoreCase(status)) {
                 cancelledCount++;
+            }
+
+            boolean isUpcoming =
+                    !rawDate.isBefore(today)
+                    && ("Pending".equalsIgnoreCase(status)
+                    || "Approved".equalsIgnoreCase(status));
+
+            if (isUpcoming) {
+                upcomingBookings.add(b);
+            } else {
+                historyBookings.add(b);
             }
         }
 
@@ -127,6 +135,36 @@
             font-weight: 800;
             color: var(--edu-green);
             margin-top: 4px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            border: none;
+            background: white;
+            color: var(--edu-green);
+            padding: 11px 18px;
+            border-radius: 999px;
+            font-weight: 800;
+            box-shadow: 0 6px 18px rgba(26, 58, 50, 0.05);
+        }
+
+        .tab-btn.active {
+            background: var(--edu-green);
+            color: white;
+        }
+
+        .booking-section {
+            display: none;
+        }
+
+        .booking-section.active {
+            display: block;
         }
 
         .filter-bar {
@@ -282,6 +320,16 @@
         </div>
     </div>
 
+    <div class="tab-buttons">
+        <button class="tab-btn active" onclick="showSection('upcomingSection', this)">
+            Upcoming Bookings (<%= upcomingBookings.size() %>)
+        </button>
+
+        <button class="tab-btn" onclick="showSection('historySection', this)">
+            Booking History (<%= historyBookings.size() %>)
+        </button>
+    </div>
+
     <div class="filter-bar">
         <input type="text" id="searchInput" placeholder="Search by facility, date, or purpose...">
 
@@ -294,141 +342,208 @@
         </select>
     </div>
 
-    <div class="table-card">
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Facility</th>
-                    <th>Date</th>
-                    <th>Time Slot</th>
-                    <th>Purpose</th>
-                    <th>Admin Notes</th>
-                    <th class="text-center">Status</th>
-                    <th class="text-center">Action</th>
-                </tr>
-            </thead>
+    <%
+        String dbError = (String) request.getAttribute("dbError");
+    %>
 
-            <tbody>
-            <%
-                String dbError = (String) request.getAttribute("dbError");
+    <div id="upcomingSection" class="booking-section active">
+        <div class="table-card">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Facility</th>
+                        <th>Date</th>
+                        <th>Time Slot</th>
+                        <th>Purpose</th>
+                        <th>Admin Notes</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
 
-                if (dbError != null) {
-            %>
-                <tr>
-                    <td colspan="7" class="text-danger text-center py-4">
-                        Error connecting to database: <%= dbError %>
-                    </td>
-                </tr>
-            <%
-                } else if (bookings.isEmpty()) {
-            %>
-                <tr>
-                    <td colspan="7" class="text-center py-5 text-muted">
-                        <i class="fa-regular fa-folder-open fa-2x mb-3 d-block text-secondary"></i>
-                        You haven't made any facility reservations yet.
-                    </td>
-                </tr>
-            <%
-                } else {
-                    for (Map<String, String> b : bookings) {
-                        String status = b.get("status");
-                        String badgeClass = "status-default";
+                <tbody>
+                <%
+                    if (dbError != null) {
+                %>
+                    <tr>
+                        <td colspan="7" class="text-danger text-center py-4">
+                            Error connecting to database: <%= dbError %>
+                        </td>
+                    </tr>
+                <%
+                    } else if (upcomingBookings.isEmpty()) {
+                %>
+                    <tr>
+                        <td colspan="7" class="text-center py-5 text-muted">
+                            No upcoming bookings.
+                        </td>
+                    </tr>
+                <%
+                    } else {
+                        for (Map<String, String> b : upcomingBookings) {
+                            String status = b.get("status");
+                            String badgeClass = "Pending".equalsIgnoreCase(status)
+                                    ? "status-pending"
+                                    : "status-approved";
 
-                        if ("Approved".equalsIgnoreCase(status)) {
-                            badgeClass = "status-approved";
-                        } else if ("Pending".equalsIgnoreCase(status)) {
-                            badgeClass = "status-pending";
-                        } else if ("Rejected".equalsIgnoreCase(status)) {
-                            badgeClass = "status-rejected";
-                        } else if ("Cancelled".equalsIgnoreCase(status)) {
-                            badgeClass = "status-cancelled";
-                        }
+                            String notes = b.get("admin_notes");
+                %>
 
-                        String notes = b.get("admin_notes");
-            %>
+                    <tr class="booking-row">
+                        <td class="facility-cell"><%= b.get("facility_name") %></td>
+                        <td><i class="fa-regular fa-calendar me-2 text-muted"></i><%= b.get("booking_date") %></td>
+                        <td><i class="fa-regular fa-clock me-2 text-muted"></i><%= b.get("start_time") %> - <%= b.get("end_time") %></td>
+                        <td class="wrap-cell"><%= b.get("purpose") %></td>
 
-                <tr>
-                    <td class="facility-cell"><%= b.get("facility_name") %></td>
+                        <td class="wrap-cell">
+                            <% if (notes == null || notes.trim().isEmpty()) { %>
+                                <span class="notes-empty">-</span>
+                            <% } else { %>
+                                <%= notes %>
+                            <% } %>
+                        </td>
 
-                    <td>
-                        <i class="fa-regular fa-calendar me-2 text-muted"></i>
-                        <%= b.get("booking_date") %>
-                    </td>
+                        <td class="text-center">
+                            <span class="status-badge <%= badgeClass %>"><%= status %></span>
+                        </td>
 
-                    <td>
-                        <i class="fa-regular fa-clock me-2 text-muted"></i>
-                        <%= b.get("start_time") %> - <%= b.get("end_time") %>
-                    </td>
-
-                    <td class="wrap-cell"><%= b.get("purpose") %></td>
-
-                    <td class="wrap-cell">
-                        <%
-                            if (notes == null || notes.trim().isEmpty()) {
-                        %>
-                            <span class="notes-empty">-</span>
-                        <%
-                            } else {
-                        %>
-                            <%= notes %>
-                        <%
-                            }
-                        %>
-                    </td>
-
-                    <td class="text-center">
-                        <span class="status-badge <%= badgeClass %>">
-                            <%= status %>
-                        </span>
-                    </td>
-
-                    <td class="text-center">
-                        <%
-                            if ("Pending".equalsIgnoreCase(status)
-                                    || "Approved".equalsIgnoreCase(status)) {
-                        %>
+                        <td class="text-center">
                             <a href="CancelBookingServlet?bookingId=<%= b.get("booking_id") %>"
                                class="btn btn-sm btn-outline-danger cancel-btn"
                                onclick="return confirm('Are you sure you want to cancel this booking?');">
-                                <i class="fa-solid fa-ban"></i>
-                                Cancel
+                                <i class="fa-solid fa-ban"></i> Cancel
                             </a>
-                        <%
-                            } else {
-                        %>
-                            <span class="text-muted">-</span>
-                        <%
-                            }
-                        %>
-                    </td>
-                </tr>
+                        </td>
+                    </tr>
 
-            <%
+                <%
+                        }
                     }
-                }
-            %>
-            </tbody>
-        </table>
+                %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="historySection" class="booking-section">
+        <div class="table-card">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Facility</th>
+                        <th>Date</th>
+                        <th>Time Slot</th>
+                        <th>Purpose</th>
+                        <th>Admin Notes</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                <%
+                    if (dbError != null) {
+                %>
+                    <tr>
+                        <td colspan="6" class="text-danger text-center py-4">
+                            Error connecting to database: <%= dbError %>
+                        </td>
+                    </tr>
+                <%
+                    } else if (historyBookings.isEmpty()) {
+                %>
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            No booking history.
+                        </td>
+                    </tr>
+                <%
+                    } else {
+                        for (Map<String, String> b : historyBookings) {
+                            String status = b.get("status");
+                            String badgeClass = "status-default";
+
+                            if ("Approved".equalsIgnoreCase(status)) {
+                                badgeClass = "status-approved";
+                            } else if ("Pending".equalsIgnoreCase(status)) {
+                                badgeClass = "status-pending";
+                            } else if ("Rejected".equalsIgnoreCase(status)) {
+                                badgeClass = "status-rejected";
+                            } else if ("Cancelled".equalsIgnoreCase(status)) {
+                                badgeClass = "status-cancelled";
+                            }
+
+                            String notes = b.get("admin_notes");
+                %>
+
+                    <tr class="booking-row">
+                        <td class="facility-cell"><%= b.get("facility_name") %></td>
+                        <td><i class="fa-regular fa-calendar me-2 text-muted"></i><%= b.get("booking_date") %></td>
+                        <td><i class="fa-regular fa-clock me-2 text-muted"></i><%= b.get("start_time") %> - <%= b.get("end_time") %></td>
+                        <td class="wrap-cell"><%= b.get("purpose") %></td>
+
+                        <td class="wrap-cell">
+                            <% if (notes == null || notes.trim().isEmpty()) { %>
+                                <span class="notes-empty">-</span>
+                            <% } else { %>
+                                <%= notes %>
+                            <% } %>
+                        </td>
+
+                        <td class="text-center">
+                            <span class="status-badge <%= badgeClass %>"><%= status %></span>
+                        </td>
+                    </tr>
+
+                <%
+                        }
+                    }
+                %>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
 <script>
+    function showSection(sectionId, button) {
+        document.querySelectorAll(".booking-section").forEach(section => {
+            section.classList.remove("active");
+        });
+
+        document.getElementById(sectionId).classList.add("active");
+
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        button.classList.add("active");
+
+        filterTable();
+    }
+
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById("searchInput");
         const statusFilter = document.getElementById("statusFilter");
-        const tableRows = document.querySelectorAll(".modern-table tbody tr");
 
-        function filterTable() {
+        window.filterTable = function () {
+            const activeSection = document.querySelector(".booking-section.active");
+            const rows = activeSection.querySelectorAll(".booking-row");
+
             const searchValue = searchInput.value.toLowerCase().trim();
             const statusValue = statusFilter.value.toLowerCase().trim();
 
-            tableRows.forEach(row => {
-                if (row.cells.length < 7) return;
-
+            rows.forEach(row => {
                 const facility = row.cells[0].innerText.toLowerCase();
                 const date = row.cells[1].innerText.toLowerCase();
                 const purpose = row.cells[3].innerText.toLowerCase();
-                const status = row.cells[5].innerText.toLowerCase().trim();
+
+                let status = "";
+
+                if (activeSection.id === "upcomingSection") {
+                    status = row.cells[5].innerText.toLowerCase().trim();
+                } else {
+                    status = row.cells[5].innerText.toLowerCase().trim();
+                }
 
                 const matchSearch =
                         facility.includes(searchValue) ||
@@ -440,7 +555,7 @@
 
                 row.style.display = matchSearch && matchStatus ? "" : "none";
             });
-        }
+        };
 
         searchInput.addEventListener("input", filterTable);
         statusFilter.addEventListener("change", filterTable);
