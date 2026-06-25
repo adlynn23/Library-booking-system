@@ -46,181 +46,202 @@
 <head>
     <title>Facility Availability</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --edu-green: #1a3a32;
+        --accent-gold: #d4a373;
+        --text-dark: #2d3436;
+        --soft-bg: #f5f6f7;
+    }
 
-    <style>
-        body{
-            font-family:'Inter', sans-serif;
-            background:#f4f6f8;
-            margin:0;
-            padding:28px;
-            color:#111827;
-        }
+    body{
+        font-family:'DM Sans', sans-serif;
+        background-color: var(--soft-bg);
+        margin:0;
+        padding:30px;
+        color:var(--text-dark);
+    }
 
-        .back-btn{
-            display:inline-block;
-            margin-bottom:18px;
-            padding:11px 20px;
-            background:#123c35;
-            color:white;
-            text-decoration:none;
-            border-radius:10px;
-            font-weight:700;
-            box-shadow:0 4px 10px rgba(0,0,0,0.12);
-        }
+    .back-btn{
+        display:inline-block;
+        margin-bottom:22px;
+        padding:10px 18px;
+        background:var(--edu-green);
+        color:white;
+        text-decoration:none;
+        border-radius:10px;
+        font-weight:700;
+        box-shadow:0 6px 18px rgba(26, 58, 50, 0.08);
+    }
 
-        .page-header{
-            background:white;
-            padding:28px 30px;
-            border-radius:18px;
-            box-shadow:0 8px 20px rgba(15,23,42,0.06);
-            margin-bottom:24px;
-        }
+    .back-btn:hover{
+        color:white;
+        background:#112621;
+    }
 
-        .page-header h1{
-            margin:0;
-            color:#123c35;
-            font-size:30px;
-            font-weight:800;
-        }
+    .page-header{
+        background:white;
+        padding:28px 30px;
+        border-radius:16px;
+        box-shadow:0 8px 24px rgba(26, 58, 50, 0.06);
+        margin-bottom:24px;
+        border-left:4px solid var(--accent-gold);
+    }
 
-        .subtitle{
-            margin-top:8px;
-            color:#6b7280;
-            font-size:15px;
-        }
+    .page-header h1{
+        margin:0;
+        color:var(--edu-green);
+        font-size:32px;
+        font-weight:800;
+    }
 
-        .meta{
-            margin-top:20px;
-            display:flex;
-            gap:10px;
-            flex-wrap:wrap;
-        }
+    .subtitle{
+        margin-top:8px;
+        color:#6b7280;
+        font-size:15px;
+    }
 
-        .badge{
-            background:#f1f5f9;
-            padding:8px 14px;
-            border-radius:999px;
-            font-size:13px;
-            font-weight:700;
-            color:#111827;
-        }
+    .meta{
+        margin-top:20px;
+        display:flex;
+        gap:12px;
+        flex-wrap:wrap;
+    }
 
-        .legend{
-            display:flex;
-            gap:20px;
-            margin-top:20px;
-            flex-wrap:wrap;
-        }
+    .badge{
+        background:#f8fafc;
+        padding:9px 15px;
+        border-radius:999px;
+        font-size:13px;
+        font-weight:700;
+        color:#374151;
+        border:1px solid #eef2f7;
+    }
 
-        .legend-item{
-            display:flex;
-            align-items:center;
-            gap:8px;
-            color:#4b5563;
-            font-weight:600;
-            font-size:14px;
-        }
+    .legend{
+        display:flex;
+        gap:18px;
+        margin-top:20px;
+        flex-wrap:wrap;
+    }
 
-        .legend-box{
-            width:16px;
-            height:16px;
-            border-radius:5px;
-        }
+    .legend-item{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        color:#4b5563;
+        font-weight:700;
+        font-size:14px;
+    }
 
-        .legend-available{
-            background:#bbf7d0;
-        }
+    .legend-box{
+        width:16px;
+        height:16px;
+        border-radius:5px;
+    }
 
-        .legend-booked{
-            background:#f87171;
-        }
+    .legend-available{
+        background:#dcfce7;
+        border:1px solid #86efac;
+    }
 
-        .legend-disabled{
-            background:#d1d5db;
-        }
+    .legend-booked{
+        background:#fee2e2;
+        border:1px solid #fca5a5;
+    }
 
-        .facility-card{
-            background:white;
-            padding:20px 24px;
-            border-radius:18px;
-            margin-bottom:22px;
-            box-shadow:0 8px 20px rgba(15,23,42,0.06);
-        }
+    .legend-disabled{
+        background:#f1f3f4;
+        border:1px solid #d1d5db;
+    }
 
-        .facility-name{
-            font-size:21px;
-            font-weight:800;
-            color:#0f172a;
-        }
+    .facility-card{
+        background:white;
+        padding:24px;
+        border-radius:16px;
+        margin-bottom:22px;
+        box-shadow:0 8px 24px rgba(26, 58, 50, 0.06);
+        border:1px solid rgba(0,0,0,0.04);
+    }
 
-        .facility-info{
-            margin-top:6px;
-            margin-bottom:16px;
-            color:#64748b;
-            font-size:14px;
-            font-weight:600;
-        }
+    .facility-name{
+        font-size:22px;
+        font-weight:800;
+        color:#111827;
+    }
 
-        .slot-grid{
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(82px,1fr));
-            gap:10px;
-        }
+    .facility-info{
+        margin-top:6px;
+        margin-bottom:18px;
+        color:#6b7280;
+        font-size:14px;
+        font-weight:600;
+    }
 
-        .slot{
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:54px;
-            border-radius:10px;
-            background:#bbf7d0;
-            font-size:15px;
-            font-weight:800;
-            text-decoration:none;
-            color:#111827;
-            transition:0.18s;
-        }
+    .slot-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fill,minmax(82px,1fr));
+        gap:10px;
+    }
 
-        .slot:hover{
-            background:#22c55e;
-            color:white;
-            transform:translateY(-2px);
-        }
+    .slot{
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        height:52px;
+        border-radius:10px;
+        background:#dcfce7;
+        border:1px solid #86efac;
+        font-size:15px;
+        font-weight:800;
+        text-decoration:none;
+        color:#166534;
+        transition:0.18s;
+    }
 
-        .slot.booked{
-            background:#f87171;
-            color:white;
-            cursor:not-allowed;
-            pointer-events:none;
-        }
+    .slot:hover{
+        background:#16a34a;
+        color:white;
+        transform:translateY(-2px);
+    }
 
-        .slot.disabled{
-            background:#d1d5db;
-            color:#6b7280;
-            cursor:not-allowed;
-            pointer-events:none;
-        }
+    .slot.booked{
+        background:#fee2e2;
+        border:1px solid #fca5a5;
+        color:#991b1b;
+        cursor:not-allowed;
+        pointer-events:none;
+    }
 
-        .facility-disabled{
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            background:#fff1f2;
-            color:#991b1b;
-            padding:10px 16px;
-            border-radius:999px;
-            font-weight:700;
-            font-size:14px;
-        }
+    .slot.disabled{
+        background:#f1f3f4;
+        border:1px solid #d1d5db;
+        color:#6b7280;
+        cursor:not-allowed;
+        pointer-events:none;
+    }
 
-        .empty-card{
-            background:white;
-            padding:25px;
-            border-radius:16px;
-            box-shadow:0 8px 20px rgba(15,23,42,0.06);
-        }
-    </style>
+    .facility-disabled{
+        display:inline-flex;
+        align-items:center;
+        gap:8px;
+        background:#fee2e2;
+        color:#991b1b;
+        padding:10px 16px;
+        border-radius:999px;
+        font-weight:800;
+        font-size:14px;
+        border:1px solid #fca5a5;
+    }
+
+    .empty-card{
+        background:white;
+        padding:25px;
+        border-radius:16px;
+        box-shadow:0 8px 24px rgba(26, 58, 50, 0.06);
+    }
+</style>
 </head>
 
 <body>
